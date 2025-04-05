@@ -26,7 +26,7 @@ public class FilterSecurity extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = request.getHeader("Authorization");
+        String token = this.recoverToken(request);
 
         if (token != null && tokenService.isTokenValid(token)) {
             String email = tokenService.subjectToken(token);
@@ -42,15 +42,12 @@ public class FilterSecurity extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
 
     }
-    
-    public String recoverToken(HttpServletRequest request){
-        var authHeader = request.getHeader("Authorization");
-        
-        if(authHeader != null){
-            return null;
-        }
 
-        String bearer = authHeader.replace("Bearer ", "");
-        return bearer;
+    public String recoverToken(HttpServletRequest request) {
+        var authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.replace("Bearer ", "");
+        }
+        return null;
     }
 }

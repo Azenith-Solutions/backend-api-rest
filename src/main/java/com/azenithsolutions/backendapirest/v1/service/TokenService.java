@@ -15,13 +15,8 @@ import java.time.ZoneOffset;
 
 @Service
 public class TokenService {
-    private final OffsetScrollPositionHandlerMethodArgumentResolver offsetResolver;
     @Value("${api.security.token.secret}")
     private String secret;
-
-    public TokenService(OffsetScrollPositionHandlerMethodArgumentResolver offsetResolver) {
-        this.offsetResolver = offsetResolver;
-    }
 
     public String generateToken(User user) {
         try{
