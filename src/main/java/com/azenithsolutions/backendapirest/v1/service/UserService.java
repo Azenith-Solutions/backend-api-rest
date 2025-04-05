@@ -4,6 +4,10 @@ import com.azenithsolutions.backendapirest.v1.model.User;
 import com.azenithsolutions.backendapirest.v1.repository.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,12 +33,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User findByUserByEmail(String email) throws EntityNotFoundException {
-        User userFound = userRepository.findByEmail(email);
-
-        if(userFound == null){
-            throw new EntityNotFoundException("User not found");
-        }
-        return userFound;
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }

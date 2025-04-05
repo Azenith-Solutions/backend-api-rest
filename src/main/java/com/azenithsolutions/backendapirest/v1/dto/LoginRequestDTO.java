@@ -19,6 +19,9 @@ public class LoginRequestDTO {
     private String email;
 
     @NotBlank(message = "Password cannot be empty")
-    @Size(max = 100, message = "Password must be less than 100 characters")
+    @Size(max = 255, message = "Password must be less than 100 characters")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$",
+            message = "Password needs to have: - One capital letter | - One lowercase letter | - One number | - One special character")
+
     private String password;
 }

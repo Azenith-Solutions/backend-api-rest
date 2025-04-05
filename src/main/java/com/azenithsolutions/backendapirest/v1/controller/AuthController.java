@@ -6,7 +6,6 @@ import com.azenithsolutions.backendapirest.v1.dto.LoginResponseDTO;
 import com.azenithsolutions.backendapirest.v1.dto.RegisterRequestDTO;
 import com.azenithsolutions.backendapirest.v1.dto.RegisterResponseDTO;
 import com.azenithsolutions.backendapirest.v1.model.User;
-import com.azenithsolutions.backendapirest.v1.repository.UserRepository;
 import com.azenithsolutions.backendapirest.v1.service.TokenService;
 import com.azenithsolutions.backendapirest.v1.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,11 +35,13 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@Valid @RequestBody LoginRequestDTO body){
         try{
-            User user = userService.findByUserByEmail(body.getEmail());
+            System.out.println("Email: " + body.getEmail());
+            System.out.println("Senha: " + body.getPassword()); // Verifique se a senha está aqui!
 
-            if(user == null){
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
-            }
+            User user = userService.findUserByEmail(body.getEmail());
+
+            System.out.println("body: " + body);
+            System.out.println("user: " + user);
 
             if (passwordEncoder.matches(body.getPassword(), user.getPassword())) {
                 String token = this.tokenService.generateToken(user);

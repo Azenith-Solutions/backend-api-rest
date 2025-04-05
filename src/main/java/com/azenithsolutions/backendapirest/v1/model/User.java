@@ -24,6 +24,8 @@ public class User implements UserDetails {
 
     @Column(unique = true)
     private String email;
+
+    @Column(name = "password")
     private String password;
     private LocalDate createdAt;
     private LocalDate updatedAt;
@@ -35,12 +37,12 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return "";
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return this.email;
     }
 
     @Override
