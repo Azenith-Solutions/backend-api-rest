@@ -9,6 +9,8 @@ import com.azenithsolutions.backendapirest.v1.model.User;
 import com.azenithsolutions.backendapirest.v1.repository.UserRepository;
 import com.azenithsolutions.backendapirest.v1.service.TokenService;
 import com.azenithsolutions.backendapirest.v1.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Authentication - v1", description = "Endpoints to authenticate with JWT Token validation")
 @RestController
 @RequestMapping("/v1/auth")
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
 
+    @Operation(summary = "Sign in", description = "User sign in validation")
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@Valid @RequestBody LoginRequestDTO body){
         try{
@@ -57,6 +61,7 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "Sign up", description = "User sign up validation")
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequestDTO body){
         try{
