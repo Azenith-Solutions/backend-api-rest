@@ -35,13 +35,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@Valid @RequestBody LoginRequestDTO body){
         try{
-            System.out.println("Email: " + body.getEmail());
-            System.out.println("Senha: " + body.getPassword()); // Verifique se a senha está aqui!
-
             User user = userService.findUserByEmail(body.getEmail());
 
-            System.out.println("body: " + body);
-            System.out.println("user: " + user);
+            if (user == null){
+                throw new EntityNotFoundException("Invalid email or password");
+            }
 
             if (passwordEncoder.matches(body.getPassword(), user.getPassword())) {
                 String token = this.tokenService.generateToken(user);
