@@ -21,6 +21,7 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI apiInfo() {
         return new OpenAPI()
+                .openapi("3.0.1")
                 .components(new Components()
                         .addSecuritySchemes("basic", new SecurityScheme()
                                 .type(SecurityScheme.Type.HTTP)
@@ -43,7 +44,7 @@ public class OpenApiConfig {
         return GroupedOpenApi.builder()
                 .group("v1")
                 .pathsToMatch("/v1/**")
-                .packagesToScan("com.azenithsolutions.backend.v1")
+                .packagesToScan("com.azenithsolutions.backendapirest.v1")
                 .build();
     }
 }
