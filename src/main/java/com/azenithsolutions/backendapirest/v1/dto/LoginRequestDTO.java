@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter
-@AllArgsConstructor
-public class AuthRequestDTO {
+@AllArgsConstructor @NoArgsConstructor
+public class LoginRequestDTO {
     @NotBlank(message = "Email cannot be empty")
     @Email(message = "Email is not valid")
     @Pattern(regexp = ".*@.*\\..*", message = "Email must contain @ and domain")
