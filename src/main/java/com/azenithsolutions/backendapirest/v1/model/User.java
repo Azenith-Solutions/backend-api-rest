@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name="users")
+@Table(name="Usuario")
 @Data
 @AllArgsConstructor @NoArgsConstructor
 public class User implements UserDetails {
@@ -20,12 +20,13 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "nome")
     private String fullName;
 
-    @Column(unique = true)
+    @Column(unique = true, name = "email")
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "senha")
     private String password;
     private LocalDate createdAt;
     private LocalDate updatedAt;

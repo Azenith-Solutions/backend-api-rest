@@ -3,6 +3,7 @@ package com.azenithsolutions.backendapirest.config;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.models.GroupedOpenApi;
@@ -20,12 +21,16 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI apiInfo() {
+        final String securitySchemeName = "bearerAuth";
         return new OpenAPI()
                 .openapi("3.0.1")
+                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new Components()
-                        .addSecuritySchemes("basic", new SecurityScheme()
+                        .addSecuritySchemes(securitySchemeName, new SecurityScheme()
+                                .name(securitySchemeName)
                                 .type(SecurityScheme.Type.HTTP)
-                                .scheme("basic")
+                                .scheme("bearer")
+                                .bearerFormat("JWT")
                         )
                 )
                 .info(new Info()
@@ -34,9 +39,8 @@ public class OpenApiConfig {
                         .version("1.0")
                 )
                 .servers(List.of(
-                                new Server().url(contextPath).description("API Server")
-                        )
-                );
+                        new Server().url(contextPath).description("API Server")
+                ));
     }
 
     @Bean

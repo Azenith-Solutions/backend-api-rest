@@ -21,7 +21,7 @@ public class RegisterRequestDTO {
     @Pattern(regexp = ".*@.*\\..*", message = "Email must contain @ and domain")
     private String email;
 
-    @NotBlank(message = "Password cannot be emptu")
+    @NotBlank(message = "Password cannot be empty")
     @Size(min = 8, max = 100, message = "Password has to be between 8-100 characters")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+={}:;\"'<>,.?~`-])[A-Za-z\\d!@#$%^&*()_+={}:;\"'<>,.?~`-]{8,}$", message = "Password must contain at least one uppercase letter, one lowercase letter, one digit, one special character, and be at least 8 characters long.")
     private String password;
