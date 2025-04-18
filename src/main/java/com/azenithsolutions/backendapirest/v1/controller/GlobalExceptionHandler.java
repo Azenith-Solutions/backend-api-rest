@@ -1,7 +1,6 @@
-
 package com.azenithsolutions.backendapirest.v1.controller;
 
-import com.azenithsolutions.backendapirest.v1.dto.ApiErrorResponseDTO;
+import com.azenithsolutions.backendapirest.v1.dto.ApiResponseDTO;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiErrorResponseDTO> handleValidationExceptions(MethodArgumentNotValidException ex, WebRequest request) {
+    public ResponseEntity<ApiResponseDTO<List<String>>> handleValidationExceptions(MethodArgumentNotValidException ex, WebRequest request) {
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -29,7 +28,7 @@ public class GlobalExceptionHandler {
 
         String path = ((ServletWebRequest) request).getRequest().getRequestURI();
 
-        ApiErrorResponseDTO errorResponse = new ApiErrorResponseDTO(
+        ApiResponseDTO<List<String>> errorResponse = new ApiResponseDTO<>(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 "Validation Error",
