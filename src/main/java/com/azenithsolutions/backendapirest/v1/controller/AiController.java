@@ -163,22 +163,34 @@ public class AiController {
 
     private Mono<String> generateSql(String context) {
         String prompt = String.format(
-            """
-            Histórico da Conversa:
-            %s
-
-            Instrução: Baseado no histórico e no esquema de banco de dados abaixo, converta a ÚLTIMA pergunta do usuário em um comando SQL SELECT VÁLIDO para consulta.
-            REGRAS IMPORTANTES:
-            1. Gere APENAS o comando SQL SELECT.
-            2. deixe EXPLICITO que não pode INSERIR, ATUALIZAR e principalmente DELETAR dados.
-            3. NÃO inclua explicações, comentários, markdown (```) ou qualquer texto adicional fora do SQL.
-            4. Se a pergunta não puder ser convertida em um comando SQL SELECT ou não for relacionada a consultar dados do esquema fornecido, responda EXATAMENTE com: %s
-
-            Esquema do Banco de Dados:
-            %s
-
-            Comando SQL ou %s:""",
-            context, NAO_SQL_MARKER, DB_SCHEMA, NAO_SQL_MARKER
+                """
+                **Persona e Contexto:** Você é um assistente de IA da **Hardware Tech**, especializado EXCLUSIVAMENTE em **gerenciamento de estoque, reparo de máquinas industriais, vendas de componentes eletrônicos e serviços relacionados** oferecidos pela Hardware Tech. Sua função é auxiliar com informações e insights DENTRO deste contexto, usando o banco de dados fornecido.
+    
+                **Histórico da Conversa:**
+                %s
+    
+                **Instrução Principal:** Analise a ÚLTIMA pergunta do usuário no histórico.
+                1.  **Verificação de Contexto:** A pergunta está ESTRITAMENTE dentro do contexto da Hardware Tech (estoque, reparos, vendas de componentes/máquinas, serviços)?
+                    *   **NÃO:** Responda IMEDIATAMENTE e EXATAMENTE com: %s
+                    *   **SIM:** Prossiga para a próxima etapa.
+                2.  **Verificação de Intenção:** A pergunta busca dados consultáveis no esquema abaixo (requer um `SELECT`)?
+                    *   **SIM:** Gere o comando SQL `SELECT` correspondente, seguindo as regras abaixo.
+                    *   **NÃO (ex: saudação, pergunta geral sobre a Hardware Tech sem necessidade de dados específicos):** Responda EXATAMENTE com: %s
+    
+                **REGRAS para Geração de SQL (APENAS se aplicável):**
+                *   **SOMENTE SELECT:** Gere APENAS o comando `SELECT`. NUNCA `INSERT`, `UPDATE`, `DELETE`. Qualquer outra coisa resulta em %s.
+                *   **SEM TEXTO EXTRA:** O output deve ser APENAS o SQL, sem explicações, markdown (```), etc.
+    
+                **Esquema do Banco de Dados:**
+                %s
+    
+                **Comando SQL SELECT Válido ou Marcador (%s):**""",
+                context,           // Histórico
+                NAO_SQL_MARKER,    // Regra 1: Fora de contexto
+                NAO_SQL_MARKER,    // Regra 2: Pergunta não-SQL dentro do contexto
+                NAO_SQL_MARKER,    // Regra SQL: Não-SELECT
+                DB_SCHEMA,         // Esquema
+                NAO_SQL_MARKER     // Placeholder final
         );
         log.debug("Generating SQL with prompt:\n{}", prompt);
         return geminiService.generateContent(prompt);
@@ -274,7 +286,7 @@ public class AiController {
             Instrução: Com base no histórico da conversa e no resultado da consulta fornecido, elabore uma resposta curta e clara para o usuário em Português.
             REGRAS IMPORTANTES:
             1. NÃO mencione SQL, tabelas, ou o processo de consulta.
-            2. deixe EXPLICITO que você NÃO pode INSERIR, ATUALIZAR ou DELETAR itens
+            2. Avise que você NÃO pode INSERIR, ATUALIZAR ou DELETAR itens, só não seja repetitivo, falando sempre.
             3. Foque em apresentar a informação do resultado de forma útil e direta.
             4. Seja conciso e amigável.
 
@@ -286,15 +298,23 @@ public class AiController {
     }
 
     private Mono<String> generateChatResponse(String context) {
+        String lastUserMessage = extractLastUserMessage(context);
+
         String prompt = String.format(
-            """
-            Histórico da Conversa:
-            %s
-
-            Instrução: Responda à ÚLTIMA pergunta do usuário de forma conversacional, útil e amigável, em Português. Use o histórico como contexto. Não tente gerar SQL nem mencionar o banco de dados. Apenas converse.
-
-            Resposta:""",
-            context
+                """
+                **Persona e Contexto:** Você é um assistente de IA da **Hardware Tech**, especializado EXCLUSIVAMENTE em **gerenciamento de estoque, reparo de máquinas industriais, vendas de componentes eletrônicos e serviços relacionados** oferecidos pela Hardware Tech, você tem a base de dados e esta focado em trazeer insights e infomações relevantes.
+    
+                **Histórico da Conversa (incluindo a última pergunta):**
+                %s
+    
+                **Instrução Principal:** Analise a ÚLTIMA pergunta do usuário: "%s"
+                1.  **Verificação de Contexto:** A pergunta está ESTRITAMENTE dentro do contexto da Hardware Tech (estoque, reparos, vendas de componentes/máquinas, serviços, usuarios, insights, funcionalidades da aplicação)?
+                    *   **NÃO:** Responda educadamente que você só pode ajudar com assuntos relacionados à Hardware Tech (estoque, reparos, vendas, serviços). NÃO responda à pergunta fora do tópico. Exemplo: "Desculpe, só posso ajudar com questões sobre gerenciamento de estoque, reparos, vendas de componentes e serviços da Hardware Tech. Como posso auxiliar dentro desses tópicos?"
+                    *   **SIM:** Responda à pergunta de forma conversacional, útil e amigável, em Português, mantendo-se dentro do contexto da Hardware Tech. Use o histórico se relevante. NÃO tente gerar SQL nem mencionar o banco de dados diretamente. Apenas converse sobre o tópico permitido.
+    
+                **Resposta:**""",
+                context,
+                lastUserMessage
         );
         log.debug("Generating chat response with prompt:\n{}", prompt);
         return geminiService.generateContent(prompt);
@@ -318,5 +338,13 @@ public class AiController {
                 errors,
                 path
         ));
+    }
+
+    private String extractLastUserMessage(String context) {
+        int lastUserPrefix = context.lastIndexOf("User: ");
+        if (lastUserPrefix != -1) {
+            return context.substring(lastUserPrefix + "User: ".length()).trim();
+        }
+        return "";
     }
 }
