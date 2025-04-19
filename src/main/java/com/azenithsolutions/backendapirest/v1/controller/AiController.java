@@ -3,19 +3,19 @@ package com.azenithsolutions.backendapirest.v1.controller;
 import com.azenithsolutions.backendapirest.v1.dto.AiGeminiRequest;
 import com.azenithsolutions.backendapirest.v1.dto.ApiResponseDTO;
 import com.azenithsolutions.backendapirest.v1.model.ChatMessage;
-import com.azenithsolutions.backendapirest.v1.service.GeminiService; // Import the service
+import com.azenithsolutions.backendapirest.v1.service.GeminiService; 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext; // Use PersistenceContext for EntityManager
+import jakarta.persistence.PersistenceContext; 
 import jakarta.persistence.Query;
 import jakarta.servlet.http.HttpServletRequest;
-import org.slf4j.Logger; // Use a proper logger
+import org.slf4j.Logger; 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional; // Add for DB operations
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono; // Import Mono
+import reactor.core.publisher.Mono; 
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -164,30 +164,32 @@ public class AiController {
     private Mono<String> generateSql(String context) {
         String prompt = String.format(
                 """
-                **Persona e Contexto:** Você é um assistente de IA da **Hardware Tech**, especializado EXCLUSIVAMENTE em **gerenciamento de estoque, reparo de máquinas industriais, vendas de componentes eletrônicos e serviços relacionados** oferecidos pela Hardware Tech. Sua função é auxiliar com informações e insights DENTRO deste contexto, usando o banco de dados fornecido.
-    
+                **Persona e Contexto:** Você é um assistente de IA analítico da **Hardware Tech**, especialista em **gerenciamento de estoque, status de pedidos/solicitações, detalhes de componentes eletrônicos, e informações sobre clientes/empresas** com base nos dados da Hardware Tech. Sua função principal é analisar a pergunta do usuário e, SE E SOMENTE SE for necessário consultar dados específicos do banco para respondê-la, gerar o comando SQL `SELECT` apropriado.
+
                 **Histórico da Conversa:**
                 %s
-    
-                **Instrução Principal:** Analise a ÚLTIMA pergunta do usuário no histórico.
-                1.  **Verificação de Contexto:** A pergunta está ESTRITAMENTE dentro do contexto da Hardware Tech (estoque, reparos, vendas de componentes/máquinas, serviços)?
-                    *   **NÃO:** Responda IMEDIATAMENTE e EXATAMENTE com: %s
-                    *   **SIM:** Prossiga para a próxima etapa.
-                2.  **Verificação de Intenção:** A pergunta busca dados consultáveis no esquema abaixo (requer um `SELECT`)?
-                    *   **SIM:** Gere o comando SQL `SELECT` correspondente, seguindo as regras abaixo.
-                    *   **NÃO (ex: saudação, pergunta geral sobre a Hardware Tech sem necessidade de dados específicos):** Responda EXATAMENTE com: %s
-    
-                **REGRAS para Geração de SQL (APENAS se aplicável):**
-                *   **SOMENTE SELECT:** Gere APENAS o comando `SELECT`. NUNCA `INSERT`, `UPDATE`, `DELETE`. Qualquer outra coisa resulta em %s.
-                *   **SEM TEXTO EXTRA:** O output deve ser APENAS o SQL, sem explicações, markdown (```), etc.
-    
+
+                **Instrução Principal:** Analise CUIDADOSAMENTE a ÚLTIMA pergunta do usuário no histórico.
+                1.  **Verificação de Relevância e Intenção:**
+                    *   A pergunta está ESTRITAMENTE relacionada aos tópicos da Hardware Tech (estoque, componentes, pedidos, solicitações, clientes, etc.)?
+                    *   A pergunta EXIGE dados específicos do banco de dados para ser respondida (ex: "liste os componentes X", "qual o status do pedido Y", "quantos itens Z temos?", "qual o email do cliente W?")?
+                    *   **NÃO (Fora do tópico OU pergunta geral/saudação que não precisa de dados):** Responda IMEDIATAMENTE e EXATAMENTE com: %s
+                    *   **SIM (Relevante e requer dados):** Prossiga para gerar o SQL.
+
+                2.  **Geração de SQL (APENAS se a etapa 1 indicar SIM):**
+                    *   Gere APENAS o comando `SELECT` SQL necessário para obter os dados que respondem DIRETAMENTE à pergunta do usuário.
+                    *   Use o esquema abaixo para construir a query. Seja preciso com nomes de tabelas e colunas.
+                    *   Considere joins quando necessário para combinar informações (ex: pedido com detalhes do componente ou cliente).
+                    *   **REGRAS ESTRITAS:**
+                        *   SOMENTE `SELECT`. NUNCA `INSERT`, `UPDATE`, `DELETE`, `DROP`, etc. Qualquer outra coisa resulta em %s.
+                        *   O output deve ser APENAS o comando SQL puro, sem explicações, comentários, ou markdown (```).
+
                 **Esquema do Banco de Dados:**
                 %s
-    
+
                 **Comando SQL SELECT Válido ou Marcador (%s):**""",
                 context,           // Histórico
-                NAO_SQL_MARKER,    // Regra 1: Fora de contexto
-                NAO_SQL_MARKER,    // Regra 2: Pergunta não-SQL dentro do contexto
+                NAO_SQL_MARKER,    // Regra 1/2: Fora de contexto ou não requer SQL
                 NAO_SQL_MARKER,    // Regra SQL: Não-SELECT
                 DB_SCHEMA,         // Esquema
                 NAO_SQL_MARKER     // Placeholder final
@@ -270,27 +272,31 @@ public class AiController {
 
     private Mono<String> summarizeResults(String context, Object result) {
         String resultString = result != null ? result.toString() : "Nenhum resultado.";
-        int maxLength = 1500;
+        int maxLength = 1500; // Keep truncation for safety
         if (resultString.length() > maxLength) {
             resultString = resultString.substring(0, maxLength) + "... (resultado truncado)";
         }
 
         String prompt = String.format(
             """
-            Histórico da Conversa:
+            **Contexto:** Você é um assistente da Hardware Tech. O usuário fez uma pergunta que exigiu uma consulta ao banco de dados. A consulta foi executada e o resultado está abaixo.
+
+            **Histórico da Conversa (incluindo a pergunta original do usuário):**
             %s
 
-            Resultado da Consulta SQL (já executada):
+            **Resultado da Consulta SQL (Dados brutos):**
             %s
 
-            Instrução: Com base no histórico da conversa e no resultado da consulta fornecido, elabore uma resposta curta e clara para o usuário em Português.
-            REGRAS IMPORTANTES:
-            1. NÃO mencione SQL, tabelas, ou o processo de consulta.
-            2. Avise que você NÃO pode INSERIR, ATUALIZAR ou DELETAR itens, só não seja repetitivo, falando sempre.
-            3. Foque em apresentar a informação do resultado de forma útil e direta.
-            4. Seja conciso e amigável.
+            **Instrução Principal:** Sua tarefa é interpretar o **Resultado da Consulta SQL** e formular uma resposta CLARA, CONCISA e ÚTIL em Português para a ÚLTIMA pergunta do usuário no histórico.
+            **REGRAS IMPORTANTES:**
+            1.  **NÃO mencione SQL**, tabelas, colunas, banco de dados ou o processo de consulta. Fale como se você soubesse a informação diretamente.
+            2.  **Responda diretamente à pergunta do usuário** usando os dados do resultado.
+            3.  Se o resultado for "Nenhum resultado encontrado.", informe ao usuário de forma clara que a informação solicitada não foi encontrada nos registros.
+            4.  Se o resultado for complexo (muitas linhas/colunas), resuma os pontos principais ou a informação mais relevante para a pergunta do usuário. Não apenas liste os dados. Tente agregar ou analisar se apropriado.
+            5.  Mantenha a persona de um assistente prestativo da Hardware Tech.
+            6.  Lembre ao usuário que você não pode modificar dados (inserir, atualizar, deletar), mas faça isso apenas ocasionalmente, quando parecer relevante, não em toda resposta.
 
-            Resposta para o usuário:""",
+            **Resposta final para o usuário:**""",
             context, resultString
         );
         log.debug("Generating summary with prompt:\n{}", prompt);
@@ -302,17 +308,33 @@ public class AiController {
 
         String prompt = String.format(
                 """
-                **Persona e Contexto:** Você é um assistente de IA da **Hardware Tech**, especializado EXCLUSIVAMENTE em **gerenciamento de estoque, reparo de máquinas industriais, vendas de componentes eletrônicos e serviços relacionados** oferecidos pela Hardware Tech, você tem a base de dados e esta focado em trazeer insights e infomações relevantes.
-    
+                **Persona e Contexto:** Você é um assistente de IA da **Hardware Tech**, especialista em **gerenciamento de estoque, reparo de máquinas industriais, vendas de componentes eletrônicos, status de pedidos/solicitações e serviços relacionados** oferecidos pela Hardware Tech. Você também tem conhecimento sobre a estrutura de dados do sistema.
+
+                **Esquema do Banco de Dados (para referência sobre estrutura):**
+                %s
+
                 **Histórico da Conversa (incluindo a última pergunta):**
                 %s
-    
+
                 **Instrução Principal:** Analise a ÚLTIMA pergunta do usuário: "%s"
-                1.  **Verificação de Contexto:** A pergunta está ESTRITAMENTE dentro do contexto da Hardware Tech (estoque, reparos, vendas de componentes/máquinas, serviços, usuarios, insights, funcionalidades da aplicação)?
-                    *   **NÃO:** Responda educadamente que você só pode ajudar com assuntos relacionados à Hardware Tech (estoque, reparos, vendas, serviços). NÃO responda à pergunta fora do tópico. Exemplo: "Desculpe, só posso ajudar com questões sobre gerenciamento de estoque, reparos, vendas de componentes e serviços da Hardware Tech. Como posso auxiliar dentro desses tópicos?"
-                    *   **SIM:** Responda à pergunta de forma conversacional, útil e amigável, em Português, mantendo-se dentro do contexto da Hardware Tech. Use o histórico se relevante. NÃO tente gerar SQL nem mencionar o banco de dados diretamente. Apenas converse sobre o tópico permitido.
-    
-                **Resposta:**""",
+                1.  **Verificação de Contexto e Intenção:**
+                    *   A pergunta está ESTRITAMENTE dentro do contexto da Hardware Tech (estoque, reparos, vendas, pedidos, solicitações, serviços, funcionalidades gerais da aplicação, estrutura de dados)?
+                    *   **NÃO:** Responda educadamente que você só pode ajudar com assuntos relacionados à Hardware Tech e seus serviços. NÃO responda à pergunta fora do tópico.
+                    *   **SIM:** Prossiga para a etapa 2.
+
+                2.  **Tipo de Resposta:**
+                    *   **Pergunta sobre ESTRUTURA ou COMO FAZER?** (Ex: "quais campos preciso para cadastrar um componente?", "como registro um usuário?"): Use o **Esquema do Banco de Dados** acima para identificar a tabela relevante. Formule uma resposta clara e CONCISA em Português listando APENAS os campos que o usuário precisa **informar manualmente** durante o cadastro/criação.
+                        *   **OMITIR:** IDs (chaves primárias), chaves estrangeiras (mas explique o conceito se necessário, ex: "precisa informar a categoria"), timestamps (`created_at`, `updated_at`), e outros campos que são geralmente preenchidos automaticamente pelo sistema.
+                        *   **NÃO MENCIONAR:** Tipos de dados (VARCHAR, INT), tamanhos (45, 225), ou restrições de banco de dados, a menos que seja crucial para o entendimento.
+                        *   **Exemplo (Usuário):** "Para registrar um novo usuário, você precisa fornecer o Nome, Email, Senha e a Função dele no sistema."
+                    *   **Pergunta GERAL ou CONVERSACIONAL?** (Ex: "o que a Hardware Tech faz?", "fale sobre reparos"): Responda de forma conversacional, informativa e amigável, em Português. Use o histórico se relevante. Foque em fornecer informações gerais ou explicações sobre os tópicos permitidos.
+
+                **REGRAS IMPORTANTES:**
+                *   NÃO execute ou gere comandos SQL neste modo.
+                *   Seja prestativo, claro e direto ao ponto.
+
+                **Resposta Concisa e Direta (baseada no esquema, se aplicável):**""",
+                DB_SCHEMA,
                 context,
                 lastUserMessage
         );
