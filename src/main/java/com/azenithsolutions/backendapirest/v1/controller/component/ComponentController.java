@@ -1,10 +1,7 @@
-package com.azenithsolutions.backendapirest.v1.controller;
+package com.azenithsolutions.backendapirest.v1.controller.component;
 
-import com.azenithsolutions.backendapirest.v1.dto.ComponentResponseDTO;
-import com.azenithsolutions.backendapirest.v1.model.Component;
-import com.azenithsolutions.backendapirest.v1.model.User;
-import com.azenithsolutions.backendapirest.v1.service.ComponentService;
-import com.azenithsolutions.backendapirest.v1.service.UserService;
+import com.azenithsolutions.backendapirest.v1.dto.component.ComponentResponseDTO;
+import com.azenithsolutions.backendapirest.v1.service.component.ComponentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

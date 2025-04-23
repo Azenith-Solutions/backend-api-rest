@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.v1.dto;
+package com.azenithsolutions.backendapirest.v1.dto.component;
 
 import com.azenithsolutions.backendapirest.v1.model.Component;
 import lombok.Data;

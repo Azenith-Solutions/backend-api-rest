@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.v1.service;
+package com.azenithsolutions.backendapirest.v1.service.auth;
 
 import com.azenithsolutions.backendapirest.v1.model.User;
 import com.azenithsolutions.backendapirest.v1.repository.UserRepository;

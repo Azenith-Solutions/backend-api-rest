@@ -1,6 +1,6 @@
-package com.azenithsolutions.backendapirest.v1.service;
+package com.azenithsolutions.backendapirest.v1.service.component;
 
-import com.azenithsolutions.backendapirest.v1.dto.ComponentResponseDTO;
+import com.azenithsolutions.backendapirest.v1.dto.component.ComponentResponseDTO;
 import com.azenithsolutions.backendapirest.v1.model.Component;
 import com.azenithsolutions.backendapirest.v1.repository.ComponentRepository;
 import jakarta.persistence.EntityNotFoundException;

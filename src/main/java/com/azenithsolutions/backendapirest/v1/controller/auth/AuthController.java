@@ -1,10 +1,14 @@
-package com.azenithsolutions.backendapirest.v1.controller;
+package com.azenithsolutions.backendapirest.v1.controller.auth;
 
 import com.auth0.jwt.exceptions.JWTCreationException;
-import com.azenithsolutions.backendapirest.v1.dto.*;
+import com.azenithsolutions.backendapirest.v1.dto.auth.LoginRequestDTO;
+import com.azenithsolutions.backendapirest.v1.dto.auth.LoginResponseDTO;
+import com.azenithsolutions.backendapirest.v1.dto.auth.RegisterRequestDTO;
+import com.azenithsolutions.backendapirest.v1.dto.auth.RegisterResponseDTO;
+import com.azenithsolutions.backendapirest.v1.dto.shared.ApiResponseDTO;
 import com.azenithsolutions.backendapirest.v1.model.User;
-import com.azenithsolutions.backendapirest.v1.service.TokenService;
-import com.azenithsolutions.backendapirest.v1.service.UserService;
+import com.azenithsolutions.backendapirest.v1.service.auth.TokenService;
+import com.azenithsolutions.backendapirest.v1.service.component.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityExistsException;
@@ -22,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Tag(name = "Authentication - v1", description = "Endpoints to authenticate with JWT Token validation")
 @RestController

@@ -1,7 +1,6 @@
-package com.azenithsolutions.backendapirest.v1.controller;
+package com.azenithsolutions.backendapirest.v1.controller.user;
 
-import com.azenithsolutions.backendapirest.v1.model.User;
-import com.azenithsolutions.backendapirest.v1.service.UserService;
+import com.azenithsolutions.backendapirest.v1.service.component.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
 @Tag(name = "User Management - v1", description = "Endpoints to manage users")
 @RestController
 @RequestMapping("/v1/users")

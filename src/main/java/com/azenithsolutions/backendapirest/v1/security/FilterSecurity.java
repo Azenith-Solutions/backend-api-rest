@@ -1,8 +1,7 @@
 package com.azenithsolutions.backendapirest.v1.security;
 
-import com.azenithsolutions.backendapirest.v1.model.User;
 import com.azenithsolutions.backendapirest.v1.repository.UserRepository;
-import com.azenithsolutions.backendapirest.v1.service.TokenService;
+import com.azenithsolutions.backendapirest.v1.service.auth.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

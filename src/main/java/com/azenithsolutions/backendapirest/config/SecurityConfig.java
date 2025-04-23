@@ -1,7 +1,7 @@
 package com.azenithsolutions.backendapirest.config;
 
 import com.azenithsolutions.backendapirest.v1.security.FilterSecurity;
-import com.azenithsolutions.backendapirest.v1.service.CustomUserDetailsService;
+import com.azenithsolutions.backendapirest.v1.service.auth.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
