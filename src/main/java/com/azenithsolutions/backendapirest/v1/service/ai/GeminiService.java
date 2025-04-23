@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.v1.service;
+package com.azenithsolutions.backendapirest.v1.service.ai;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;

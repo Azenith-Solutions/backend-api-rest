@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.v1.dto;
+package com.azenithsolutions.backendapirest.v1.dto.component;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

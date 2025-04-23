@@ -1,6 +1,6 @@
-package com.azenithsolutions.backendapirest.v1.controller;
+package com.azenithsolutions.backendapirest.v1.controller.exception;
 
-import com.azenithsolutions.backendapirest.v1.dto.ApiResponseDTO;
+import com.azenithsolutions.backendapirest.v1.dto.shared.ApiResponseDTO;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

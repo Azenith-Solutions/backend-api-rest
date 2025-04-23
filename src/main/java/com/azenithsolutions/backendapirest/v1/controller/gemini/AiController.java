@@ -1,9 +1,9 @@
-package com.azenithsolutions.backendapirest.v1.controller;
+package com.azenithsolutions.backendapirest.v1.controller.gemini;
 
-import com.azenithsolutions.backendapirest.v1.dto.AiGeminiRequest;
-import com.azenithsolutions.backendapirest.v1.dto.ApiResponseDTO;
+import com.azenithsolutions.backendapirest.v1.dto.gemini.AiGeminiRequest;
+import com.azenithsolutions.backendapirest.v1.dto.shared.ApiResponseDTO;
 import com.azenithsolutions.backendapirest.v1.model.ChatMessage;
-import com.azenithsolutions.backendapirest.v1.service.GeminiService; 
+import com.azenithsolutions.backendapirest.v1.service.ai.GeminiService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext; 
 import jakarta.persistence.Query;

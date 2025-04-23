@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.v1.dto;
+package com.azenithsolutions.backendapirest.v1.dto.gemini;
 
 import com.azenithsolutions.backendapirest.v1.model.ChatMessage;
 import lombok.AllArgsConstructor;
