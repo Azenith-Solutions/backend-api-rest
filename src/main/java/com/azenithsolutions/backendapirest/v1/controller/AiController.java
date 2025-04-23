@@ -23,9 +23,11 @@ public class AiController {
     @Autowired
     private WebClient.Builder webClientBuilder;
 
+    @Value("${gemini.api.url}")
+    private String geminiApiUrl;
+
     @Value("${gemini.api.key}")
     private String geminiApiKey;
-
 
     @PostMapping("/gemini/chat")
     public ResponseEntity<ApiResponseDTO<?>> getGemini(@RequestBody AiGeminiRequest body, HttpServletRequest request) {
@@ -42,7 +44,7 @@ public class AiController {
                 );
             }
 
-            String apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiApiKey;
+            String apiUrl = geminiApiUrl + geminiApiKey;
 
             Map<String, Object> requestBody;
 
