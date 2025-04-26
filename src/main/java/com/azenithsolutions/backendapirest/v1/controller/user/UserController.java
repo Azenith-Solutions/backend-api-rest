@@ -1,6 +1,6 @@
 package com.azenithsolutions.backendapirest.v1.controller.user;
 
-import com.azenithsolutions.backendapirest.v1.service.component.UserService;
+import com.azenithsolutions.backendapirest.v1.service.user.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

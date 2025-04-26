@@ -8,7 +8,7 @@ public class ComponentRequestDTO {
     private String idHardWareTech;
 
     @NotBlank(message = "Deve haver uma caixa para ser registrada")
-    private String caixa;
+    private Long caixa;
 
     @NotBlank(message = "Deve haver um part number para ser registrado")
     private String partNumber;

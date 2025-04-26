@@ -1,5 +1,6 @@
 package com.azenithsolutions.backendapirest.v1.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name="Usuario")
+@Table(name="usuario")
 @Data
 @AllArgsConstructor @NoArgsConstructor
 public class User implements UserDetails {
@@ -28,7 +29,16 @@ public class User implements UserDetails {
 
     @Column(name = "senha")
     private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_funcao")
+    @JsonManagedReference
+    private Role fkFuncao;
+
+    @Column(name = "created_at")
     private LocalDate createdAt;
+
+    @Column(name = "updated_at")
     private LocalDate updatedAt;
 
     @Override

@@ -6,9 +6,10 @@ import com.azenithsolutions.backendapirest.v1.dto.auth.LoginResponseDTO;
 import com.azenithsolutions.backendapirest.v1.dto.auth.RegisterRequestDTO;
 import com.azenithsolutions.backendapirest.v1.dto.auth.RegisterResponseDTO;
 import com.azenithsolutions.backendapirest.v1.dto.shared.ApiResponseDTO;
+import com.azenithsolutions.backendapirest.v1.model.Role;
 import com.azenithsolutions.backendapirest.v1.model.User;
 import com.azenithsolutions.backendapirest.v1.service.auth.TokenService;
-import com.azenithsolutions.backendapirest.v1.service.component.UserService;
+import com.azenithsolutions.backendapirest.v1.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityExistsException;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "Authentication - v1", description = "Endpoints to authenticate with JWT Token validation")
 @RestController
@@ -115,13 +117,13 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<ApiResponseDTO<?>> registerUser(@RequestBody RegisterRequestDTO body, HttpServletRequest request) {
         try {
-            if (body.getFullName() == null || body.getEmail() == null || body.getPassword() == null) {
+            if (body.getFullName() == null || body.getEmail() == null || body.getPassword() == null || body.getRole() == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                         new ApiResponseDTO<>(
                                 LocalDateTime.now(),
                                 HttpStatus.BAD_REQUEST.value(),
                                 "Bad Request",
-                                List.of("Full name, email, and password are required"),
+                                List.of("Full name, email, password are required"),
                                 request.getRequestURI()
                         )
                 );
@@ -131,6 +133,19 @@ public class AuthController {
             user.setFullName(body.getFullName());
             user.setEmail(body.getEmail());
             user.setPassword(passwordEncoder.encode(body.getPassword()));
+            Optional<Role> role = userService.findRoleById(body.getRole());
+            if (role.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                        new ApiResponseDTO<>(
+                                LocalDateTime.now(),
+                                HttpStatus.BAD_REQUEST.value(),
+                                "Bad Request",
+                                List.of("Role not found"),
+                                request.getRequestURI()
+                        )
+                );
+            }
+            user.setFkFuncao(role.get());
 
             userService.register(user);
 
