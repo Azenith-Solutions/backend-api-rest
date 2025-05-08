@@ -2,13 +2,23 @@ package com.azenithsolutions.backendapirest.v1.dto.component;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ComponentRequestDTO {
     @NotBlank(message = "ID não pode estar vazio")
     private String idHardWareTech;
 
-    @NotBlank(message = "Deve haver uma caixa para ser registrada")
+    @NotNull(message = "Deve haver uma caixa para ser registrada")
     private Long caixa;
+    
+    @NotNull(message = "Deve haver uma categoria para ser registrada")
+    private Long categoria;
 
     @NotBlank(message = "Deve haver um part number para ser registrado")
     private String partNumber;

@@ -1,10 +1,12 @@
 package com.azenithsolutions.backendapirest.v1.controller.component;
 
+import com.azenithsolutions.backendapirest.v1.dto.component.ComponentRequestDTO;
 import com.azenithsolutions.backendapirest.v1.dto.shared.ApiResponseDTO;
 import com.azenithsolutions.backendapirest.v1.model.Component;
 import com.azenithsolutions.backendapirest.v1.service.component.ComponentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +40,16 @@ public class ComponentController {
 
         }
         catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
         }
     }
 
@@ -73,14 +84,23 @@ public class ComponentController {
 
         }
         catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
         }
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponseDTO<?>> createComponent(@RequestBody Component component, HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDTO<?>> createComponent(@Valid @RequestBody ComponentRequestDTO componentRequestDTO, HttpServletRequest request) {
         try {
-            Component createdComponent = componentService.save(component);
+            Component createdComponent = componentService.save(componentRequestDTO);
 
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(
@@ -95,16 +115,25 @@ public class ComponentController {
 
         }
         catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponseDTO<?>> updateComponent(@PathVariable Long id, @RequestBody Component component, HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDTO<?>> updateComponent(@PathVariable Long id, @Valid @RequestBody ComponentRequestDTO componentRequestDTO, HttpServletRequest request) {
         try {
-            Component existingComponent = componentService.findById(id).orElse(null);
+            Component updatedComponent = componentService.update(id, componentRequestDTO);
 
-            if (existingComponent == null) {
+            if (updatedComponent == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(
                                 new ApiResponseDTO<>(
@@ -116,9 +145,6 @@ public class ComponentController {
                                 )
                         );
             }
-
-            component.setIdComponente(id);
-            Component updatedComponent = componentService.save(component);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
@@ -133,7 +159,16 @@ public class ComponentController {
 
         }
         catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
         }
     }
 
@@ -170,7 +205,16 @@ public class ComponentController {
 
         }
         catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
         }
     }
 }
