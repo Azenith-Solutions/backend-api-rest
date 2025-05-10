@@ -1,42 +1,38 @@
-package com.azenithsolutions.backendapirest.v1.controller.user;
+package com.azenithsolutions.backendapirest.v1.controller.role;
 
+import com.azenithsolutions.backendapirest.v1.dto.role.RoleListDTO;
 import com.azenithsolutions.backendapirest.v1.dto.shared.ApiResponseDTO;
 import com.azenithsolutions.backendapirest.v1.dto.user.UserListDTO;
+import com.azenithsolutions.backendapirest.v1.model.Role;
 import com.azenithsolutions.backendapirest.v1.model.User;
-import com.azenithsolutions.backendapirest.v1.service.user.UserService;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.azenithsolutions.backendapirest.v1.service.role.RoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Tag(name = "User Management - v1", description = "Endpoints to manage users")
 @RestController
-@RequestMapping("/v1/users")
-public class UserController {
+@RequestMapping("/v1/roles")
+public class RoleController {
     @Autowired
-    private UserService userService;
+    private RoleService roleService;
 
     @GetMapping
-    public ResponseEntity<ApiResponseDTO<?>> getUsers( HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDTO<?>> getRoles( HttpServletRequest request) {
         try{
-            List<User> users = userService.findAllUsers();
+            List<Role> roles = roleService.findAllRoles();
 
-            List<UserListDTO> userListDTOs = users.stream()
-                    .map(user -> new UserListDTO(
-                            user.getId(),
-                            user.getFullName(),
-                            user.getEmail(),
-                            user.getFkFuncao().getFuncao(),
-                            true,  // mock up
-                            user.getCreatedAt()
+            List<RoleListDTO> roleListDTOs = roles.stream()
+                    .map(role -> new RoleListDTO(
+                            role.getIdFuncao(),
+                            role.getFuncao()
                     ))
                     .collect(Collectors.toList());
 
@@ -45,7 +41,7 @@ public class UserController {
                             LocalDateTime.now(),
                             HttpStatus.OK.value(),
                             "Success",
-                            userListDTOs,
+                            roleListDTOs,
                             request.getRequestURI()
                     )
             );
