@@ -4,7 +4,6 @@ import com.azenithsolutions.backendapirest.v1.dto.gemini.AiGeminiRequest;
 import com.azenithsolutions.backendapirest.v1.dto.shared.ApiResponseDTO;
 import com.azenithsolutions.backendapirest.v1.model.ChatMessage;
 import com.azenithsolutions.backendapirest.v1.service.ai.GeminiService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext; 
 import jakarta.persistence.Query;
@@ -25,7 +24,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Tag(name= "Gemini Assistant - v1", description = "Assistant with AI capabilities")
 @RestController
 @RequestMapping("/v1/ai")
 public class AiController {

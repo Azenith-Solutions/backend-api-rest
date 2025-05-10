@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Tag(name= "Component Management - v1", description = "Endpoints to manage components")
+@Tag(name = "Component Management - v1", description = "Endpoints to manage components")
 @RestController
 @RequestMapping("/v1/components")
 public class ComponentController {
+
     @Autowired
     private ComponentService componentService;
 
@@ -38,8 +39,7 @@ public class ComponentController {
                             )
                     );
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(
                             new ApiResponseDTO<>(
@@ -82,8 +82,7 @@ public class ComponentController {
                             )
                     );
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(
                             new ApiResponseDTO<>(
@@ -113,8 +112,7 @@ public class ComponentController {
                             )
                     );
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(
                             new ApiResponseDTO<>(
@@ -157,8 +155,7 @@ public class ComponentController {
                             )
                     );
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(
                             new ApiResponseDTO<>(
@@ -203,8 +200,7 @@ public class ComponentController {
                             )
                     );
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(
                             new ApiResponseDTO<>(
