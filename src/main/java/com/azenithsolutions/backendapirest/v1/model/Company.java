@@ -1,5 +1,6 @@
 package com.azenithsolutions.backendapirest.v1.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,13 +13,13 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Enterprise {
+public class Company {
     @Column(name = "id_empresa")
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long idEmpresa;
 
-    @Column(name = "nome_empresa")
+    @Column(name = "cnpj")
     private String cnpj;
 
     @Column(name = "nome")
@@ -26,7 +27,8 @@ public class Enterprise {
 
     @Column(name = "qntd_solicitacoes")
     private int qntdSolicitacoes;
-    
-    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "fkEmpresa")
+    @JsonBackReference
     private List<Order> pedidos;
 }

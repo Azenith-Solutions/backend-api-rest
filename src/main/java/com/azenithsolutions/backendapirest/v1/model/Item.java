@@ -18,12 +18,12 @@ public class Item {
     private Long idItem;
 
     @ManyToOne
-    @JoinColumn(name = "fk_componente")
+    @JoinColumn(name = "fkComponente")
     @JsonManagedReference
     private Component fkComponente;
 
     @ManyToOne
-    @JoinColumn(name = "fk_pedido")
+    @JoinColumn(name = "fkPedido")
     @JsonManagedReference
     private Order fkPedido;
 
