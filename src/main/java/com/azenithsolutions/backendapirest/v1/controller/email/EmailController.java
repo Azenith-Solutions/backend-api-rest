@@ -26,15 +26,17 @@ public class EmailController {
     @PostMapping("/send")
     public ResponseEntity<ApiResponseDTO<?>> sendEmail(@RequestBody EmailRequest emailToSend, HttpServletRequest request) {
         try {
-            Mono<String> emailSended = emailService.sendEmail(emailToSend);
+            System.out.println("Entrou no controller, estou chamando a service!");
 
-            return ResponseEntity.status(HttpStatus.OK)
+            String emailSent = emailService.sendEmail(emailToSend).block(); // Use apenas em contexto síncrono como controller
+
+            return ResponseEntity.status(HttpStatus.CREATED)
                     .body(
                             new ApiResponseDTO<>(
                                     LocalDateTime.now(),
-                                    HttpStatus.OK.value(),
-                                    "OK",
-                                    emailSended,
+                                    HttpStatus.CREATED.value(),
+                                    "Email enviado!",
+                                    emailSent,
                                     request.getRequestURI()
                             )
                     );
