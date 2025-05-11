@@ -77,8 +77,6 @@ public class OrderService {
         order.setEmailComprador(dto.getEmailComprador());
         order.setTelCelular(dto.getTelCelular());
         order.setStatus(dto.getStatus());
-        order.setCreatedAt(dto.getCreatedAt());
-        order.setUpdatedAt(dto.getUpdatedAt());
 
         return order;
     }

@@ -12,14 +12,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderRequestDTO {
-    @NotNull(message = "ID do pedido não pode ser vazio!")
-    private Long idPedido;
+    private Long idPedido; // Opcional para updates
     private String codigo;
     private Long fkEmpresa;
     private String nomeComprador;
     private String emailComprador;
     private String telCelular;
     private String status;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }
