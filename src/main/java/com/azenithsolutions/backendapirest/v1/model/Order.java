@@ -1,12 +1,12 @@
 package com.azenithsolutions.backendapirest.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -23,6 +23,15 @@ public class Order {
     @Column(name = "codigo")
     private String codigo;
 
+    @ManyToOne
+    @JoinColumn(name = "fk_empresa")
+    @JsonManagedReference
+    private Company fkEmpresa;
+
+    @OneToMany(mappedBy = "fkPedido")
+    @JsonBackReference
+    private List<Item> fkItens;
+
     @Column(name = "nome_comprador")
     private String nomeComprador;
 
@@ -36,16 +45,8 @@ public class Order {
     private String status;
 
     @Column(name = "created_at")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDate updatedAt;
-    
-    @ManyToOne
-    @JoinColumn(name = "fk_empresa", referencedColumnName = "id_empresa")
-    private Enterprise empresa;
-    
-    @OneToMany(mappedBy = "fkPedido")
-    @JsonBackReference
-    private List<Item> itens;
+    private LocalDateTime updatedAt;
 }

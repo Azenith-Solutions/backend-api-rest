@@ -1,13 +1,14 @@
-package com.azenithsolutions.backendapirest.v1.controller.component;
+package com.azenithsolutions.backendapirest.v1.controller.order;
 
-import com.azenithsolutions.backendapirest.v1.dto.component.ComponentRequestDTO;
+import com.azenithsolutions.backendapirest.v1.dto.order.OrderRequestDTO;
 import com.azenithsolutions.backendapirest.v1.dto.shared.ApiResponseDTO;
-import com.azenithsolutions.backendapirest.v1.model.Component;
-import com.azenithsolutions.backendapirest.v1.service.component.ComponentService;
+import com.azenithsolutions.backendapirest.v1.model.Order;
+import com.azenithsolutions.backendapirest.v1.service.order.OrderService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,18 +16,17 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Tag(name = "Component Management - v1", description = "Endpoints to manage components")
+@Tag(name = "Order Management - v1", description = "Endpoints to manage orders")
 @RestController
-@RequestMapping("/v1/components")
-public class ComponentController {
-
+@RequestMapping("/v1/orders")
+public class OrderController {
     @Autowired
-    private ComponentService componentService;
+    private OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<ApiResponseDTO<?>> getAllComponents(HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDTO<?>> getAllOrders(HttpServletRequest request) {
         try {
-            List<Component> components = componentService.getAllComponents();
+            List<Order> orders = orderService.getAllOrders();
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
@@ -34,11 +34,10 @@ public class ComponentController {
                                     LocalDateTime.now(),
                                     HttpStatus.OK.value(),
                                     "OK",
-                                    components,
+                                    orders,
                                     request.getRequestURI()
                             )
                     );
-
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(
@@ -54,17 +53,17 @@ public class ComponentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponseDTO<?>> getComponentById(@PathVariable Long id, HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDTO<?>> getOrderById(HttpServletRequest request, @PathVariable Long id) {
         try {
-            Component component = componentService.findById(id).orElse(null);
+            Order orderWithId = orderService.getOrderById(id).orElse(null);
 
-            if (component == null) {
+            if (orderWithId == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(
                                 new ApiResponseDTO<>(
                                         LocalDateTime.now(),
                                         HttpStatus.NOT_FOUND.value(),
-                                        "Componente não encontrado!",
+                                        "Pedido não encontrado!",
                                         null,
                                         request.getRequestURI()
                                 )
@@ -77,7 +76,7 @@ public class ComponentController {
                                     LocalDateTime.now(),
                                     HttpStatus.OK.value(),
                                     "OK",
-                                    component,
+                                    orderWithId,
                                     request.getRequestURI()
                             )
                     );
@@ -96,21 +95,20 @@ public class ComponentController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponseDTO<?>> createComponent(@Valid @RequestBody ComponentRequestDTO componentRequestDTO, HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDTO<?>> createOrder(@Valid @RequestBody OrderRequestDTO orderRequestDTO, HttpServletRequest httpServletRequest) {
         try {
-            Component createdComponent = componentService.save(componentRequestDTO);
+            Order order = orderService.createOrder(orderRequestDTO);
 
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(
                             new ApiResponseDTO<>(
                                     LocalDateTime.now(),
                                     HttpStatus.CREATED.value(),
-                                    "Componente cadastrado!",
-                                    createdComponent,
-                                    request.getRequestURI()
+                                    "Pedido criado com sucesso!",
+                                    order,
+                                    httpServletRequest.getRequestURI()
                             )
                     );
-
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(
@@ -119,26 +117,26 @@ public class ComponentController {
                                     HttpStatus.INTERNAL_SERVER_ERROR.value(),
                                     "Erro interno: " + e.getMessage(),
                                     null,
-                                    request.getRequestURI()
+                                    httpServletRequest.getRequestURI()
                             )
                     );
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponseDTO<?>> updateComponent(@PathVariable Long id, @Valid @RequestBody ComponentRequestDTO componentRequestDTO, HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDTO<?>> updateOrder(@PathVariable Long id, @Valid @RequestBody OrderRequestDTO orderRequestDTO, HttpServletRequest httpServletRequest) {
         try {
-            Component updatedComponent = componentService.update(id, componentRequestDTO);
+            Order updatedOrder = orderService.updateOrder(id, orderRequestDTO);
 
-            if (updatedComponent == null) {
+            if (updatedOrder == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(
                                 new ApiResponseDTO<>(
                                         LocalDateTime.now(),
                                         HttpStatus.NOT_FOUND.value(),
-                                        "Componente não encontrado!",
+                                        "Pedido não encontrado!",
                                         null,
-                                        request.getRequestURI()
+                                        httpServletRequest.getRequestURI()
                                 )
                         );
             }
@@ -148,12 +146,11 @@ public class ComponentController {
                             new ApiResponseDTO<>(
                                     LocalDateTime.now(),
                                     HttpStatus.OK.value(),
-                                    "Componente atualizado!",
-                                    updatedComponent,
-                                    request.getRequestURI()
+                                    "Pedido atualizado com sucesso!",
+                                    updatedOrder,
+                                    httpServletRequest.getRequestURI()
                             )
                     );
-
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(
@@ -162,43 +159,42 @@ public class ComponentController {
                                     HttpStatus.INTERNAL_SERVER_ERROR.value(),
                                     "Erro interno: " + e.getMessage(),
                                     null,
-                                    request.getRequestURI()
+                                    httpServletRequest.getRequestURI()
                             )
                     );
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponseDTO<?>> deleteComponent(@PathVariable Long id, HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDTO<?>> deleteOrder(@PathVariable Long id, HttpServletRequest httpServletRequest) {
         try {
-            Component existingComponent = componentService.findById(id).orElse(null);
+            Order existingOrder = orderService.getOrderById(id).orElse(null);
 
-            if (existingComponent == null) {
+            if (existingOrder == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(
                                 new ApiResponseDTO<>(
                                         LocalDateTime.now(),
                                         HttpStatus.NOT_FOUND.value(),
-                                        "Componente não encontrado!",
+                                        "Pedido não encontrado!",
                                         null,
-                                        request.getRequestURI()
+                                        httpServletRequest.getRequestURI()
                                 )
                         );
             }
 
-            componentService.delete(id);
+            orderService.deleteOrder(id);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
                             new ApiResponseDTO<>(
                                     LocalDateTime.now(),
                                     HttpStatus.OK.value(),
-                                    "Componente deletado!",
+                                    "Pedido deletado com sucesso!",
                                     null,
-                                    request.getRequestURI()
+                                    httpServletRequest.getRequestURI()
                             )
                     );
-
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(
@@ -207,7 +203,7 @@ public class ComponentController {
                                     HttpStatus.INTERNAL_SERVER_ERROR.value(),
                                     "Erro interno: " + e.getMessage(),
                                     null,
-                                    request.getRequestURI()
+                                    httpServletRequest.getRequestURI()
                             )
                     );
         }
