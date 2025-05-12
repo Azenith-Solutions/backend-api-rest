@@ -22,8 +22,8 @@ api:
 
 gemini:
   api:
-    key: AIzaSyAGn-DyXofSE2_it5olMXO-gZBRLAsCuTc
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=
+    key: ${GEMINI_API_KEY}
+    url: ${GEMINI_API_URL}
 brevo:
   key: ${BREVO_API_KEY}
   url: ${BREVO_API_URL}
