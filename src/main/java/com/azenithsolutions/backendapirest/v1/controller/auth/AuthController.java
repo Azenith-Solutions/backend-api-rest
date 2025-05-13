@@ -115,7 +115,7 @@ public class AuthController {
 
     @Operation(summary = "Sign up", description = "User sign up validation")
     @PostMapping("/register")
-    public ResponseEntity<ApiResponseDTO<?>> registerUser(@RequestBody RegisterRequestDTO body, HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDTO<?>> registerUser(@Valid @RequestBody RegisterRequestDTO body, HttpServletRequest request) {
         try {
             if (body.getFullName() == null || body.getEmail() == null || body.getPassword() == null || body.getRole() == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
