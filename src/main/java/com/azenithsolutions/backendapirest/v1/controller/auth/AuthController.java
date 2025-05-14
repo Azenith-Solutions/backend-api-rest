@@ -3,8 +3,8 @@ package com.azenithsolutions.backendapirest.v1.controller.auth;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.azenithsolutions.backendapirest.v1.dto.auth.LoginRequestDTO;
 import com.azenithsolutions.backendapirest.v1.dto.auth.LoginResponseDTO;
-import com.azenithsolutions.backendapirest.v1.dto.auth.RegisterRequestDTO;
-import com.azenithsolutions.backendapirest.v1.dto.auth.RegisterResponseDTO;
+import com.azenithsolutions.backendapirest.v1.dto.user.UserRegisterRequestDTO;
+import com.azenithsolutions.backendapirest.v1.dto.user.UserRegisterResponseDTO;
 import com.azenithsolutions.backendapirest.v1.dto.shared.ApiResponseDTO;
 import com.azenithsolutions.backendapirest.v1.model.Role;
 import com.azenithsolutions.backendapirest.v1.model.User;
@@ -115,7 +115,7 @@ public class AuthController {
 
     @Operation(summary = "Sign up", description = "User sign up validation")
     @PostMapping("/register")
-    public ResponseEntity<ApiResponseDTO<?>> registerUser(@Valid @RequestBody RegisterRequestDTO body, HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDTO<?>> registerUser(@Valid @RequestBody UserRegisterRequestDTO body, HttpServletRequest request) {
         try {
             if (body.getFullName() == null || body.getEmail() == null || body.getPassword() == null || body.getRole() == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
@@ -156,7 +156,7 @@ public class AuthController {
                             LocalDateTime.now(),
                             HttpStatus.CREATED.value(),
                             "User registered successfully",
-                            new RegisterResponseDTO(user.getEmail(), token),
+                            new UserRegisterResponseDTO(user.getEmail(), token),
                             request.getRequestURI()
                     )
             );

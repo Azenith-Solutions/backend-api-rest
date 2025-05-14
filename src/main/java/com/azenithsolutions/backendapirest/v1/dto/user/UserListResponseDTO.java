@@ -2,7 +2,7 @@ package com.azenithsolutions.backendapirest.v1.dto.user;
 
 import java.time.LocalDate;
 
-public record UserListDTO(
+public record UserListResponseDTO(
         int id,
         String fullName,
         String email,

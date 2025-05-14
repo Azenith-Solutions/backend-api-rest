@@ -2,9 +2,7 @@ package com.azenithsolutions.backendapirest.v1.controller.role;
 
 import com.azenithsolutions.backendapirest.v1.dto.role.RoleListDTO;
 import com.azenithsolutions.backendapirest.v1.dto.shared.ApiResponseDTO;
-import com.azenithsolutions.backendapirest.v1.dto.user.UserListDTO;
 import com.azenithsolutions.backendapirest.v1.model.Role;
-import com.azenithsolutions.backendapirest.v1.model.User;
 import com.azenithsolutions.backendapirest.v1.service.role.RoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;

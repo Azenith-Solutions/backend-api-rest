@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.v1.dto.auth;
+package com.azenithsolutions.backendapirest.v1.dto.user;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter @AllArgsConstructor
-public class RegisterRequestDTO {
+public class UserRegisterRequestDTO {
     @NotBlank(message = "Full name cannot be empty")
     @Size(max = 100, message = "Full name must be less than 100 characters")
     @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Only letters and spaces are allowed")
