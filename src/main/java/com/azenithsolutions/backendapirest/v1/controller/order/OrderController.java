@@ -1,5 +1,6 @@
 package com.azenithsolutions.backendapirest.v1.controller.order;
 
+import com.azenithsolutions.backendapirest.v1.dto.order.OrderCreateDTO;
 import com.azenithsolutions.backendapirest.v1.dto.order.OrderRequestDTO;
 import com.azenithsolutions.backendapirest.v1.dto.shared.ApiResponseDTO;
 import com.azenithsolutions.backendapirest.v1.model.Order;
@@ -95,9 +96,9 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponseDTO<?>> createOrder(@Valid @RequestBody OrderRequestDTO orderRequestDTO, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<ApiResponseDTO<?>> createOrder(@Valid @RequestBody OrderCreateDTO orderCreateDTO, HttpServletRequest httpServletRequest) {
         try {
-            Order order = orderService.createOrder(orderRequestDTO);
+            Order order = orderService.createOrder(orderCreateDTO);
 
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(
