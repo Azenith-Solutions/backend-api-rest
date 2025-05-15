@@ -8,6 +8,7 @@ import com.azenithsolutions.backendapirest.v1.model.User;
 import com.azenithsolutions.backendapirest.v1.service.user.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -83,22 +84,14 @@ public class UserController {
                         new ApiResponseDTO<>(
                                 LocalDateTime.now(),
                                 HttpStatus.OK.value(),
-                                "User updated successfully",
+                                "Success",
                                 List.of(responseDTO),
                                 request.getRequestURI()
                         )
                 );
             }
-
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ApiResponseDTO<>(
-                            LocalDateTime.now(),
-                            HttpStatus.NOT_FOUND.value(),
-                            "User not found",
-                            List.of("User with this ID does not exist"),
-                            request.getRequestURI()
-                    )
-            );
+            
+            throw new EntityNotFoundException("User with this ID does not exist");
         }catch(IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new ApiResponseDTO<>(
@@ -106,6 +99,27 @@ public class UserController {
                             HttpStatus.BAD_REQUEST.value(),
                             "Bad Request",
                             e.getMessage(),
+                            request.getRequestURI()
+                    )
+            );
+        }catch(EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ApiResponseDTO<>(
+                            LocalDateTime.now(),
+                            HttpStatus.NOT_FOUND.value(),
+                            "Not Found",
+                            List.of(e.getMessage()),
+                            request.getRequestURI()
+                    )
+            );
+
+        }catch(EntityExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                    new ApiResponseDTO<>(
+                            LocalDateTime.now(),
+                            HttpStatus.CONFLICT.value(),
+                            "Conflict",
+                            List.of(e.getMessage()),
                             request.getRequestURI()
                     )
             );
@@ -130,7 +144,7 @@ public class UserController {
                     new ApiResponseDTO<>(
                             LocalDateTime.now(),
                             HttpStatus.NO_CONTENT.value(),
-                            "User deleted successfully",
+                            "No Content",
                             null,
                             request.getRequestURI()
                     )
@@ -140,8 +154,8 @@ public class UserController {
                     new ApiResponseDTO<>(
                             LocalDateTime.now(),
                             HttpStatus.NOT_FOUND.value(),
-                            "User not found",
-                            List.of("User with this ID does not exist"),
+                            "Not Found",
+                            List.of(e.getMessage()),
                             request.getRequestURI()
                     )
             );
@@ -158,3 +172,4 @@ public class UserController {
         }
     }
 }
+
