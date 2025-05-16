@@ -75,7 +75,7 @@ public class AuthController {
                             LocalDateTime.now(),
                             HttpStatus.OK.value(),
                             "Success",
-                            new LoginResponseDTO(user.getEmail(), token),
+                            new LoginResponseDTO(user.getEmail(), user.getFullName(), user.getFkFuncao(), token),
                             request.getRequestURI()
                     )
             );
