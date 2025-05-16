@@ -1,13 +1,11 @@
 package com.azenithsolutions.backendapirest.v1.service.order;
 
-import com.azenithsolutions.backendapirest.v1.dto.order.OrderCreateDTO;
 import com.azenithsolutions.backendapirest.v1.dto.order.OrderRequestDTO;
 import com.azenithsolutions.backendapirest.v1.model.Order;
 import com.azenithsolutions.backendapirest.v1.repository.ItemRepository;
 import com.azenithsolutions.backendapirest.v1.repository.OrderRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,12 +14,10 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class OrderService {
-    @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private ItemRepository itemRepository;
+    private final OrderRepository orderRepository;
+    private final ItemRepository itemRepository;
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
@@ -31,8 +27,8 @@ public class OrderService {
         return orderRepository.findById(id);
     }
 
-    public Order createOrder(OrderCreateDTO createDTO) {
-        Order order = convertCreateDtoToEntity(createDTO);
+    public Order createOrder(OrderRequestDTO orderRequestDTO) {
+        Order order = convertDtoToEntity(orderRequestDTO);
         order.setCreatedAt(LocalDateTime.now());
         order.setUpdatedAt(LocalDateTime.now());
         return orderRepository.save(order);
@@ -46,7 +42,7 @@ public class OrderService {
         }
 
         Order existingOrder = existingOrderOpt.get();
-        Order updatedOrder = convertRequestDtoToEntity(orderRequestDTO);
+        Order updatedOrder = convertDtoToEntity(orderRequestDTO);
 
         updatedOrder.setIdPedido(id);
         updatedOrder.setCreatedAt(existingOrder.getCreatedAt());
@@ -59,25 +55,8 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
-    private Order convertCreateDtoToEntity(OrderCreateDTO dto) {
+    private Order convertDtoToEntity(OrderRequestDTO dto) {
         Order order = new Order();
-
-        // Não define ID, pois será gerado pelo banco
-        order.setCodigo(dto.getCodigo());
-        order.setNomeComprador(dto.getNomeComprador());
-        order.setEmailComprador(dto.getEmailComprador());
-        order.setTelCelular(dto.getTelCelular());
-        order.setStatus(dto.getStatus());
-
-        return order;
-    }
-
-    private Order convertRequestDtoToEntity(OrderRequestDTO dto) {
-        Order order = new Order();
-
-        if (dto.getIdPedido() != null) {
-            order.setIdPedido(dto.getIdPedido());
-        }
 
         order.setCodigo((dto.getCodigo()));
         order.setNomeComprador(dto.getNomeComprador());

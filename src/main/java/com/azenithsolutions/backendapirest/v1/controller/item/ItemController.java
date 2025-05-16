@@ -1,9 +1,9 @@
-package com.azenithsolutions.backendapirest.v1.controller.order;
+package com.azenithsolutions.backendapirest.v1.controller.item;
 
-import com.azenithsolutions.backendapirest.v1.dto.order.OrderRequestDTO;
+import com.azenithsolutions.backendapirest.v1.dto.item.ItemRequestDTO;
 import com.azenithsolutions.backendapirest.v1.dto.shared.ApiResponseDTO;
-import com.azenithsolutions.backendapirest.v1.model.Order;
-import com.azenithsolutions.backendapirest.v1.service.order.OrderService;
+import com.azenithsolutions.backendapirest.v1.model.Item;
+import com.azenithsolutions.backendapirest.v1.service.item.ItemService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -15,17 +15,17 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Tag(name = "Order Management - v1", description = "Endpoints to manage orders")
+@Tag(name = "Item Management - v1", description = "Endpoints to manage items")
 @RestController
-@RequestMapping("/v1/orders")
+@RequestMapping("/v1/items")
 @RequiredArgsConstructor
-public class OrderController {
-    private final OrderService orderService;
+public class ItemController {
+    private final ItemService itemService;
 
     @GetMapping
-    public ResponseEntity<ApiResponseDTO<?>> getAllOrders(HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDTO<?>> getAllItems(HttpServletRequest request) {
         try {
-            List<Order> orders = orderService.getAllOrders();
+            List<Item> items = itemService.getAllItems();
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
@@ -33,7 +33,7 @@ public class OrderController {
                                     LocalDateTime.now(),
                                     HttpStatus.OK.value(),
                                     "OK",
-                                    orders,
+                                    items,
                                     request.getRequestURI()
                             )
                     );
@@ -51,23 +51,10 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponseDTO<?>> getOrderById(HttpServletRequest request, @PathVariable Long id) {
+    @GetMapping("{id}")
+    public ResponseEntity<ApiResponseDTO<?>> getItemById(@PathVariable Long id) {
         try {
-            Order orderWithId = orderService.getOrderById(id).orElse(null);
-
-            if (orderWithId == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(
-                                new ApiResponseDTO<>(
-                                        LocalDateTime.now(),
-                                        HttpStatus.NOT_FOUND.value(),
-                                        "Pedido não encontrado!",
-                                        null,
-                                        request.getRequestURI()
-                                )
-                        );
-            }
+            Item itemWithId = itemService.getItemById(id).orElse(null);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
@@ -75,8 +62,8 @@ public class OrderController {
                                     LocalDateTime.now(),
                                     HttpStatus.OK.value(),
                                     "OK",
-                                    orderWithId,
-                                    request.getRequestURI()
+                                    itemWithId,
+                                    null
                             )
                     );
         } catch (Exception e) {
@@ -87,25 +74,25 @@ public class OrderController {
                                     HttpStatus.INTERNAL_SERVER_ERROR.value(),
                                     "Erro interno: " + e.getMessage(),
                                     null,
-                                    request.getRequestURI()
+                                    null
                             )
                     );
         }
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponseDTO<?>> createOrder(@Valid @RequestBody OrderRequestDTO orderRequestDTO, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<ApiResponseDTO<?>> createItem(@RequestBody ItemRequestDTO itemRequestDTO, HttpServletRequest request) {
         try {
-            Order order = orderService.createOrder(orderRequestDTO);
+            Item item = itemService.createItem(itemRequestDTO);
 
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(
                             new ApiResponseDTO<>(
                                     LocalDateTime.now(),
                                     HttpStatus.CREATED.value(),
-                                    "Pedido criado com sucesso!",
-                                    order,
-                                    httpServletRequest.getRequestURI()
+                                    "Item criado com sucesso!",
+                                    item,
+                                    request.getRequestURI()
                             )
                     );
         } catch (Exception e) {
@@ -116,38 +103,26 @@ public class OrderController {
                                     HttpStatus.INTERNAL_SERVER_ERROR.value(),
                                     "Erro interno: " + e.getMessage(),
                                     null,
-                                    httpServletRequest.getRequestURI()
+                                    request.getRequestURI()
                             )
                     );
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponseDTO<?>> updateOrder(@PathVariable Long id, @Valid @RequestBody OrderRequestDTO orderRequestDTO, HttpServletRequest httpServletRequest) {
+    @PutMapping("{id}")
+    public ResponseEntity<ApiResponseDTO<?>> updateItem(@PathVariable Long id, @Valid @RequestBody
+    ItemRequestDTO itemRequestDTO, HttpServletRequest request) {
         try {
-            Order updatedOrder = orderService.updateOrder(id, orderRequestDTO);
-
-            if (updatedOrder == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(
-                                new ApiResponseDTO<>(
-                                        LocalDateTime.now(),
-                                        HttpStatus.NOT_FOUND.value(),
-                                        "Pedido não encontrado!",
-                                        null,
-                                        httpServletRequest.getRequestURI()
-                                )
-                        );
-            }
+            Item item = itemService.updateItem(id, itemRequestDTO);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
                             new ApiResponseDTO<>(
                                     LocalDateTime.now(),
                                     HttpStatus.OK.value(),
-                                    "Pedido atualizado com sucesso!",
-                                    updatedOrder,
-                                    httpServletRequest.getRequestURI()
+                                    "Item atualizado com sucesso!",
+                                    item,
+                                    request.getRequestURI()
                             )
                     );
         } catch (Exception e) {
@@ -158,40 +133,40 @@ public class OrderController {
                                     HttpStatus.INTERNAL_SERVER_ERROR.value(),
                                     "Erro interno: " + e.getMessage(),
                                     null,
-                                    httpServletRequest.getRequestURI()
+                                    request.getRequestURI()
                             )
                     );
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponseDTO<?>> deleteOrder(@PathVariable Long id, HttpServletRequest httpServletRequest) {
+    @DeleteMapping("{id}")
+    public ResponseEntity<ApiResponseDTO<?>> deleteItem(@PathVariable Long id) {
         try {
-            Order existingOrder = orderService.getOrderById(id).orElse(null);
+            Item existingItem = itemService.getItemById(id).orElse(null);
 
-            if (existingOrder == null) {
+            if (existingItem == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(
                                 new ApiResponseDTO<>(
                                         LocalDateTime.now(),
                                         HttpStatus.NOT_FOUND.value(),
-                                        "Pedido não encontrado!",
+                                        "Item não encontrado!",
                                         null,
-                                        httpServletRequest.getRequestURI()
+                                        null
                                 )
                         );
             }
 
-            orderService.deleteOrder(id);
+            itemService.deleteItem(id);
 
-            return ResponseEntity.status(HttpStatus.OK)
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
                     .body(
                             new ApiResponseDTO<>(
                                     LocalDateTime.now(),
-                                    HttpStatus.OK.value(),
-                                    "Pedido deletado com sucesso!",
+                                    HttpStatus.NO_CONTENT.value(),
+                                    "Item deletado com sucesso!",
                                     null,
-                                    httpServletRequest.getRequestURI()
+                                    null
                             )
                     );
         } catch (Exception e) {
@@ -202,7 +177,7 @@ public class OrderController {
                                     HttpStatus.INTERNAL_SERVER_ERROR.value(),
                                     "Erro interno: " + e.getMessage(),
                                     null,
-                                    httpServletRequest.getRequestURI()
+                                    null
                             )
                     );
         }

@@ -36,6 +36,9 @@
         @Column(name = "CNPJ", columnDefinition = "CHAR(14)")
         private String CNPJ;
 
+        @Column(name = "valor")
+        private String valor;
+
         // Enum que limita os status possíveis
         @Column(name = "status")
         @Enumerated(EnumType.STRING)
