@@ -31,6 +31,8 @@ public class ComponentService {
         return componentRepository.findAll();
     }
 
+    public List<Component> getLowStockComponents() { return componentRepository.findByQuantidadeLessThanTen(); }
+
     public Optional<Component> findById(Long id) {
         return componentRepository.findById(id);
     }
