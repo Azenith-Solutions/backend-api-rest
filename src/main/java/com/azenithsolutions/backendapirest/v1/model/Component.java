@@ -66,4 +66,14 @@ public class Component {
     @OneToMany(mappedBy = "fkComponente")
     @JsonBackReference
     private List<Item> itens;
+
+    @Override
+    public String toString() {
+        return "Component{" +
+                "id=" + idComponente +
+                ", name='" + descricao + "'" +
+                // Referência à Box sem chamar toString()
+                ", boxId=" + (fkCaixa != null ? fkCaixa.getIdCaixa() : null) +
+                '}';
+    }
 }

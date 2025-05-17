@@ -15,6 +15,6 @@ public class OrderRequestDTO {
     private String CNPJ;
     private String valor;
     private StatusPedido status;
-    private String DDD;
-    private String telCelular;
+    private int DDD;
+    private int telCelular;
 }

@@ -44,11 +44,11 @@
         @Enumerated(EnumType.STRING)
         private StatusPedido status;
 
-        @Column(name = "DDD", columnDefinition = "CHAR(2)")
-        private String DDD;
+        @Column(name = "ddd", length = 3)
+        private int DDD;
 
         @Column(name = "tel_celular", columnDefinition = "CHAR(9)")
-        private String telCelular;
+            private int telCelular;
 
         @Column(name = "created_at")
         private LocalDateTime createdAt;

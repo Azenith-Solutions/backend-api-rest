@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 @Entity
 @Table(name="caixa")
 @Data
@@ -25,4 +27,14 @@ public class Box {
     @OneToMany(mappedBy = "fkCaixa", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<Component> components;
+
+    // Em Box.java
+    @Override
+    public String toString() {
+        return "Box{" +
+                "id=" + id +
+                ", name='" + nomeCaixa + "'" +
+                // NÃO inclua coleções de componentes aqui!
+                '}';
+    }
 }

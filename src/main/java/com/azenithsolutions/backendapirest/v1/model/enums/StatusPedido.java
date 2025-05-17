@@ -1,9 +1,9 @@
 package com.azenithsolutions.backendapirest.v1.model.enums;
 
 public enum StatusPedido {
-    EM_ANALISE("Em análise"),
-    EM_ANDAMENTO("Em andamento"),
-    CONCLUIDO("Concluído");
+    EM_ANALISE("EM_ANALISE"),
+    EM_ANDAMENTO("EM_ANDAMENTO"),
+    CONCLUIDO("CONCLUIDO");
 
     private String formatedTitle;
 

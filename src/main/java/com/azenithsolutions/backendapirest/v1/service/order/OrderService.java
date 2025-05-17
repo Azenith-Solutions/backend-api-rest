@@ -58,11 +58,17 @@ public class OrderService {
     private Order convertDtoToEntity(OrderRequestDTO dto) {
         Order order = new Order();
 
-        order.setCodigo((dto.getCodigo()));
+        order.setCodigo(dto.getCodigo());
         order.setNomeComprador(dto.getNomeComprador());
         order.setEmailComprador(dto.getEmailComprador());
-        order.setTelCelular(dto.getTelCelular());
+
+        if (dto.getCNPJ() != null) {
+            order.setCNPJ(dto.getCNPJ());
+        }
+
         order.setStatus(dto.getStatus());
+        order.setDDD(dto.getDDD());
+        order.setTelCelular(dto.getTelCelular());
 
         return order;
     }

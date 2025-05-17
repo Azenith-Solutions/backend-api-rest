@@ -81,9 +81,13 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponseDTO<?>> createItem(@RequestBody ItemRequestDTO itemRequestDTO, HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDTO<?>> createItem(@RequestBody List<ItemRequestDTO> itemRequestDTOS, HttpServletRequest request) {
+        System.out.println("Estou entrando no createItem");
+
         try {
-            Item item = itemService.createItem(itemRequestDTO);
+            System.out.println("Estou entrando no try do createItem");
+
+            List<Item> item = itemService.createItem(itemRequestDTOS);
 
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(

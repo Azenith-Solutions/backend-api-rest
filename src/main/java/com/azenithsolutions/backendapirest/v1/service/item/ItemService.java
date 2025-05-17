@@ -10,6 +10,7 @@ import com.azenithsolutions.backendapirest.v1.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,9 +29,25 @@ public class ItemService {
         return itemRepository.findById(id);
     }
 
-    public Item createItem(ItemRequestDTO itemRequestDTO) {
-        Item item = convertDtoToEntity(itemRequestDTO);
-        return itemRepository.save(item);
+    public List<Item> createItem(List<ItemRequestDTO> itemRequestDTOS) {
+        System.out.println("Criando itens: " + itemRequestDTOS);
+
+        itemRequestDTOS.forEach(dto -> {
+            if (dto.getFkComponente() == null) {
+                throw new IllegalArgumentException("ID do componente não pode ser nulo");
+            }
+            if (dto.getFkPedido() == null) {
+                throw new IllegalArgumentException("ID do pedido não pode ser nulo");
+            }
+            if (dto.getQuantidade() == null || dto.getQuantidade() <= 0) {
+                throw new IllegalArgumentException("Quantidade deve ser maior que zero");
+            }
+        });
+
+        List<Item> items = convertDtoToEntity(itemRequestDTOS);
+
+        System.out.println("Itens convertidos: " + items);
+        return itemRepository.saveAll(items);
     }
 
     public Item updateItem(Long id, ItemRequestDTO itemRequestDTO) {
@@ -40,7 +57,7 @@ public class ItemService {
             return null;
         }
 
-        Item updatedItem = convertDtoToEntity(itemRequestDTO);
+        Item updatedItem = convertDtoToUpdateEntity(itemRequestDTO);
         updatedItem.setIdItem(id);
 
         return itemRepository.save(updatedItem);
@@ -50,7 +67,29 @@ public class ItemService {
         itemRepository.deleteById(id);
     }
 
-    private Item convertDtoToEntity(ItemRequestDTO itemRequestDTO) {
+    private List<Item> convertDtoToEntity(List<ItemRequestDTO> itemRequestDTOS) {
+        List<Item> items = new ArrayList<>();
+
+        for (ItemRequestDTO itemRequestDTO : itemRequestDTOS) {
+            Item item = new Item();
+
+            Component component = componentRepository.findById(itemRequestDTO.getFkComponente())
+                    .orElseThrow(() -> new IllegalArgumentException("Component not found with ID: " + itemRequestDTO.getFkComponente()));
+            item.setFkComponente(component);
+
+            Order order = orderRepository.findById(itemRequestDTO.getFkPedido())
+                    .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + itemRequestDTO.getFkPedido()));
+            item.setFkPedido(order);
+
+            item.setQuantidade(itemRequestDTO.getQuantidade());
+
+            items.add(item);
+        }
+
+        return items;
+    }
+
+    private Item convertDtoToUpdateEntity(ItemRequestDTO itemRequestDTO) {
         Item item = new Item();
 
         Component component = componentRepository.findById(itemRequestDTO.getFkComponente())
