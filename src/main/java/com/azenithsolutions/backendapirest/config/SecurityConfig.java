@@ -42,8 +42,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/v1/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/emails/send").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/v1/orders/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/v1/orders/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/orders").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/items").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow preflight requests
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
