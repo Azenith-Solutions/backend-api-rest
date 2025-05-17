@@ -1,29 +1,23 @@
 package com.azenithsolutions.backendapirest.v1.service.order;
 
 import com.azenithsolutions.backendapirest.v1.dto.order.OrderRequestDTO;
-import com.azenithsolutions.backendapirest.v1.model.Company;
 import com.azenithsolutions.backendapirest.v1.model.Order;
-import com.azenithsolutions.backendapirest.v1.repository.CompanyRepository;
 import com.azenithsolutions.backendapirest.v1.repository.ItemRepository;
 import com.azenithsolutions.backendapirest.v1.repository.OrderRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class OrderService {
-    @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private CompanyRepository companyRepository;
-
-    @Autowired
-    private ItemRepository itemRepository;
+    private final OrderRepository orderRepository;
+    private final ItemRepository itemRepository;
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
@@ -35,11 +29,7 @@ public class OrderService {
 
     public Order createOrder(OrderRequestDTO orderRequestDTO) {
         Order order = convertDtoToEntity(orderRequestDTO);
-
-        if (order.getIdPedido() == null) {
-            order.setCreatedAt(LocalDateTime.now());
-        }
-
+        order.setCreatedAt(LocalDateTime.now());
         order.setUpdatedAt(LocalDateTime.now());
         return orderRepository.save(order);
     }
@@ -68,15 +58,17 @@ public class OrderService {
     private Order convertDtoToEntity(OrderRequestDTO dto) {
         Order order = new Order();
 
-        order.setIdPedido(dto.getIdPedido());
-        order.setCodigo((dto.getCodigo()));
-
-        Company company = companyRepository.findById(dto.getFkEmpresa()).orElse(null);
-        order.setFkEmpresa(company);
+        order.setCodigo(dto.getCodigo());
         order.setNomeComprador(dto.getNomeComprador());
         order.setEmailComprador(dto.getEmailComprador());
-        order.setTelCelular(dto.getTelCelular());
+
+        if (dto.getCNPJ() != null) {
+            order.setCNPJ(dto.getCNPJ());
+        }
+
         order.setStatus(dto.getStatus());
+        order.setDDD(dto.getDDD());
+        order.setTelCelular(dto.getTelCelular());
 
         return order;
     }
