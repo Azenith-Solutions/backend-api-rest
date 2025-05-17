@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/v1/emails/send").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/orders/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/orders/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/components/catalog").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow preflight requests
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
