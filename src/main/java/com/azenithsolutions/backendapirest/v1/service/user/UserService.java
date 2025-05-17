@@ -7,6 +7,7 @@ import com.azenithsolutions.backendapirest.v1.model.User;
 import com.azenithsolutions.backendapirest.v1.repository.RoleRepository;
 import com.azenithsolutions.backendapirest.v1.repository.UserRepository;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -51,12 +52,15 @@ public class UserService {
         return roleRepository.findById(id);
     }
 
-    @PutMapping("/{id}")
     public Optional<User> updateUser(Long id, UserUpdateRequestDTO body) {
         Optional<User> userOptional = userRepository.findById(id);
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
+
+            if (this.isEmailInUseByAnotherUser(id, body.getEmail())) {
+                throw new EntityExistsException("Email is already in use by another user");
+            }
 
             user.setFullName(body.getFullName());
             user.setEmail(body.getEmail());
@@ -73,8 +77,13 @@ public class UserService {
 
             return Optional.of(user);
         }
+        throw new EntityNotFoundException("User with this ID does not exist");
 
-        return Optional.empty();
+    }
+
+    public boolean isEmailInUseByAnotherUser(Long userId, String email) {
+        Optional<User> userWithEmail = Optional.ofNullable(userRepository.findByEmail(email));
+        return userWithEmail.isPresent() && userWithEmail.get().getId() != userId;
     }
 
     public void deleteUser(Long id) {
