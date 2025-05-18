@@ -60,10 +60,11 @@ public class ComponentController {
     @GetMapping("/catalog")
     public ResponseEntity<ApiResponseDTO<?>> getAllComponentsCatalog(HttpServletRequest request,
                                                                      @RequestParam(defaultValue = "0") int page,
-                                                                     @RequestParam(defaultValue = "10") int size) {
+                                                                     @RequestParam(defaultValue = "10") int size,
+                                                                     @RequestParam(required = false) String descricao) {
         try {
             Pageable pageable = PageRequest.of(page, size);
-            Page<ComponentCatalogResponseDTO> pagina = componentService.getAllComponentsCatalog(pageable);
+            Page<ComponentCatalogResponseDTO> pagina = componentService.getAllComponentsCatalog(pageable, descricao);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(

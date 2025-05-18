@@ -2,6 +2,7 @@ package com.azenithsolutions.backendapirest.v1.service.component;
 
 import com.azenithsolutions.backendapirest.v1.dto.component.ComponentCatalogResponseDTO;
 import com.azenithsolutions.backendapirest.v1.dto.component.ComponentRequestDTO;
+import com.azenithsolutions.backendapirest.v1.jpaSpecification.ComponentSpecification;
 import com.azenithsolutions.backendapirest.v1.model.Box;
 import com.azenithsolutions.backendapirest.v1.model.Category;
 import com.azenithsolutions.backendapirest.v1.model.Component;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -36,8 +38,10 @@ public class ComponentService {
         return componentRepository.findAll();
     }
 
-    public Page<ComponentCatalogResponseDTO> getAllComponentsCatalog(Pageable pageable) {
-        Page<Component> page = componentRepository.findAll(pageable);
+    public Page<ComponentCatalogResponseDTO> getAllComponentsCatalog(Pageable pageable, String descricao) {
+        Specification<Component> spec = ComponentSpecification.filterBy(descricao);
+
+        Page<Component> page = componentRepository.findAll(spec, pageable);
 
         List<ComponentCatalogResponseDTO> dtos = page.getContent().stream()
                 .map(component -> new ComponentCatalogResponseDTO(
