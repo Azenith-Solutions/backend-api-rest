@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.v1.jpaSpecification;
+package com.azenithsolutions.backendapirest.v1.utils.jpaSpecification;
 
 import com.azenithsolutions.backendapirest.v1.model.Component;
 import org.springframework.data.jpa.domain.Specification;

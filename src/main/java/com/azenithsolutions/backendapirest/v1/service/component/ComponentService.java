@@ -2,7 +2,7 @@ package com.azenithsolutions.backendapirest.v1.service.component;
 
 import com.azenithsolutions.backendapirest.v1.dto.component.ComponentCatalogResponseDTO;
 import com.azenithsolutions.backendapirest.v1.dto.component.ComponentRequestDTO;
-import com.azenithsolutions.backendapirest.v1.jpaSpecification.ComponentSpecification;
+import com.azenithsolutions.backendapirest.v1.utils.jpaSpecification.ComponentSpecification;
 import com.azenithsolutions.backendapirest.v1.model.Box;
 import com.azenithsolutions.backendapirest.v1.model.Category;
 import com.azenithsolutions.backendapirest.v1.model.Component;
