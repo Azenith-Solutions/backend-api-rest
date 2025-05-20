@@ -1,5 +1,6 @@
 package com.azenithsolutions.backendapirest.v1.model;
 
+import com.azenithsolutions.backendapirest.v1.model.enums.ComponentCondition;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -49,7 +50,7 @@ public class Component {
     private Boolean flagVerificado;
 
     @Column(name = "condicao")
-    private String condicao;
+    private ComponentCondition condicao;
 
     @Column(name = "observacao")
     private String observacao;

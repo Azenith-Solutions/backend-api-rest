@@ -1,5 +1,6 @@
 package com.azenithsolutions.backendapirest.v1.dto.component;
 
+import com.azenithsolutions.backendapirest.v1.model.enums.ComponentCondition;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,7 +30,7 @@ public class ComponentRequestDTO {
     private Boolean flagML;
     private String codigoML;
     private Boolean flagVerificado;
-    private String condicao;
+    private ComponentCondition condicao;
     private String observacao;
     private String descricao;
 }
