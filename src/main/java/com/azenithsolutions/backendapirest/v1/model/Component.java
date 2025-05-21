@@ -62,6 +62,12 @@ public class Component {
 
     @Column(name = "updated_at")
     private LocalDate updatedAt;
+
+    @Column(name = "quantidade_vendido")
+    private Integer quantidadeVendido;
+
+    @Column(name = "is_visible_catalog")
+    private Boolean isVisibleCatalog;
     
     @OneToMany(mappedBy = "fkComponente")
     @JsonBackReference
