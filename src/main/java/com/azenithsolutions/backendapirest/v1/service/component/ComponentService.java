@@ -4,6 +4,7 @@ import com.azenithsolutions.backendapirest.v1.dto.component.ComponentRequestDTO;
 import com.azenithsolutions.backendapirest.v1.model.Box;
 import com.azenithsolutions.backendapirest.v1.model.Category;
 import com.azenithsolutions.backendapirest.v1.model.Component;
+import com.azenithsolutions.backendapirest.v1.model.enums.ComponentCondition;
 import com.azenithsolutions.backendapirest.v1.repository.BoxRepository;
 import com.azenithsolutions.backendapirest.v1.repository.CategoryRepository;
 import com.azenithsolutions.backendapirest.v1.repository.ComponentRepository;
@@ -40,11 +41,11 @@ public class ComponentService {
     }
 
     public List<Component> getCriticsAndObservations() {
-        return componentRepository.findByCriticAndObservationCondition();
+        return componentRepository.findByCriticAndObservationCondition(ComponentCondition.CRITICO, ComponentCondition.OBSERVACAO);
     }
 
     public List<Component> getIncompleteComponents() {
-        return componentRepository.findByIcomplete();
+        return componentRepository.findByIncomplete(ComponentCondition.OBSERVACAO);
     }
 
     public Component save(ComponentRequestDTO componentRequestDTO) {

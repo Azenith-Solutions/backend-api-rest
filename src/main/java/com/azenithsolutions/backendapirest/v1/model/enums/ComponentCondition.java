@@ -9,5 +9,4 @@ public enum ComponentCondition {
     CRITICO("Crítico");
 
     public final String descricao;
-
 }

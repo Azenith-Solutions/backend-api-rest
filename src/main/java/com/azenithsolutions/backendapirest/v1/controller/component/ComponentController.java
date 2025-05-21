@@ -154,7 +154,7 @@ public class ComponentController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/kpi/incompletes")
     public ResponseEntity<ApiResponseDTO<?>> getIncompleteComponents(HttpServletRequest request) {
         try {
             List<Component> incompleteComponents = componentService.getIncompleteComponents();
