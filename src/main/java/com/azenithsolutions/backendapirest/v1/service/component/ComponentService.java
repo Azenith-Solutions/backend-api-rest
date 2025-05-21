@@ -38,7 +38,7 @@ public class ComponentService {
         return componentRepository.findAll();
     }
 
-    public Page<ComponentCatalogResponseDTO> getAllComponentsCatalog(Pageable pageable, String descricao) {
+    public Page<ComponentCatalogResponseDTO> getPagebleComponents(Pageable pageable, String descricao) {
         Specification<Component> spec = ComponentSpecification.filterBy(descricao);
 
         Page<Component> page = componentRepository.findAll(spec, pageable);
