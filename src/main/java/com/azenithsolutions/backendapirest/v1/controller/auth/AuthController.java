@@ -229,7 +229,7 @@ public class AuthController {
             System.out.println("Arquivo: " + file.getOriginalFilename() + " | Tamanho: " + file.getSize());
             System.out.println("Dados: " + myData.getEmail());
 
-            if (myData.getFullName() == null || myData.getEmail() == null || myData.getPassword() == null || myData.getRole() == null) {
+            if(myData.getFullName() == null || myData.getEmail() == null || myData.getPassword() == null || myData.getRole() == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                         new ApiResponseDTO<>(
                                 LocalDateTime.now(),
@@ -260,15 +260,19 @@ public class AuthController {
             }
             user.setFkFuncao(role.get());
 
-            userService.register(user);
-
             String originalFilename = file.getOriginalFilename();
             String timestamp = String.valueOf(System.currentTimeMillis());
             String uniqueFileName = timestamp + "_" + originalFilename;
 
             MultipartFile renamedFile = new CustomMultipartFile(file, uniqueFileName);
+
+            user.setProfilePicture(renamedFile.getOriginalFilename());
+
+            userService.register(user);
+
             String fileName = imageService.saveImage(renamedFile);
             System.out.println("File saved with name: " + fileName);
+            
             String token = this.tokenService.generateToken(user);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(
