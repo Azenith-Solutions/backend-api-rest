@@ -201,13 +201,13 @@ public class AuthController {
             HttpServletRequest request
     ) {
         try {
-            if (file == null || file.isEmpty()) {
+            if (myData == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                         new ApiResponseDTO<>(
                                 LocalDateTime.now(),
                                 HttpStatus.BAD_REQUEST.value(),
                                 "Bad Request",
-                                List.of("Image file is required"),
+                                List.of("Invalid JSON format"),
                                 request.getRequestURI()
                         )
                 );
@@ -226,7 +226,9 @@ public class AuthController {
             }
 
             // debug test
-            System.out.println("Arquivo: " + file.getOriginalFilename() + " | Tamanho: " + file.getSize());
+            if (file != null) {
+                System.out.println("Arquivo: " + file.getOriginalFilename() + " | Tamanho: " + file.getSize());
+            }
             System.out.println("Dados: " + myData.getEmail());
 
             if(myData.getFullName() == null || myData.getEmail() == null || myData.getPassword() == null || myData.getRole() == null) {
@@ -260,19 +262,24 @@ public class AuthController {
             }
             user.setFkFuncao(role.get());
 
-            String originalFilename = file.getOriginalFilename();
-            String timestamp = String.valueOf(System.currentTimeMillis());
-            String uniqueFileName = timestamp + "_" + originalFilename;
+            // Adicionar lógica condicional para processar o arquivo apenas se ele existir
+            if (file != null && !file.isEmpty()) {
+                String originalFilename = file.getOriginalFilename();
+                String timestamp = String.valueOf(System.currentTimeMillis());
+                String uniqueFileName = timestamp + "_" + originalFilename;
 
-            MultipartFile renamedFile = new CustomMultipartFile(file, uniqueFileName);
+                MultipartFile renamedFile = new CustomMultipartFile(file, uniqueFileName);
 
-            user.setProfilePicture(renamedFile.getOriginalFilename());
+                user.setProfilePicture(renamedFile.getOriginalFilename());
 
+                // Salvar a imagem após o registro do usuário
+                String fileName = imageService.saveImage(renamedFile);
+                System.out.println("File saved with name: " + fileName);
+            }
+
+            user.setStatus(true);
             userService.register(user);
 
-            String fileName = imageService.saveImage(renamedFile);
-            System.out.println("File saved with name: " + fileName);
-            
             String token = this.tokenService.generateToken(user);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(
@@ -284,7 +291,6 @@ public class AuthController {
                             request.getRequestURI()
                     )
             );
-
         }catch(EntityExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
                     new ApiResponseDTO<>(

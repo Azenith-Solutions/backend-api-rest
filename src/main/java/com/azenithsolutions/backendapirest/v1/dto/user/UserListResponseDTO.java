@@ -7,6 +7,7 @@ public record UserListResponseDTO(
         String fullName,
         String email,
         String role,
-        boolean status,
+        String profilePicture,
+        Boolean status,
         LocalDate createdAt
 ) {}

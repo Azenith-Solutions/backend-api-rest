@@ -33,6 +33,9 @@ public class User implements UserDetails {
     @Column(name = "foto")
     private String profilePicture;
 
+    @Column(name = "status")
+    private Boolean status;
+
     @ManyToOne
     @JoinColumn(name = "fk_funcao")
     @JsonManagedReference

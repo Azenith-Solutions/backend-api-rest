@@ -38,7 +38,8 @@ public class UserController {
                             user.getFullName(),
                             user.getEmail(),
                             user.getFkFuncao().getFuncao(),
-                            true,  // mock up
+                            user.getProfilePicture(),
+                            user.getStatus(),
                             user.getCreatedAt()
                     ))
                     .collect(Collectors.toList());
@@ -77,6 +78,7 @@ public class UserController {
                         user.getFullName(),
                         user.getEmail(),
                         user.getFkFuncao().getFuncao(),
+                        user.getStatus(),
                         user.getUpdatedAt()
                 );
 

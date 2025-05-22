@@ -72,6 +72,8 @@ public class UserService {
             if (body.getPassword() != null && !body.getPassword().isBlank()) {
                 user.setPassword(passwordEncoder.encode(body.getPassword()));
             }
+
+            user.setStatus(body.getStatus());
             user.setUpdatedAt(LocalDate.now());
             userRepository.save(user);
 

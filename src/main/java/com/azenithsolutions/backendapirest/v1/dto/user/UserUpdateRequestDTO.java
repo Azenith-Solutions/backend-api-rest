@@ -24,6 +24,9 @@ public class UserUpdateRequestDTO {
     @Size(min = 8, max = 100, message = "Password has to be between 8-100 characters")
     private String password;
 
+    @NotNull(message = "Status cannot be null")
+    private Boolean status;
+
     @NotNull(message = "Role ID cannot be null")
     @Min(value = 1, message = "Role ID must be greater than 1")
     private Long role;
