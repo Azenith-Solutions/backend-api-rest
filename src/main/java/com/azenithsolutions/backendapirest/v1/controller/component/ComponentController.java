@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 @Tag(name = "Component Management - v1", description = "Endpoints to manage components")
@@ -58,13 +59,13 @@ public class ComponentController {
     }
 
     @GetMapping("/catalog")
-    public ResponseEntity<ApiResponseDTO<?>> getAllComponentsCatalog(HttpServletRequest request,
-                                                                     @RequestParam(defaultValue = "0") int page,
-                                                                     @RequestParam(defaultValue = "10") int size,
-                                                                     @RequestParam(required = false) String descricao) {
+    public ResponseEntity<ApiResponseDTO<?>> getPagebleComponentsCatalog(HttpServletRequest request,
+                                                                         @RequestParam(defaultValue = "0") int page,
+                                                                         @RequestParam(defaultValue = "10") int size,
+                                                                         @RequestParam(required = false) String descricao) {
         try {
             Pageable pageable = PageRequest.of(page, size);
-            Page<ComponentCatalogResponseDTO> pagina = componentService.getAllComponentsCatalog(pageable, descricao);
+            Page<ComponentCatalogResponseDTO> pagina = componentService.getPagebleComponents(pageable, descricao);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
@@ -73,6 +74,37 @@ public class ComponentController {
                                     HttpStatus.OK.value(),
                                     "OK",
                                     pagina,
+                                    request.getRequestURI()
+                            )
+                    );
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
+        }
+    }
+
+    @PostMapping("/filterComponentList")
+    public ResponseEntity<ApiResponseDTO<?>> getFilterComponentList(HttpServletRequest request,
+                                                                    @RequestBody(required = false) HashMap<String, Object> filtros) {
+        try {
+            List<ComponentCatalogResponseDTO> components = componentService.getFilterComponentList(filtros);
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.OK.value(),
+                                    "OK",
+                                    components,
                                     request.getRequestURI()
                             )
                     );

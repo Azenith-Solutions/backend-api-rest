@@ -11,13 +11,12 @@ import com.azenithsolutions.backendapirest.v1.repository.CategoryRepository;
 import com.azenithsolutions.backendapirest.v1.repository.ComponentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +37,7 @@ public class ComponentService {
         return componentRepository.findAll();
     }
 
-    public Page<ComponentCatalogResponseDTO> getAllComponentsCatalog(Pageable pageable, String descricao) {
+    public Page<ComponentCatalogResponseDTO> getPagebleComponents(Pageable pageable, String descricao) {
         Specification<Component> spec = ComponentSpecification.filterBy(descricao);
 
         Page<Component> page = componentRepository.findAll(spec, pageable);
@@ -53,6 +52,33 @@ public class ComponentService {
                 .toList();
 
         return new PageImpl<>(dtos, pageable, page.getTotalElements());
+    }
+
+    public List<ComponentCatalogResponseDTO> getFilterComponentList(HashMap<String, Object> filtros) {
+        Specification<Component> spec = ComponentSpecification.whereDinamicFilter(filtros);
+
+        String orderBy = (String) filtros.get("orderBy");
+        Sort.Direction direction = (boolean) filtros.get("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Integer limit = filtros.containsKey("limit") ? Integer.parseInt(filtros.get("limit").toString()) : null;
+
+        Pageable pageable = PageRequest.of(0, limit);
+
+        if(orderBy != null && !orderBy.isBlank()){
+            pageable = PageRequest.of(0, limit, Sort.by(direction, orderBy));
+        }
+
+        Page<Component> components = componentRepository.findAll(spec, pageable);
+
+        List<ComponentCatalogResponseDTO> dtos = components.stream()
+                .map(component -> new ComponentCatalogResponseDTO(
+                        component.getIdComponente(),
+                        component.getFkCategoria(),
+                        component.getQuantidade(),
+                        component.getDescricao()
+                ))
+                .toList();
+
+        return dtos;
     }
 
 
