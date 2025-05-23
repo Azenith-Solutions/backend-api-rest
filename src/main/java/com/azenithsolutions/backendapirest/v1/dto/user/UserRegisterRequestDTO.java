@@ -3,9 +3,11 @@ package com.azenithsolutions.backendapirest.v1.dto.user;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
-@Getter @Setter @AllArgsConstructor
+@Getter @Setter @AllArgsConstructor @NoArgsConstructor
 public class UserRegisterRequestDTO {
     @NotBlank(message = "Full name cannot be empty")
     @Size(max = 100, message = "Full name must be less than 100 characters")
@@ -26,5 +28,4 @@ public class UserRegisterRequestDTO {
     @NotNull(message = "Role ID cannot be null")
     @Min(value = 1, message = "Role ID must be greater than 1")
     private Long role;
-
 }

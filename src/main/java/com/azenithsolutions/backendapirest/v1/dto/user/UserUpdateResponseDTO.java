@@ -6,5 +6,6 @@ public record UserUpdateResponseDTO(
         String fullName,
         String email,
         String role,
+        Boolean status,
         LocalDate updatedAt
 ) {}
