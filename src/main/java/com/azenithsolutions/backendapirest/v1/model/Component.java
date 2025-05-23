@@ -59,6 +59,9 @@ public class Component {
     @Column(name = "descricao")
     private String descricao;
 
+    @Column(name = "data_ultima_venda")
+    private LocalDate dataUltimaVenda;
+
     @Column(name = "created_at")
     private LocalDate createdAt;
 

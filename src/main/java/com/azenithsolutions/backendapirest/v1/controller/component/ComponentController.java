@@ -194,7 +194,7 @@ public class ComponentController {
         }
     }
 
-    @GetMapping("/kpi/critics-and-observations")
+    @GetMapping("/kpi/in-observation")
     public ResponseEntity<ApiResponseDTO<?>> getInObservationComponents(HttpServletRequest request) {
         try {
             List<Component> components = componentService.getInObservationComponents();
@@ -224,7 +224,7 @@ public class ComponentController {
         }
     }
 
-    @GetMapping("/kpi/incompletes")
+    @GetMapping("/kpi/incomplete")
     public ResponseEntity<ApiResponseDTO<?>> getIncompleteComponents(HttpServletRequest request) {
         try {
             List<Component> incompleteComponents = componentService.getIncompleteComponents();
@@ -236,6 +236,36 @@ public class ComponentController {
                                     HttpStatus.OK.value(),
                                     "OK",
                                     incompleteComponents,
+                                    request.getRequestURI()
+                            )
+                    );
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
+        }
+    }
+
+    @GetMapping("/kpi/out-of-last-sale-sla")
+    public ResponseEntity<ApiResponseDTO<?>> getOutOfLastSaleComponents(HttpServletRequest request) {
+        try {
+            List<Component> components = componentService.getComponentsOutOfLastSaleSLA();
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.OK.value(),
+                                    "OK",
+                                    components,
                                     request.getRequestURI()
                             )
                     );

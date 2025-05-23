@@ -106,6 +106,11 @@ public class ComponentService {
         return componentRepository.findByIncomplete(ComponentCondition.OBSERVACAO);
     }
 
+    public List<Component> getComponentsOutOfLastSaleSLA() {
+        LocalDate LastSaleSLA = LocalDate.now().minusDays(30);
+        return componentRepository.findByLastSaleSLA(LastSaleSLA);
+    }
+
     public Component save(ComponentRequestDTO componentRequestDTO) {
         Component component = convertDtoToEntity(componentRequestDTO);
 
