@@ -1,10 +1,7 @@
 package com.azenithsolutions.backendapirest.v1.dto.user;
 
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor

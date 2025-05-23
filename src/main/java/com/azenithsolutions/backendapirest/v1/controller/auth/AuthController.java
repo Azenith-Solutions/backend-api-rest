@@ -22,6 +22,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.DataInput;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -213,35 +215,24 @@ public class AuthController {
                 );
             }
 
-            if (myData == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                        new ApiResponseDTO<>(
-                                LocalDateTime.now(),
-                                HttpStatus.BAD_REQUEST.value(),
-                                "Bad Request",
-                                List.of("Invalid JSON format"),
-                                request.getRequestURI()
-                        )
-                );
-            }
-
-            // debug test
             if (file != null) {
                 System.out.println("Arquivo: " + file.getOriginalFilename() + " | Tamanho: " + file.getSize());
             }
+
             System.out.println("Dados: " + myData.getEmail());
 
-            if(myData.getFullName() == null || myData.getEmail() == null || myData.getPassword() == null || myData.getRole() == null) {
+            if (myData.getFullName() == null || myData.getEmail() == null || myData.getPassword() == null || myData.getRole() == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                         new ApiResponseDTO<>(
                                 LocalDateTime.now(),
                                 HttpStatus.BAD_REQUEST.value(),
                                 "Bad Request",
-                                List.of("Invalid Json format"),
+                                List.of("Missing required fields: fullName, email, password, or role"),
                                 request.getRequestURI()
                         )
                 );
             }
+
 
             User user = new User();
             user.setFullName(myData.getFullName());
@@ -262,7 +253,6 @@ public class AuthController {
             }
             user.setFkFuncao(role.get());
 
-            // Adicionar lógica condicional para processar o arquivo apenas se ele existir
             if (file != null && !file.isEmpty()) {
                 String originalFilename = file.getOriginalFilename();
                 String timestamp = String.valueOf(System.currentTimeMillis());
@@ -291,27 +281,26 @@ public class AuthController {
                             request.getRequestURI()
                     )
             );
-        }catch(EntityExistsException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                    new ApiResponseDTO<>(
-                            LocalDateTime.now(),
-                            HttpStatus.CONFLICT.value(),
-                            "Conflict",
-                            List.of(e.getMessage()),
-                            request.getRequestURI()
-                    )
-            );
-        }catch(Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    new ApiResponseDTO<>(
-                            LocalDateTime.now(),
-                            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                            "Internal Server Error",
-                            List.of("Erro interno: " + e.getMessage()),
-                            request.getRequestURI()
-                    )
-            );
-        }
+        }  catch (EntityExistsException e) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                        new ApiResponseDTO<>(
+                                LocalDateTime.now(),
+                                HttpStatus.CONFLICT.value(),
+                                "Conflict",
+                                List.of(e.getMessage()),
+                                request.getRequestURI()
+                        )
+                );
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                        new ApiResponseDTO<>(
+                                LocalDateTime.now(),
+                                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                "Internal Server Error",
+                                List.of("Erro interno: " + e.getMessage()),
+                                request.getRequestURI()
+                        )
+                );
+            }
     }
-
 }
