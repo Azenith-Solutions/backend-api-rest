@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 public enum ComponentCondition {
     BOM_ESTADO("Bom estado"),
     OBSERVACAO("Observação"),
-    CRITICO("Crítico");
+    NULL("Null");
 
     public final String descricao;
 }

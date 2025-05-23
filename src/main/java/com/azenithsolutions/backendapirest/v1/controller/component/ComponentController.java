@@ -125,9 +125,9 @@ public class ComponentController {
     }
 
     @GetMapping("/kpi/critics-and-observations")
-    public ResponseEntity<ApiResponseDTO<?>> getCriticsAndObservations(HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDTO<?>> getInObservationComponents(HttpServletRequest request) {
         try {
-            List<Component> components = componentService.getCriticsAndObservations();
+            List<Component> components = componentService.getInObservationComponents();
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(

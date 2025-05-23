@@ -50,6 +50,7 @@ public class Component {
     private Boolean flagVerificado;
 
     @Column(name = "condicao")
+    @Enumerated(EnumType.STRING)
     private ComponentCondition condicao;
 
     @Column(name = "observacao")

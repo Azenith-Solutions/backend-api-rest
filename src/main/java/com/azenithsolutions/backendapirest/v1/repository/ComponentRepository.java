@@ -9,12 +9,11 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ComponentRepository extends JpaRepository<Component, Long> {
-    @Query("SELECT c FROM Component c WHERE c.quantidade <= 1")
-    List<Component> findByQuantityLessThanTen();
+    @Query("SELECT c FROM Component c WHERE c.quantidade <= :quantidade")
+    List<Component> findByQuantityLessThan(Integer quantidade);
 
-    @Query("SELECT c FROM Component c WHERE c.condicao = :critico OR c.condicao = :observacao")
-    List<Component> findByCriticAndObservationCondition(
-            @Param("critico") ComponentCondition critico,
+    @Query("SELECT c FROM Component c WHERE c.condicao = :observacao")
+    List<Component> findByObservationCondition(
             @Param("observacao") ComponentCondition observacao
     );
 

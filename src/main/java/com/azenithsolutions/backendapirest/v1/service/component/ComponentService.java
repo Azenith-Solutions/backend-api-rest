@@ -37,11 +37,18 @@ public class ComponentService {
     }
 
     public List<Component> getLowStockComponents() {
-        return componentRepository.findByQuantityLessThanTen();
+        try {
+            System.out.println("Chamando repository findByQuantityLessThan...");
+            return componentRepository.findByQuantityLessThan(1);
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar componentes de baixo estoque: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 
-    public List<Component> getCriticsAndObservations() {
-        return componentRepository.findByCriticAndObservationCondition(ComponentCondition.CRITICO, ComponentCondition.OBSERVACAO);
+    public List<Component> getInObservationComponents() {
+        return componentRepository.findByObservationCondition(ComponentCondition.OBSERVACAO);
     }
 
     public List<Component> getIncompleteComponents() {
