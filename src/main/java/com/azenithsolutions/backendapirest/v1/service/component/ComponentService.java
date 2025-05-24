@@ -10,6 +10,7 @@ import com.azenithsolutions.backendapirest.v1.model.enums.ComponentCondition;
 import com.azenithsolutions.backendapirest.v1.repository.BoxRepository;
 import com.azenithsolutions.backendapirest.v1.repository.CategoryRepository;
 import com.azenithsolutions.backendapirest.v1.repository.ComponentRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -26,10 +27,10 @@ import java.util.Optional;
 public class ComponentService {
     @Autowired
     private ComponentRepository componentRepository;
-
+    
     @Autowired
     private BoxRepository boxRepository;
-
+    
     @Autowired
     private CategoryRepository categoryRepository;
 
@@ -87,6 +88,20 @@ public class ComponentService {
         return componentRepository.findById(id);
     }
 
+    public ComponentCatalogResponseDTO findDetailsCoponentById(Long id) {
+        Optional<Component> component = componentRepository.findById(id);
+        if(!component.isEmpty()){
+            ComponentCatalogResponseDTO componentDto = new ComponentCatalogResponseDTO(
+                    component.get().getIdComponente(),
+                    component.get().getFkCategoria(),
+                    component.get().getQuantidade(),
+                    component.get().getDescricao()
+            );
+            return componentDto;
+        }
+        return null;
+    }
+
     public List<Component> getLowStockComponents() {
         try {
             System.out.println("Chamando repository findByQuantityLessThan...");
@@ -113,48 +128,48 @@ public class ComponentService {
 
     public Component save(ComponentRequestDTO componentRequestDTO) {
         Component component = convertDtoToEntity(componentRequestDTO);
-
+        
         if (component.getIdComponente() == null) {
             component.setCreatedAt(LocalDate.now());
         }
         component.setUpdatedAt(LocalDate.now());
-
+        
         return componentRepository.save(component);
     }
-
+    
     public Component update(Long id, ComponentRequestDTO componentRequestDTO) {
         Optional<Component> existingComponentOpt = componentRepository.findById(id);
-
+        
         if (existingComponentOpt.isEmpty()) {
             return null;
         }
-
+        
         Component existingComponent = existingComponentOpt.get();
         Component updatedComponent = convertDtoToEntity(componentRequestDTO);
-
+        
         updatedComponent.setIdComponente(id);
         updatedComponent.setCreatedAt(existingComponent.getCreatedAt());
         updatedComponent.setUpdatedAt(LocalDate.now());
         updatedComponent.setItens(existingComponent.getItens());
-
+        
         return componentRepository.save(updatedComponent);
     }
-
+    
     private Component convertDtoToEntity(ComponentRequestDTO dto) {
         Component component = new Component();
-
+        
         component.setIdHardWareTech(dto.getIdHardWareTech());
-
+        
         // Set Box
         Box box = boxRepository.findById(dto.getCaixa())
                 .orElseThrow(() -> new IllegalArgumentException("Box not found with ID: " + dto.getCaixa()));
         component.setFkCaixa(box);
-
+        
         // Set Category
         Category category = categoryRepository.findById(dto.getCategoria())
                 .orElseThrow(() -> new IllegalArgumentException("Category not found with ID: " + dto.getCategoria()));
         component.setFkCategoria(category);
-
+        
         component.setPartNumber(dto.getPartNumber());
         component.setQuantidade(dto.getQuantidade());
         component.setFlagML(dto.getFlagML());
@@ -163,7 +178,7 @@ public class ComponentService {
         component.setCondicao(dto.getCondicao());
         component.setObservacao(dto.getObservacao());
         component.setDescricao(dto.getDescricao());
-
+        
         return component;
     }
 
