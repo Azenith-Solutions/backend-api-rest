@@ -6,6 +6,7 @@ import com.azenithsolutions.backendapirest.v1.utils.jpaSpecification.ComponentSp
 import com.azenithsolutions.backendapirest.v1.model.Box;
 import com.azenithsolutions.backendapirest.v1.model.Category;
 import com.azenithsolutions.backendapirest.v1.model.Component;
+import com.azenithsolutions.backendapirest.v1.model.enums.ComponentCondition;
 import com.azenithsolutions.backendapirest.v1.repository.BoxRepository;
 import com.azenithsolutions.backendapirest.v1.repository.CategoryRepository;
 import com.azenithsolutions.backendapirest.v1.repository.ComponentRepository;
@@ -25,10 +26,10 @@ import java.util.Optional;
 public class ComponentService {
     @Autowired
     private ComponentRepository componentRepository;
-    
+
     @Autowired
     private BoxRepository boxRepository;
-    
+
     @Autowired
     private CategoryRepository categoryRepository;
 
@@ -86,50 +87,74 @@ public class ComponentService {
         return componentRepository.findById(id);
     }
 
+    public List<Component> getLowStockComponents() {
+        try {
+            System.out.println("Chamando repository findByQuantityLessThan...");
+            return componentRepository.findByQuantityLessThan(1);
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar componentes de baixo estoque: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public List<Component> getInObservationComponents() {
+        return componentRepository.findByObservationCondition(ComponentCondition.OBSERVACAO);
+    }
+
+    public List<Component> getIncompleteComponents() {
+        return componentRepository.findByIncomplete(ComponentCondition.OBSERVACAO);
+    }
+
+    public List<Component> getComponentsOutOfLastSaleSLA() {
+        LocalDate LastSaleSLA = LocalDate.now().minusDays(30);
+        return componentRepository.findByLastSaleSLA(LastSaleSLA);
+    }
+
     public Component save(ComponentRequestDTO componentRequestDTO) {
         Component component = convertDtoToEntity(componentRequestDTO);
-        
+
         if (component.getIdComponente() == null) {
             component.setCreatedAt(LocalDate.now());
         }
         component.setUpdatedAt(LocalDate.now());
-        
+
         return componentRepository.save(component);
     }
-    
+
     public Component update(Long id, ComponentRequestDTO componentRequestDTO) {
         Optional<Component> existingComponentOpt = componentRepository.findById(id);
-        
+
         if (existingComponentOpt.isEmpty()) {
             return null;
         }
-        
+
         Component existingComponent = existingComponentOpt.get();
         Component updatedComponent = convertDtoToEntity(componentRequestDTO);
-        
+
         updatedComponent.setIdComponente(id);
         updatedComponent.setCreatedAt(existingComponent.getCreatedAt());
         updatedComponent.setUpdatedAt(LocalDate.now());
         updatedComponent.setItens(existingComponent.getItens());
-        
+
         return componentRepository.save(updatedComponent);
     }
-    
+
     private Component convertDtoToEntity(ComponentRequestDTO dto) {
         Component component = new Component();
-        
+
         component.setIdHardWareTech(dto.getIdHardWareTech());
-        
+
         // Set Box
         Box box = boxRepository.findById(dto.getCaixa())
                 .orElseThrow(() -> new IllegalArgumentException("Box not found with ID: " + dto.getCaixa()));
         component.setFkCaixa(box);
-        
+
         // Set Category
         Category category = categoryRepository.findById(dto.getCategoria())
                 .orElseThrow(() -> new IllegalArgumentException("Category not found with ID: " + dto.getCategoria()));
         component.setFkCategoria(category);
-        
+
         component.setPartNumber(dto.getPartNumber());
         component.setQuantidade(dto.getQuantidade());
         component.setFlagML(dto.getFlagML());
@@ -138,7 +163,7 @@ public class ComponentService {
         component.setCondicao(dto.getCondicao());
         component.setObservacao(dto.getObservacao());
         component.setDescricao(dto.getDescricao());
-        
+
         return component;
     }
 
