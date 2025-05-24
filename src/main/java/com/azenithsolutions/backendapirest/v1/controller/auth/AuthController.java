@@ -22,6 +22,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.DataInput;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -125,76 +127,7 @@ public class AuthController {
     }
 
     @Operation(summary = "Sign up", description = "User sign up validation")
-    @PostMapping("/register")
-    public ResponseEntity<ApiResponseDTO<?>> registerUser(@Valid @RequestBody UserRegisterRequestDTO body, HttpServletRequest request) {
-        try {
-            if (body.getFullName() == null || body.getEmail() == null || body.getPassword() == null || body.getRole() == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                        new ApiResponseDTO<>(
-                                LocalDateTime.now(),
-                                HttpStatus.BAD_REQUEST.value(),
-                                "Bad Request",
-                                List.of("Invalid Json format"),
-                                request.getRequestURI()
-                        )
-                );
-            }
-
-            User user = new User();
-            user.setFullName(body.getFullName());
-            user.setEmail(body.getEmail());
-            user.setPassword(passwordEncoder.encode(body.getPassword()));
-            Optional<Role> role = userService.findRoleById(body.getRole());
-            if (role.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                        new ApiResponseDTO<>(
-                                LocalDateTime.now(),
-                                HttpStatus.BAD_REQUEST.value(),
-                                "Bad Request",
-                                List.of("Role not found"),
-                                request.getRequestURI()
-                        )
-                );
-            }
-            user.setFkFuncao(role.get());
-
-            userService.register(user);
-
-            String token = this.tokenService.generateToken(user);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(
-                    new ApiResponseDTO<>(
-                            LocalDateTime.now(),
-                            HttpStatus.CREATED.value(),
-                            "User registered successfully",
-                            new UserRegisterResponseDTO(user.getEmail(), token),
-                            request.getRequestURI()
-                    )
-            );
-        } catch (EntityExistsException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                    new ApiResponseDTO<>(
-                            LocalDateTime.now(),
-                            HttpStatus.CONFLICT.value(),
-                            "Conflict",
-                            List.of(e.getMessage()),
-                            request.getRequestURI()
-                    )
-            );
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    new ApiResponseDTO<>(
-                            LocalDateTime.now(),
-                            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                            "Internal Server Error",
-                            List.of("Something went wrong"),
-                            request.getRequestURI()
-                    )
-            );
-        }
-    }
-
-    @PostMapping(value = "/register1", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseDTO<?>> handleFileAndJson(
             @RequestPart(value = "data", required = false) UserRegisterRequestDTO myData,
             @RequestPart(value = "file", required = false) MultipartFile file,
@@ -213,35 +146,24 @@ public class AuthController {
                 );
             }
 
-            if (myData == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                        new ApiResponseDTO<>(
-                                LocalDateTime.now(),
-                                HttpStatus.BAD_REQUEST.value(),
-                                "Bad Request",
-                                List.of("Invalid JSON format"),
-                                request.getRequestURI()
-                        )
-                );
-            }
-
-            // debug test
             if (file != null) {
                 System.out.println("Arquivo: " + file.getOriginalFilename() + " | Tamanho: " + file.getSize());
             }
+
             System.out.println("Dados: " + myData.getEmail());
 
-            if(myData.getFullName() == null || myData.getEmail() == null || myData.getPassword() == null || myData.getRole() == null) {
+            if (myData.getFullName() == null || myData.getEmail() == null || myData.getPassword() == null || myData.getRole() == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                         new ApiResponseDTO<>(
                                 LocalDateTime.now(),
                                 HttpStatus.BAD_REQUEST.value(),
                                 "Bad Request",
-                                List.of("Invalid Json format"),
+                                List.of("Missing required fields: fullName, email, password, or role"),
                                 request.getRequestURI()
                         )
                 );
             }
+
 
             User user = new User();
             user.setFullName(myData.getFullName());
@@ -262,7 +184,6 @@ public class AuthController {
             }
             user.setFkFuncao(role.get());
 
-            // Adicionar lógica condicional para processar o arquivo apenas se ele existir
             if (file != null && !file.isEmpty()) {
                 String originalFilename = file.getOriginalFilename();
                 String timestamp = String.valueOf(System.currentTimeMillis());
@@ -291,27 +212,26 @@ public class AuthController {
                             request.getRequestURI()
                     )
             );
-        }catch(EntityExistsException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                    new ApiResponseDTO<>(
-                            LocalDateTime.now(),
-                            HttpStatus.CONFLICT.value(),
-                            "Conflict",
-                            List.of(e.getMessage()),
-                            request.getRequestURI()
-                    )
-            );
-        }catch(Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    new ApiResponseDTO<>(
-                            LocalDateTime.now(),
-                            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                            "Internal Server Error",
-                            List.of("Erro interno: " + e.getMessage()),
-                            request.getRequestURI()
-                    )
-            );
-        }
+        }  catch (EntityExistsException e) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                        new ApiResponseDTO<>(
+                                LocalDateTime.now(),
+                                HttpStatus.CONFLICT.value(),
+                                "Conflict",
+                                List.of(e.getMessage()),
+                                request.getRequestURI()
+                        )
+                );
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                        new ApiResponseDTO<>(
+                                LocalDateTime.now(),
+                                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                "Internal Server Error",
+                                List.of("Erro interno: " + e.getMessage()),
+                                request.getRequestURI()
+                        )
+                );
+            }
     }
-
 }

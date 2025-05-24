@@ -1,6 +1,6 @@
     package com.azenithsolutions.backendapirest.v1.model;
 
-    import com.azenithsolutions.backendapirest.v1.model.enums.StatusPedido;
+    import com.azenithsolutions.backendapirest.v1.model.enums.OrderStatus;
     import com.fasterxml.jackson.annotation.JsonBackReference;
     import jakarta.persistence.*;
     import lombok.AllArgsConstructor;
@@ -42,7 +42,7 @@
         // Enum que limita os status possíveis
         @Column(name = "status")
         @Enumerated(EnumType.STRING)
-        private StatusPedido status;
+        private OrderStatus status;
 
         @Column(name = "ddd", length = 3)
         private int DDD;
