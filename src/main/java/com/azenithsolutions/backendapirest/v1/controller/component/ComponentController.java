@@ -94,7 +94,7 @@ public class ComponentController {
 
     @PostMapping("/filterComponentList")
     public ResponseEntity<ApiResponseDTO<?>> getFilterComponentList(HttpServletRequest request,
-                                                                    @RequestBody(required = false) HashMap<String, Object> filtros) {
+                                                                    @RequestBody HashMap<String, Object> filtros) {
         try {
             List<ComponentCatalogResponseDTO> components = componentService.getFilterComponentList(filtros);
 
@@ -127,6 +127,48 @@ public class ComponentController {
     public ResponseEntity<ApiResponseDTO<?>> getComponentById(@PathVariable Long id, HttpServletRequest request) {
         try {
             Component component = componentService.findById(id).orElse(null);
+
+            if (component == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(
+                                new ApiResponseDTO<>(
+                                        LocalDateTime.now(),
+                                        HttpStatus.NOT_FOUND.value(),
+                                        "Componente não encontrado!",
+                                        null,
+                                        request.getRequestURI()
+                                )
+                        );
+            }
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.OK.value(),
+                                    "OK",
+                                    component,
+                                    request.getRequestURI()
+                            )
+                    );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
+        }
+    }
+
+    @GetMapping("/details/{id}")
+    public ResponseEntity<ApiResponseDTO<?>> getDetailsComponentById(@PathVariable Long id, HttpServletRequest request) {
+        try {
+            ComponentCatalogResponseDTO component = componentService.findDetailsCoponentById(id);
 
             if (component == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
