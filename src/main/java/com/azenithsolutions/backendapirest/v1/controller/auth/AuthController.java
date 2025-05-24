@@ -127,76 +127,7 @@ public class AuthController {
     }
 
     @Operation(summary = "Sign up", description = "User sign up validation")
-    @PostMapping("/register")
-    public ResponseEntity<ApiResponseDTO<?>> registerUser(@Valid @RequestBody UserRegisterRequestDTO body, HttpServletRequest request) {
-        try {
-            if (body.getFullName() == null || body.getEmail() == null || body.getPassword() == null || body.getRole() == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                        new ApiResponseDTO<>(
-                                LocalDateTime.now(),
-                                HttpStatus.BAD_REQUEST.value(),
-                                "Bad Request",
-                                List.of("Invalid Json format"),
-                                request.getRequestURI()
-                        )
-                );
-            }
-
-            User user = new User();
-            user.setFullName(body.getFullName());
-            user.setEmail(body.getEmail());
-            user.setPassword(passwordEncoder.encode(body.getPassword()));
-            Optional<Role> role = userService.findRoleById(body.getRole());
-            if (role.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                        new ApiResponseDTO<>(
-                                LocalDateTime.now(),
-                                HttpStatus.BAD_REQUEST.value(),
-                                "Bad Request",
-                                List.of("Role not found"),
-                                request.getRequestURI()
-                        )
-                );
-            }
-            user.setFkFuncao(role.get());
-
-            userService.register(user);
-
-            String token = this.tokenService.generateToken(user);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(
-                    new ApiResponseDTO<>(
-                            LocalDateTime.now(),
-                            HttpStatus.CREATED.value(),
-                            "User registered successfully",
-                            new UserRegisterResponseDTO(user.getEmail(), token),
-                            request.getRequestURI()
-                    )
-            );
-        } catch (EntityExistsException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                    new ApiResponseDTO<>(
-                            LocalDateTime.now(),
-                            HttpStatus.CONFLICT.value(),
-                            "Conflict",
-                            List.of(e.getMessage()),
-                            request.getRequestURI()
-                    )
-            );
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    new ApiResponseDTO<>(
-                            LocalDateTime.now(),
-                            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                            "Internal Server Error",
-                            List.of("Something went wrong"),
-                            request.getRequestURI()
-                    )
-            );
-        }
-    }
-
-    @PostMapping(value = "/register1", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseDTO<?>> handleFileAndJson(
             @RequestPart(value = "data", required = false) UserRegisterRequestDTO myData,
             @RequestPart(value = "file", required = false) MultipartFile file,
