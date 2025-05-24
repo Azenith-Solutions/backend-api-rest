@@ -111,6 +111,13 @@ public class ComponentService {
         return componentRepository.findByLastSaleSLA(LastSaleSLA);
     }
 
+    public List<Integer> getCountOfTrueAndFalseFlagML() {
+        Integer componentsWithFlagMLTrue = componentRepository.findByFlagMLTrue();
+        Integer componentsWithFlagMLFalse = componentRepository.findByFlagMLFalse();
+
+        return List.of(componentsWithFlagMLTrue, componentsWithFlagMLFalse);
+    }
+
     public Component save(ComponentRequestDTO componentRequestDTO) {
         Component component = convertDtoToEntity(componentRequestDTO);
 

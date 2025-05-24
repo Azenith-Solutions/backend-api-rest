@@ -28,4 +28,10 @@ public interface ComponentRepository extends JpaRepository<Component, Long>, Jpa
 
     @Query("SELECT c FROM Component c WHERE c.dataUltimaVenda <= :SLAUltimaVenda")
     List<Component> findByLastSaleSLA(LocalDate SLAUltimaVenda);
+
+    @Query("SELECT COUNT (*) FROM Component c WHERE c.flagML = true")
+    Integer findByFlagMLTrue();
+
+    @Query("SELECT COUNT (*) FROM Component c WHERE c.flagML = false")
+    Integer findByFlagMLFalse();
 }
