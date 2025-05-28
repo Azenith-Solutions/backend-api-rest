@@ -165,6 +165,168 @@ public class ComponentController {
         }
     }
 
+    @GetMapping("/details/{id}")
+    public ResponseEntity<ApiResponseDTO<?>> getDetailsComponentById(@PathVariable Long id, HttpServletRequest request) {
+        try {
+            ComponentCatalogResponseDTO component = componentService.findDetailsCoponentById(id);
+
+            if (component == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(
+                                new ApiResponseDTO<>(
+                                        LocalDateTime.now(),
+                                        HttpStatus.NOT_FOUND.value(),
+                                        "Componente não encontrado!",
+                                        null,
+                                        request.getRequestURI()
+                                )
+                        );
+            }
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.OK.value(),
+                                    "OK",
+                                    component,
+                                    request.getRequestURI()
+                            )
+                    );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
+        }
+    }
+
+    @GetMapping("/kpi/low-stock")
+    public ResponseEntity<ApiResponseDTO<?>> getLowStockComponents(HttpServletRequest request) {
+        try {
+            List<Component> lowStockComponents = componentService.getLowStockComponents();
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.OK.value(),
+                                    "OK",
+                                    lowStockComponents,
+                                    request.getRequestURI()
+                            )
+                    );
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
+        }
+    }
+
+    @GetMapping("/kpi/in-observation")
+    public ResponseEntity<ApiResponseDTO<?>> getInObservationComponents(HttpServletRequest request) {
+        try {
+            List<Component> components = componentService.getInObservationComponents();
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.OK.value(),
+                                    "OK",
+                                    components,
+                                    request.getRequestURI()
+                            )
+                    );
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
+        }
+    }
+
+    @GetMapping("/kpi/incomplete")
+    public ResponseEntity<ApiResponseDTO<?>> getIncompleteComponents(HttpServletRequest request) {
+        try {
+            List<Component> incompleteComponents = componentService.getIncompleteComponents();
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.OK.value(),
+                                    "OK",
+                                    incompleteComponents,
+                                    request.getRequestURI()
+                            )
+                    );
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
+        }
+    }
+
+    @GetMapping("/kpi/out-of-last-sale-sla")
+    public ResponseEntity<ApiResponseDTO<?>> getOutOfLastSaleComponents(HttpServletRequest request) {
+        try {
+            List<Component> components = componentService.getComponentsOutOfLastSaleSLA();
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.OK.value(),
+                                    "OK",
+                                    components,
+                                    request.getRequestURI()
+                            )
+                    );
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
+        }
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponseDTO<?>> createComponent(@Valid @RequestBody ComponentRequestDTO componentRequestDTO, HttpServletRequest request) {
         try {

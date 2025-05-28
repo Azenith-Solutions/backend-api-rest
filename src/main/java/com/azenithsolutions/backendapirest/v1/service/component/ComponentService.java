@@ -6,9 +6,11 @@ import com.azenithsolutions.backendapirest.v1.utils.jpaSpecification.ComponentSp
 import com.azenithsolutions.backendapirest.v1.model.Box;
 import com.azenithsolutions.backendapirest.v1.model.Category;
 import com.azenithsolutions.backendapirest.v1.model.Component;
+import com.azenithsolutions.backendapirest.v1.model.enums.ComponentCondition;
 import com.azenithsolutions.backendapirest.v1.repository.BoxRepository;
 import com.azenithsolutions.backendapirest.v1.repository.CategoryRepository;
 import com.azenithsolutions.backendapirest.v1.repository.ComponentRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -84,6 +86,44 @@ public class ComponentService {
 
     public Optional<Component> findById(Long id) {
         return componentRepository.findById(id);
+    }
+
+    public ComponentCatalogResponseDTO findDetailsCoponentById(Long id) {
+        Optional<Component> component = componentRepository.findById(id);
+        if(!component.isEmpty()){
+            ComponentCatalogResponseDTO componentDto = new ComponentCatalogResponseDTO(
+                    component.get().getIdComponente(),
+                    component.get().getFkCategoria(),
+                    component.get().getQuantidade(),
+                    component.get().getDescricao()
+            );
+            return componentDto;
+        }
+        return null;
+    }
+
+    public List<Component> getLowStockComponents() {
+        try {
+            System.out.println("Chamando repository findByQuantityLessThan...");
+            return componentRepository.findByQuantityLessThan(1);
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar componentes de baixo estoque: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public List<Component> getInObservationComponents() {
+        return componentRepository.findByObservationCondition(ComponentCondition.OBSERVACAO);
+    }
+
+    public List<Component> getIncompleteComponents() {
+        return componentRepository.findByIncomplete(ComponentCondition.OBSERVACAO);
+    }
+
+    public List<Component> getComponentsOutOfLastSaleSLA() {
+        LocalDate LastSaleSLA = LocalDate.now().minusDays(30);
+        return componentRepository.findByLastSaleSLA(LastSaleSLA);
     }
 
     public Component save(ComponentRequestDTO componentRequestDTO) {
