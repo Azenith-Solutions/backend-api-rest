@@ -28,7 +28,7 @@ public class EmailController {
         try {
             System.out.println("Entrou no controller, estou chamando a service!");
 
-            String emailSent = emailService.sendEmail(emailToSend).block(); // Use apenas em contexto síncrono como controller
+            String emailSent = emailService.sendEmail(emailToSend).block();
 
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(
@@ -42,7 +42,22 @@ public class EmailController {
                     );
         }
         catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            System.err.println("=== ERRO NO CONTROLLER AO ENVIAR EMAIL ===");
+            System.err.println("Error type: " + e.getClass().getName());
+            System.err.println("Error message: " + e.getMessage());
+            System.err.println("Stack trace:");
+            e.printStackTrace();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Falha ao enviar email: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
         }
     }
 }

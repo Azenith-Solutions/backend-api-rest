@@ -48,7 +48,7 @@
         private int DDD;
 
         @Column(name = "tel_celular", columnDefinition = "CHAR(9)")
-            private int telCelular;
+        private String telCelular;
 
         @Column(name = "created_at")
         private LocalDateTime createdAt;
