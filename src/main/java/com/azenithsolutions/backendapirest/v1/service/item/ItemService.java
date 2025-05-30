@@ -39,8 +39,8 @@ public class ItemService {
             if (dto.getFkPedido() == null) {
                 throw new IllegalArgumentException("ID do pedido não pode ser nulo");
             }
-            if (dto.getQuantidade() == null || dto.getQuantidade() <= 0) {
-                throw new IllegalArgumentException("Quantidade deve ser maior que zero");
+            if (dto.getQuantidadeCarrinho() == null || dto.getQuantidadeCarrinho() <= 0) {
+                throw new IllegalArgumentException("QuantidadeCarrinho deve ser maior que zero");
             }
         });
 
@@ -81,7 +81,7 @@ public class ItemService {
                     .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + itemRequestDTO.getFkPedido()));
             item.setFkPedido(order);
 
-            item.setQuantidade(itemRequestDTO.getQuantidade());
+            item.setQuantidadeCarrinho(itemRequestDTO.getQuantidadeCarrinho());
 
             items.add(item);
         }
@@ -100,7 +100,7 @@ public class ItemService {
         Order order = orderRepository.findById(itemRequestDTO.getFkPedido())
                 .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + itemRequestDTO.getFkPedido()));
         item.setFkPedido(order);
-        item.setQuantidade(itemRequestDTO.getQuantidade());
+        item.setQuantidadeCarrinho(itemRequestDTO.getQuantidadeCarrinho());
         return item;
     }
 }

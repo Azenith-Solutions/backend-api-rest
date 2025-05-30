@@ -67,7 +67,6 @@ public class OrderService {
         }
 
         order.setStatus(dto.getStatus());
-        order.setDDD(dto.getDDD());
         order.setTelCelular(dto.getTelCelular());
         order.setValor(dto.getValor());
 
