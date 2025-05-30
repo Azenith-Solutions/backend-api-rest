@@ -10,7 +10,6 @@ import com.azenithsolutions.backendapirest.v1.model.enums.ComponentCondition;
 import com.azenithsolutions.backendapirest.v1.repository.BoxRepository;
 import com.azenithsolutions.backendapirest.v1.repository.CategoryRepository;
 import com.azenithsolutions.backendapirest.v1.repository.ComponentRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -88,7 +87,7 @@ public class ComponentService {
         return componentRepository.findById(id);
     }
 
-    public ComponentCatalogResponseDTO findDetailsCoponentById(Long id) {
+    public ComponentCatalogResponseDTO findDetailsComponentById(Long id) {
         Optional<Component> component = componentRepository.findById(id);
         if(!component.isEmpty()){
             ComponentCatalogResponseDTO componentDto = new ComponentCatalogResponseDTO(
@@ -124,6 +123,13 @@ public class ComponentService {
     public List<Component> getComponentsOutOfLastSaleSLA() {
         LocalDate LastSaleSLA = LocalDate.now().minusDays(30);
         return componentRepository.findByLastSaleSLA(LastSaleSLA);
+    }
+
+    public List<Integer> getCountOfTrueAndFalseFlagML() {
+        Integer componentsWithFlagMLTrue = componentRepository.findByFlagMLTrue();
+        Integer componentsWithFlagMLFalse = componentRepository.findByFlagMLFalse();
+
+        return List.of(componentsWithFlagMLTrue, componentsWithFlagMLFalse);
     }
 
     public Component save(ComponentRequestDTO componentRequestDTO) {

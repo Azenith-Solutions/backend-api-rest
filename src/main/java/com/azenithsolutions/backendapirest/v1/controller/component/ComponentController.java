@@ -168,7 +168,7 @@ public class ComponentController {
     @GetMapping("/details/{id}")
     public ResponseEntity<ApiResponseDTO<?>> getDetailsComponentById(@PathVariable Long id, HttpServletRequest request) {
         try {
-            ComponentCatalogResponseDTO component = componentService.findDetailsCoponentById(id);
+            ComponentCatalogResponseDTO component = componentService.findDetailsComponentById(id);
 
             if (component == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -309,6 +309,36 @@ public class ComponentController {
                                     HttpStatus.OK.value(),
                                     "OK",
                                     components,
+                                    request.getRequestURI()
+                            )
+                    );
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
+        }
+    }
+
+    @GetMapping("/dashboard/flag-ml")
+    public ResponseEntity<ApiResponseDTO<?>> getCountOfTrueAndFalseFlagML(HttpServletRequest request) {
+        try {
+            List<Integer> componentsWithFlagMLTrueAndFalse = componentService.getCountOfTrueAndFalseFlagML();
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.OK.value(),
+                                    "OK",
+                                    componentsWithFlagMLTrueAndFalse,
                                     request.getRequestURI()
                             )
                     );
