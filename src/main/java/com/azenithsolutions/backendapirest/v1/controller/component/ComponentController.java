@@ -1,6 +1,7 @@
 package com.azenithsolutions.backendapirest.v1.controller.component;
 
 import com.azenithsolutions.backendapirest.v1.dto.component.ComponentCatalogResponseDTO;
+import com.azenithsolutions.backendapirest.v1.dto.component.ComponentObservationDTO;
 import com.azenithsolutions.backendapirest.v1.dto.component.ComponentRequestDTO;
 import com.azenithsolutions.backendapirest.v1.dto.shared.ApiResponseDTO;
 import com.azenithsolutions.backendapirest.v1.model.Component;
@@ -240,7 +241,7 @@ public class ComponentController {
     @GetMapping("/kpi/in-observation")
     public ResponseEntity<ApiResponseDTO<?>> getInObservationComponents(HttpServletRequest request) {
         try {
-            List<Component> components = componentService.getInObservationComponents();
+            List<ComponentObservationDTO> components = componentService.getInObservationComponents();
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
