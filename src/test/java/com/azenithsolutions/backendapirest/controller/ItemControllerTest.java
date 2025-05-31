@@ -42,11 +42,11 @@ public class ItemControllerTest {
     void testGetItem_sucess(){
         Item item1 = new Item();
         item1.setIdItem(1l);
-        item1.setQuantidade(2);
+        item1.setQuantidadeCarrinho(2);
 
         Item item2 = new Item();
         item2.setIdItem(2l);
-        item2.setQuantidade(5);
+        item2.setQuantidadeCarrinho(5);
 
         when(itemService.getAllItems()).thenReturn(List.of(item1, item2));
         when(request.getRequestURI()).thenReturn("/items");
@@ -73,7 +73,7 @@ public class ItemControllerTest {
     void testGetItemId_sucess(){
         Item item = new Item();
         item.setIdItem(1L);
-        item.setQuantidade(2);
+        item.setQuantidadeCarrinho(2);
 
         when(itemService.getItemById(1L)).thenReturn(Optional.of(item));
         when(request.getRequestURI()).thenReturn("/items/1L");
@@ -83,7 +83,7 @@ public class ItemControllerTest {
         Item itemBody = (Item) body.getData();
 
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(2, itemBody.getQuantidade());
+        assertEquals(2, itemBody.getQuantidadeCarrinho());
     }
 
     @Test
@@ -102,23 +102,23 @@ public class ItemControllerTest {
     void testCreateItem_success() {
         Item itemCriado = new Item();
         itemCriado.setIdItem(1L);
-        itemCriado.setQuantidade(3);
+        itemCriado.setQuantidadeCarrinho(3);
 
         Item itemCriado2 = new Item();
         itemCriado2.setIdItem(2L);
-        itemCriado2.setQuantidade(4);
+        itemCriado2.setQuantidadeCarrinho(4);
 
         List<Item> listaCriada = List.of(itemCriado, itemCriado2);
 
         ItemRequestDTO dto1 = new ItemRequestDTO();
         dto1.setFkComponente(1L);
         dto1.setFkPedido(1L);
-        dto1.setQuantidade(3);
+        dto1.setQuantidadeCarrinho(3);
 
         ItemRequestDTO dto2 = new ItemRequestDTO();
         dto2.setFkComponente(2L);
         dto2.setFkPedido(1L);
-        dto2.setQuantidade(4);
+        dto2.setQuantidadeCarrinho(4);
 
         when(itemService.createItem(List.of(dto1, dto2))).thenReturn(listaCriada);
         when(request.getRequestURI()).thenReturn("/v1/items");
@@ -140,7 +140,7 @@ public class ItemControllerTest {
         ItemRequestDTO dto = new ItemRequestDTO();
         dto.setFkComponente(null); // dado inválido para simular erro
         dto.setFkPedido(1L);
-        dto.setQuantidade(1);
+        dto.setQuantidadeCarrinho(1);
 
         when(itemService.createItem(List.of(dto))).thenThrow(new IllegalArgumentException("ID do componente não pode ser nulo"));
         when(request.getRequestURI()).thenReturn("/v1/items");
@@ -160,11 +160,11 @@ public class ItemControllerTest {
         ItemRequestDTO dto = new ItemRequestDTO();
         dto.setFkComponente(1L);
         dto.setFkPedido(1L);
-        dto.setQuantidade(5);
+        dto.setQuantidadeCarrinho(5);
 
         Item itemAtualizado = new Item();
         itemAtualizado.setIdItem(1L);
-        itemAtualizado.setQuantidade(5);
+        itemAtualizado.setQuantidadeCarrinho(5);
 
 
         when(itemService.updateItem(1L, dto)).thenReturn(itemAtualizado);
@@ -178,7 +178,7 @@ public class ItemControllerTest {
         assertEquals("Item atualizado com sucesso!", body.getMessage());
         assertNotNull(body.getData());
         Item itemBody = (Item) body.getData();
-        assertEquals(5, itemBody.getQuantidade());
+        assertEquals(5, itemBody.getQuantidadeCarrinho());
     }
 
     @Test
@@ -189,7 +189,7 @@ public class ItemControllerTest {
         ItemRequestDTO itemRequestDTO = new ItemRequestDTO();
         itemRequestDTO.setFkComponente(1L);
         itemRequestDTO.setFkPedido(1L);
-        itemRequestDTO.setQuantidade(10);
+        itemRequestDTO.setQuantidadeCarrinho(10);
 
         when(itemService.updateItem(itemId, itemRequestDTO)).thenThrow(new RuntimeException("Erro interno"));
         when(request.getRequestURI()).thenReturn("/items/" + itemId);

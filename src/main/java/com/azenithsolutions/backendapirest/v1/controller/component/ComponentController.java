@@ -1,6 +1,7 @@
 package com.azenithsolutions.backendapirest.v1.controller.component;
 
 import com.azenithsolutions.backendapirest.v1.dto.component.ComponentCatalogResponseDTO;
+import com.azenithsolutions.backendapirest.v1.dto.component.ComponentObservationDTO;
 import com.azenithsolutions.backendapirest.v1.dto.component.ComponentRequestDTO;
 import com.azenithsolutions.backendapirest.v1.dto.component.ComponentVisibilityDTO;
 import com.azenithsolutions.backendapirest.v1.dto.shared.ApiResponseDTO;
@@ -33,7 +34,7 @@ public class ComponentController {
 
     @Autowired
     private ComponentService componentService;
-    
+
     @Autowired
     private ImageService imageService;
 
@@ -173,7 +174,7 @@ public class ComponentController {
     @GetMapping("/details/{id}")
     public ResponseEntity<ApiResponseDTO<?>> getDetailsComponentById(@PathVariable Long id, HttpServletRequest request) {
         try {
-            ComponentCatalogResponseDTO component = componentService.findDetailsCoponentById(id);
+            ComponentCatalogResponseDTO component = componentService.findDetailsComponentById(id);
 
             if (component == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -245,7 +246,7 @@ public class ComponentController {
     @GetMapping("/kpi/in-observation")
     public ResponseEntity<ApiResponseDTO<?>> getInObservationComponents(HttpServletRequest request) {
         try {
-            List<Component> components = componentService.getInObservationComponents();
+            List<ComponentObservationDTO> components = componentService.getInObservationComponents();
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
@@ -332,6 +333,36 @@ public class ComponentController {
         }
     }
 
+    @GetMapping("/dashboard/flag-ml")
+    public ResponseEntity<ApiResponseDTO<?>> getCountOfTrueAndFalseFlagML(HttpServletRequest request) {
+        try {
+            List<Integer> componentsWithFlagMLTrueAndFalse = componentService.getCountOfTrueAndFalseFlagML();
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.OK.value(),
+                                    "OK",
+                                    componentsWithFlagMLTrueAndFalse,
+                                    request.getRequestURI()
+                            )
+                    );
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
+        }
+    }
+
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseDTO<?>> createComponent(
             @RequestPart(value = "data", required = false) ComponentRequestDTO componentData,
@@ -361,7 +392,7 @@ public class ComponentController {
                 String uniqueFileName = timestamp + "_" + originalFilename;
 
                 MultipartFile renamedFile = new CustomMultipartFile(file, uniqueFileName);
-                
+
 
                 componentData.setImagem(renamedFile.getOriginalFilename());
 
@@ -425,10 +456,10 @@ public class ComponentController {
                 String uniqueFileName = timestamp + "_" + originalFilename;
 
                 MultipartFile renamedFile = new CustomMultipartFile(file, uniqueFileName);
-                
+
                 // Save image
                 String fileName = imageService.saveImage(renamedFile);
-                
+
                 // Set the image filename in the component data
                 componentData.setImagem(renamedFile.getOriginalFilename());
             } else {
@@ -526,7 +557,7 @@ public class ComponentController {
             HttpServletRequest request) {
         return updateComponentVisibility(id, visibilityDTO, request);
     }
-    
+
     private ResponseEntity<ApiResponseDTO<?>> updateComponentVisibility(
             Long id,
             ComponentVisibilityDTO visibilityDTO,
@@ -582,7 +613,7 @@ public class ComponentController {
             HttpServletRequest request) {
         try {
             Optional<Component> componentOpt = componentService.findById(id);
-            
+
             if (componentOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(
@@ -595,11 +626,11 @@ public class ComponentController {
                                 )
                         );
             }
-            
+
             Component component = componentOpt.get();
-            
+
             String fileName = imageService.saveImage(image);
-            
+
             ComponentRequestDTO updateDTO = new ComponentRequestDTO();
             updateDTO.setIdHardWareTech(component.getIdHardWareTech());
             updateDTO.setNomeComponente(component.getNomeComponente());
@@ -614,9 +645,9 @@ public class ComponentController {
             updateDTO.setObservacao(component.getObservacao());
             updateDTO.setDescricao(component.getDescricao());
             updateDTO.setImagem(fileName);
-            
+
             Component updatedComponent = componentService.update(id, updateDTO);
-            
+
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
                             new ApiResponseDTO<>(
@@ -627,7 +658,7 @@ public class ComponentController {
                                     request.getRequestURI()
                             )
                     );
-            
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(

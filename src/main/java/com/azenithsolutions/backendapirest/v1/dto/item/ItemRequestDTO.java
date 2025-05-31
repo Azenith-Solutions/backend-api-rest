@@ -18,5 +18,5 @@ public class ItemRequestDTO {
     private Long fkPedido;
 
     @Min(value = 1, message = "Quantidade deve ser pelo menos 1")
-    private Integer quantidade;
+    private Integer quantidadeCarrinho;
 }

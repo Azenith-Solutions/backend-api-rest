@@ -1,6 +1,7 @@
 package com.azenithsolutions.backendapirest.v1.service.component;
 
 import com.azenithsolutions.backendapirest.v1.dto.component.ComponentCatalogResponseDTO;
+import com.azenithsolutions.backendapirest.v1.dto.component.ComponentObservationDTO;
 import com.azenithsolutions.backendapirest.v1.dto.component.ComponentRequestDTO;
 import com.azenithsolutions.backendapirest.v1.utils.jpaSpecification.ComponentSpecification;
 import com.azenithsolutions.backendapirest.v1.model.Box;
@@ -10,7 +11,6 @@ import com.azenithsolutions.backendapirest.v1.model.enums.ComponentCondition;
 import com.azenithsolutions.backendapirest.v1.repository.BoxRepository;
 import com.azenithsolutions.backendapirest.v1.repository.CategoryRepository;
 import com.azenithsolutions.backendapirest.v1.repository.ComponentRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -21,13 +21,14 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class ComponentService {
     @Autowired
     private ComponentRepository componentRepository;
-    
+
     @Autowired
     private BoxRepository boxRepository;
 
@@ -66,7 +67,7 @@ public class ComponentService {
 
         Pageable pageable = PageRequest.of(0, limit);
 
-        if(orderBy != null && !orderBy.isBlank()){
+        if (orderBy != null && !orderBy.isBlank()) {
             pageable = PageRequest.of(0, limit, Sort.by(direction, orderBy));
         }
 
@@ -90,9 +91,9 @@ public class ComponentService {
         return componentRepository.findById(id);
     }
 
-    public ComponentCatalogResponseDTO findDetailsCoponentById(Long id) {
+    public ComponentCatalogResponseDTO findDetailsComponentById(Long id) {
         Optional<Component> component = componentRepository.findById(id);
-        if(!component.isEmpty()){
+        if (!component.isEmpty()) {
             ComponentCatalogResponseDTO componentDto = new ComponentCatalogResponseDTO(
                     component.get().getIdComponente(),
                     component.get().getNomeComponente(),
@@ -117,8 +118,17 @@ public class ComponentService {
         }
     }
 
-    public List<Component> getInObservationComponents() {
-        return componentRepository.findByObservationCondition(ComponentCondition.OBSERVACAO);
+    public List<ComponentObservationDTO> getInObservationComponents() {
+        List<Component> componentsInObservation = componentRepository.findByObservationCondition(ComponentCondition.OBSERVACAO);
+
+        return componentsInObservation.stream()
+                .map(component -> new ComponentObservationDTO(
+                        component.getIdHardWareTech(),
+                        component.getPartNumber(),
+                        component.getObservacao(),
+                        component.getDescricao()
+                ))
+                .collect(Collectors.toList());
     }
 
     public List<Component> getIncompleteComponents() {
@@ -130,6 +140,13 @@ public class ComponentService {
         return componentRepository.findByLastSaleSLA(LastSaleSLA);
     }
 
+    public List<Integer> getCountOfTrueAndFalseFlagML() {
+        Integer componentsWithFlagMLTrue = componentRepository.findByFlagMLTrue();
+        Integer componentsWithFlagMLFalse = componentRepository.findByFlagMLFalse();
+
+        return List.of(componentsWithFlagMLTrue, componentsWithFlagMLFalse);
+    }
+
     public Component save(ComponentRequestDTO componentRequestDTO) {
         Component component = convertDtoToEntity(componentRequestDTO);
 
@@ -137,10 +154,10 @@ public class ComponentService {
             component.setCreatedAt(LocalDate.now());
         }
         component.setUpdatedAt(LocalDate.now());
-        
+
         // Set default visibility for new components
         if (component.getIsVisibleCatalog() == null) {
-            component.setIsVisibleCatalog(true);
+            component.setIsVisibleCatalog(false);
         }
 
         return componentRepository.save(component);
@@ -166,15 +183,15 @@ public class ComponentService {
 
     public Component updateVisibility(Long id, Boolean isVisibleCatalog) {
         Optional<Component> componentOpt = componentRepository.findById(id);
-        
+
         if (componentOpt.isEmpty()) {
             return null;
         }
-        
+
         Component component = componentOpt.get();
         component.setIsVisibleCatalog(isVisibleCatalog);
         component.setUpdatedAt(LocalDate.now());
-        
+
         return componentRepository.save(component);
     }
 
@@ -194,6 +211,11 @@ public class ComponentService {
         }
 
         component.setNomeComponente(dto.getNomeComponente());
+
+        // Set Category
+        Category category = categoryRepository.findById(dto.getFkCategoria())
+                .orElseThrow(() -> new IllegalArgumentException("Category not found with ID: " + dto.getFkCategoria()));
+        component.setFkCategoria(category);
         component.setPartNumber(dto.getPartNumber());
         component.setQuantidade(dto.getQuantidade());
         component.setFlagML(dto.getFlagML());
@@ -206,7 +228,7 @@ public class ComponentService {
 
         return component;
     }
-    
+
     public void delete(Long id) {
         componentRepository.deleteById(id);
     }

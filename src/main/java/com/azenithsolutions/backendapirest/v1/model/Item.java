@@ -28,5 +28,5 @@ public class Item {
     private Order fkPedido;
 
     @Column(name = "quantidade")
-    private Integer quantidade;
+    private Integer quantidadeCarrinho;
 }

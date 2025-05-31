@@ -41,11 +41,11 @@ public class OrderControllerTest {
     @Test
     public void testGetOrder_ReturnSuccess() {
         Order order1 = new Order(1L, "PED456",null,"Mariana", "mariana@example.com", "98765432000188",
-                "250.00", OrderStatus.EM_ANALISE, 11, "912345678",
+                "250.00", OrderStatus.EM_ANALISE, "912345678",
                 LocalDateTime.now(), LocalDateTime.now());
 
         Order order2 = new Order(2L, "PED456",null,"Kauan", "kauan@example.com", "98765432000188",
-                "100.00", OrderStatus.CONCLUIDO, 11, "912345678",
+                "100.00", OrderStatus.CONCLUIDO, "912345678",
                 LocalDateTime.now(), LocalDateTime.now());
 
         when(orderService.getAllOrders()).thenReturn(List.of(order1, order2));
@@ -75,7 +75,6 @@ public class OrderControllerTest {
         requestDTO.setCNPJ("12345678000199");
         requestDTO.setValor("500.00");
         requestDTO.setStatus(OrderStatus.EM_ANALISE);
-        requestDTO.setDDD(11);
         requestDTO.setTelCelular("912345678");
 
         Order mockOrder = new Order();
@@ -86,7 +85,6 @@ public class OrderControllerTest {
         mockOrder.setCNPJ(requestDTO.getCNPJ());
         mockOrder.setValor(requestDTO.getValor());
         mockOrder.setStatus(requestDTO.getStatus());
-        mockOrder.setDDD(requestDTO.getDDD());
         mockOrder.setTelCelular(requestDTO.getTelCelular());
         mockOrder.setCreatedAt(LocalDateTime.now());
         mockOrder.setUpdatedAt(LocalDateTime.now());
@@ -121,7 +119,6 @@ public class OrderControllerTest {
         requestDTO.setCNPJ("12345678000199");
         requestDTO.setValor("0.00");
         requestDTO.setStatus(OrderStatus.EM_ANALISE);
-        requestDTO.setDDD(11);
         requestDTO.setTelCelular("912345678");
 
         when(orderService.createOrder(requestDTO))
@@ -152,7 +149,6 @@ public class OrderControllerTest {
         requestDTO.setCNPJ("98765432000177");
         requestDTO.setValor("300.00");
         requestDTO.setStatus(OrderStatus.CONCLUIDO);
-        requestDTO.setDDD(21);
         requestDTO.setTelCelular("998765432");
 
         Order updatedOrder = new Order();
@@ -163,7 +159,6 @@ public class OrderControllerTest {
         updatedOrder.setCNPJ(requestDTO.getCNPJ());
         updatedOrder.setValor(requestDTO.getValor());
         updatedOrder.setStatus(requestDTO.getStatus());
-        updatedOrder.setDDD(requestDTO.getDDD());
         updatedOrder.setTelCelular(requestDTO.getTelCelular());
         updatedOrder.setCreatedAt(LocalDateTime.now().minusDays(1));
         updatedOrder.setUpdatedAt(LocalDateTime.now());
