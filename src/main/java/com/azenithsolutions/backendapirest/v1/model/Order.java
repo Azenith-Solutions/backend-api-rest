@@ -44,7 +44,7 @@
         @Enumerated(EnumType.STRING)
         private OrderStatus status;
 
-        @Column(name = "tel_celular", columnDefinition = "CHAR(9)")
+        @Column(name = "tel_celular", columnDefinition = "CHAR(11)")
         private String telCelular;
 
         @Column(name = "created_at")
