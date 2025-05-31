@@ -13,9 +13,21 @@ import lombok.NoArgsConstructor;
 public class ComponentCatalogResponseDTO {
     private Long idComponente;
 
+    private String nomeComponente;
+
     private Category categoria;
 
     private int quantidade;
 
     private String descricao;
+    
+    private String imagem;
+    
+    public ComponentCatalogResponseDTO(Long idComponente, String nomeComponente, Category categoria, int quantidade, String descricao) {
+        this.idComponente = idComponente;
+        this.nomeComponente = nomeComponente;
+        this.categoria = categoria;
+        this.quantidade = quantidade;
+        this.descricao = descricao;
+    }
 }

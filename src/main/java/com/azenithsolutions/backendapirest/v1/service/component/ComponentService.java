@@ -30,7 +30,7 @@ public class ComponentService {
     
     @Autowired
     private BoxRepository boxRepository;
-    
+
     @Autowired
     private CategoryRepository categoryRepository;
 
@@ -47,6 +47,7 @@ public class ComponentService {
         List<ComponentCatalogResponseDTO> dtos = page.getContent().stream()
                 .map(component -> new ComponentCatalogResponseDTO(
                         component.getIdComponente(),
+                        component.getNomeComponente(),
                         component.getFkCategoria(),
                         component.getQuantidade(),
                         component.getDescricao()
@@ -74,6 +75,7 @@ public class ComponentService {
         List<ComponentCatalogResponseDTO> dtos = components.stream()
                 .map(component -> new ComponentCatalogResponseDTO(
                         component.getIdComponente(),
+                        component.getNomeComponente(),
                         component.getFkCategoria(),
                         component.getQuantidade(),
                         component.getDescricao()
@@ -93,9 +95,11 @@ public class ComponentService {
         if(!component.isEmpty()){
             ComponentCatalogResponseDTO componentDto = new ComponentCatalogResponseDTO(
                     component.get().getIdComponente(),
+                    component.get().getNomeComponente(),
                     component.get().getFkCategoria(),
                     component.get().getQuantidade(),
-                    component.get().getDescricao()
+                    component.get().getDescricao(),
+                    component.get().getImagem()
             );
             return componentDto;
         }
@@ -128,48 +132,68 @@ public class ComponentService {
 
     public Component save(ComponentRequestDTO componentRequestDTO) {
         Component component = convertDtoToEntity(componentRequestDTO);
-        
+
         if (component.getIdComponente() == null) {
             component.setCreatedAt(LocalDate.now());
         }
         component.setUpdatedAt(LocalDate.now());
         
+        // Set default visibility for new components
+        if (component.getIsVisibleCatalog() == null) {
+            component.setIsVisibleCatalog(true);
+        }
+
         return componentRepository.save(component);
     }
-    
+
     public Component update(Long id, ComponentRequestDTO componentRequestDTO) {
         Optional<Component> existingComponentOpt = componentRepository.findById(id);
-        
+
         if (existingComponentOpt.isEmpty()) {
             return null;
         }
-        
+
         Component existingComponent = existingComponentOpt.get();
         Component updatedComponent = convertDtoToEntity(componentRequestDTO);
-        
+
         updatedComponent.setIdComponente(id);
         updatedComponent.setCreatedAt(existingComponent.getCreatedAt());
         updatedComponent.setUpdatedAt(LocalDate.now());
         updatedComponent.setItens(existingComponent.getItens());
-        
+
         return componentRepository.save(updatedComponent);
     }
-    
+
+    public Component updateVisibility(Long id, Boolean isVisibleCatalog) {
+        Optional<Component> componentOpt = componentRepository.findById(id);
+        
+        if (componentOpt.isEmpty()) {
+            return null;
+        }
+        
+        Component component = componentOpt.get();
+        component.setIsVisibleCatalog(isVisibleCatalog);
+        component.setUpdatedAt(LocalDate.now());
+        
+        return componentRepository.save(component);
+    }
+
     private Component convertDtoToEntity(ComponentRequestDTO dto) {
         Component component = new Component();
-        
+
         component.setIdHardWareTech(dto.getIdHardWareTech());
-        
+
         // Set Box
-        Box box = boxRepository.findById(dto.getCaixa())
-                .orElseThrow(() -> new IllegalArgumentException("Box not found with ID: " + dto.getCaixa()));
+        Box box = boxRepository.findById(dto.getFkCaixa()).orElse(null);
         component.setFkCaixa(box);
-        
-        // Set Category
-        Category category = categoryRepository.findById(dto.getCategoria())
-                .orElseThrow(() -> new IllegalArgumentException("Category not found with ID: " + dto.getCategoria()));
-        component.setFkCategoria(category);
-        
+
+        // Set Category if provided
+        if (dto.getFkCategoria() != null) {
+            Category category = categoryRepository.findById(dto.getFkCategoria()).orElse(null);
+            component.setFkCategoria(category);
+        }
+
+        component.setNomeComponente(dto.getNomeComponente());
         component.setPartNumber(dto.getPartNumber());
         component.setQuantidade(dto.getQuantidade());
         component.setFlagML(dto.getFlagML());
@@ -178,10 +202,11 @@ public class ComponentService {
         component.setCondicao(dto.getCondicao());
         component.setObservacao(dto.getObservacao());
         component.setDescricao(dto.getDescricao());
-        
+        component.setImagem(dto.getImagem());
+
         return component;
     }
-
+    
     public void delete(Long id) {
         componentRepository.deleteById(id);
     }

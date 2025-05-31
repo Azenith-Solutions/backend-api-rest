@@ -2,9 +2,12 @@ package com.azenithsolutions.backendapirest.v1.controller.component;
 
 import com.azenithsolutions.backendapirest.v1.dto.component.ComponentCatalogResponseDTO;
 import com.azenithsolutions.backendapirest.v1.dto.component.ComponentRequestDTO;
+import com.azenithsolutions.backendapirest.v1.dto.component.ComponentVisibilityDTO;
 import com.azenithsolutions.backendapirest.v1.dto.shared.ApiResponseDTO;
 import com.azenithsolutions.backendapirest.v1.model.Component;
 import com.azenithsolutions.backendapirest.v1.service.component.ComponentService;
+import com.azenithsolutions.backendapirest.v1.service.files.ImageService;
+import com.azenithsolutions.backendapirest.v1.utils.CustomMultipartFile;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -13,12 +16,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "Component Management - v1", description = "Endpoints to manage components")
 @RestController
@@ -27,6 +33,9 @@ public class ComponentController {
 
     @Autowired
     private ComponentService componentService;
+    
+    @Autowired
+    private ImageService imageService;
 
     @GetMapping
     public ResponseEntity<ApiResponseDTO<?>> getAllComponents(HttpServletRequest request) {
@@ -59,10 +68,7 @@ public class ComponentController {
     }
 
     @GetMapping("/catalog")
-    public ResponseEntity<ApiResponseDTO<?>> getPagebleComponentsCatalog(HttpServletRequest request,
-                                                                         @RequestParam(defaultValue = "0") int page,
-                                                                         @RequestParam(defaultValue = "10") int size,
-                                                                         @RequestParam(required = false) String descricao) {
+    public ResponseEntity<ApiResponseDTO<?>> getPagebleComponentsCatalog(HttpServletRequest request, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String descricao) {
         try {
             Pageable pageable = PageRequest.of(page, size);
             Page<ComponentCatalogResponseDTO> pagina = componentService.getPagebleComponents(pageable, descricao);
@@ -93,8 +99,7 @@ public class ComponentController {
     }
 
     @PostMapping("/filterComponentList")
-    public ResponseEntity<ApiResponseDTO<?>> getFilterComponentList(HttpServletRequest request,
-                                                                    @RequestBody(required = false) HashMap<String, Object> filtros) {
+    public ResponseEntity<ApiResponseDTO<?>> getFilterComponentList(HttpServletRequest request, @RequestBody(required = false) HashMap<String, Object> filtros) {
         try {
             List<ComponentCatalogResponseDTO> components = componentService.getFilterComponentList(filtros);
 
@@ -327,17 +332,51 @@ public class ComponentController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<ApiResponseDTO<?>> createComponent(@Valid @RequestBody ComponentRequestDTO componentRequestDTO, HttpServletRequest request) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponseDTO<?>> createComponent(
+            @RequestPart(value = "data", required = false) ComponentRequestDTO componentData,
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            HttpServletRequest request) {
         try {
-            Component createdComponent = componentService.save(componentRequestDTO);
+            if (componentData == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(
+                                new ApiResponseDTO<>(
+                                        LocalDateTime.now(),
+                                        HttpStatus.BAD_REQUEST.value(),
+                                        "Bad Request",
+                                        List.of("Invalid JSON format"),
+                                        request.getRequestURI()
+                                )
+                        );
+            }
+
+            if (file != null) {
+                System.out.println("Arquivo: " + file.getOriginalFilename() + " | Tamanho: " + file.getSize());
+            }
+
+            if (file != null && !file.isEmpty()) {
+                String originalFilename = file.getOriginalFilename();
+                String timestamp = String.valueOf(System.currentTimeMillis());
+                String uniqueFileName = timestamp + "_" + originalFilename;
+
+                MultipartFile renamedFile = new CustomMultipartFile(file, uniqueFileName);
+                
+
+                componentData.setImagem(renamedFile.getOriginalFilename());
+
+                String fileName = imageService.saveImage(renamedFile);
+                System.out.println("File saved with name: " + fileName);
+            }
+
+            Component createdComponent = componentService.save(componentData);
 
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(
                             new ApiResponseDTO<>(
                                     LocalDateTime.now(),
                                     HttpStatus.CREATED.value(),
-                                    "Componente cadastrado!",
+                                    "Componente cadastrado com sucesso!",
                                     createdComponent,
                                     request.getRequestURI()
                             )
@@ -357,12 +396,16 @@ public class ComponentController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponseDTO<?>> updateComponent(@PathVariable Long id, @Valid @RequestBody ComponentRequestDTO componentRequestDTO, HttpServletRequest request) {
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponseDTO<?>> updateComponent(
+            @PathVariable Long id,
+            @RequestPart(value = "data") ComponentRequestDTO componentData,
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            HttpServletRequest request) {
         try {
-            Component updatedComponent = componentService.update(id, componentRequestDTO);
+            Optional<Component> existingComponentOpt = componentService.findById(id);
 
-            if (updatedComponent == null) {
+            if (existingComponentOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(
                                 new ApiResponseDTO<>(
@@ -375,12 +418,35 @@ public class ComponentController {
                         );
             }
 
+            // Handle image if provided
+            if (file != null && !file.isEmpty()) {
+                String originalFilename = file.getOriginalFilename();
+                String timestamp = String.valueOf(System.currentTimeMillis());
+                String uniqueFileName = timestamp + "_" + originalFilename;
+
+                MultipartFile renamedFile = new CustomMultipartFile(file, uniqueFileName);
+                
+                // Save image
+                String fileName = imageService.saveImage(renamedFile);
+                
+                // Set the image filename in the component data
+                componentData.setImagem(renamedFile.getOriginalFilename());
+            } else {
+                // Maintain the existing image if no new image is provided
+                Component existingComponent = existingComponentOpt.get();
+                if (existingComponent.getImagem() != null && !existingComponent.getImagem().isEmpty()) {
+                    componentData.setImagem(existingComponent.getImagem());
+                }
+            }
+
+            Component updatedComponent = componentService.update(id, componentData);
+
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
                             new ApiResponseDTO<>(
                                     LocalDateTime.now(),
                                     HttpStatus.OK.value(),
-                                    "Componente atualizado!",
+                                    "Componente atualizado com sucesso!",
                                     updatedComponent,
                                     request.getRequestURI()
                             )
@@ -431,6 +497,137 @@ public class ComponentController {
                             )
                     );
 
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
+        }
+    }
+
+    @PutMapping("/{id}/visibility")
+    public ResponseEntity<ApiResponseDTO<?>> updateVisibilityWithPut(
+            @PathVariable Long id,
+            @RequestBody ComponentVisibilityDTO visibilityDTO,
+            HttpServletRequest request) {
+        return updateComponentVisibility(id, visibilityDTO, request);
+    }
+
+    @PatchMapping("/{id}/visibility")
+    public ResponseEntity<ApiResponseDTO<?>> updateVisibilityWithPatch(
+            @PathVariable Long id,
+            @RequestBody ComponentVisibilityDTO visibilityDTO,
+            HttpServletRequest request) {
+        return updateComponentVisibility(id, visibilityDTO, request);
+    }
+    
+    private ResponseEntity<ApiResponseDTO<?>> updateComponentVisibility(
+            Long id,
+            ComponentVisibilityDTO visibilityDTO,
+            HttpServletRequest request) {
+
+        try {
+            Component existingComponent = componentService.findById(id).orElse(null);
+
+            if (existingComponent == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(
+                                new ApiResponseDTO<>(
+                                        LocalDateTime.now(),
+                                        HttpStatus.NOT_FOUND.value(),
+                                        "Componente não encontrado!",
+                                        null,
+                                        request.getRequestURI()
+                                )
+                        );
+            }
+
+            Component updatedComponent = componentService.updateVisibility(id, visibilityDTO.getIsVisibleCatalog());
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.OK.value(),
+                                    "Visibilidade do componente atualizada no catálogo com sucesso!",
+                                    updatedComponent,
+                                    request.getRequestURI()
+                            )
+                    );
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
+        }
+    }
+
+    @PostMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponseDTO<?>> uploadComponentImage(
+            @PathVariable Long id,
+            @RequestParam("image") MultipartFile image,
+            HttpServletRequest request) {
+        try {
+            Optional<Component> componentOpt = componentService.findById(id);
+            
+            if (componentOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(
+                                new ApiResponseDTO<>(
+                                        LocalDateTime.now(),
+                                        HttpStatus.NOT_FOUND.value(),
+                                        "Componente não encontrado!",
+                                        null,
+                                        request.getRequestURI()
+                                )
+                        );
+            }
+            
+            Component component = componentOpt.get();
+            
+            String fileName = imageService.saveImage(image);
+            
+            ComponentRequestDTO updateDTO = new ComponentRequestDTO();
+            updateDTO.setIdHardWareTech(component.getIdHardWareTech());
+            updateDTO.setNomeComponente(component.getNomeComponente());
+            updateDTO.setFkCaixa(component.getFkCaixa().getIdCaixa());
+            updateDTO.setFkCategoria(component.getFkCategoria().getIdCategoria());
+            updateDTO.setPartNumber(component.getPartNumber());
+            updateDTO.setQuantidade(component.getQuantidade());
+            updateDTO.setFlagML(component.getFlagML());
+            updateDTO.setCodigoML(component.getCodigoML());
+            updateDTO.setFlagVerificado(component.getFlagVerificado());
+            updateDTO.setCondicao(component.getCondicao());
+            updateDTO.setObservacao(component.getObservacao());
+            updateDTO.setDescricao(component.getDescricao());
+            updateDTO.setImagem(fileName);
+            
+            Component updatedComponent = componentService.update(id, updateDTO);
+            
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.OK.value(),
+                                    "Imagem do componente atualizada com sucesso!",
+                                    updatedComponent,
+                                    request.getRequestURI()
+                            )
+                    );
+            
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(

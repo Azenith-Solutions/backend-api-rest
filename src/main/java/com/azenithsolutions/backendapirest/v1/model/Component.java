@@ -24,6 +24,9 @@ public class Component {
     @Column(name = "id_hardwaretech")
     private String idHardWareTech;
 
+    @Column(name = "nome_componente")
+    private String nomeComponente;
+
     @ManyToOne
     @JoinColumn(name = "fk_caixa")
     @JsonManagedReference
@@ -59,6 +62,9 @@ public class Component {
     @Column(name = "descricao")
     private String descricao;
 
+    @Column(name = "imagem")
+    private String imagem;
+
     @Column(name = "data_ultima_venda")
     private LocalDate dataUltimaVenda;
 
@@ -82,7 +88,9 @@ public class Component {
     public String toString() {
         return "Component{" +
                 "id=" + idComponente +
-                ", name='" + descricao + "'" +
+                ", name='" + nomeComponente + "'" +
+                ", idHardWareTech='" + idHardWareTech + "'" +
+                ", descricao=" + descricao +
                 // Referência à Box sem chamar toString()
                 ", boxId=" + (fkCaixa != null ? fkCaixa.getIdCaixa() : null) +
                 '}';
