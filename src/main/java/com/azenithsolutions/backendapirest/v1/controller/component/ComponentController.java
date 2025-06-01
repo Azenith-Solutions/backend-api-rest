@@ -69,10 +69,10 @@ public class ComponentController {
     }
 
     @GetMapping("/catalog")
-    public ResponseEntity<ApiResponseDTO<?>> getPagebleComponentsCatalog(HttpServletRequest request, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String descricao) {
+    public ResponseEntity<ApiResponseDTO<?>> getPagebleComponentsCatalog(HttpServletRequest request, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String descricao, @RequestParam(required = false) Long categoria) {
         try {
             Pageable pageable = PageRequest.of(page, size);
-            Page<ComponentCatalogResponseDTO> pagina = componentService.getPagebleComponents(pageable, descricao);
+            Page<ComponentCatalogResponseDTO> pagina = componentService.getPagebleComponents(pageable, descricao, categoria);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(

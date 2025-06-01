@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/v1/orders").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/items").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v1/components/catalog").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/categorys").permitAll()
                         .requestMatchers(HttpMethod.GET, "/uploads/images/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v1/images/info/*").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/components/filterComponentList").permitAll()
