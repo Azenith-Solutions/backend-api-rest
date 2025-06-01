@@ -1,5 +1,6 @@
 package com.azenithsolutions.backendapirest.v1.controller.Box;
 
+import com.azenithsolutions.backendapirest.v1.dto.box.BoxDashboardDTO;
 import com.azenithsolutions.backendapirest.v1.dto.box.BoxListDTO;
 import com.azenithsolutions.backendapirest.v1.dto.shared.ApiResponseDTO;
 import com.azenithsolutions.backendapirest.v1.model.Box;
@@ -31,6 +32,44 @@ public class BoxController {
                     .map(box -> new BoxListDTO(
                             box.getIdCaixa(),
                             box.getNomeCaixa()
+                    ))
+                    .collect(Collectors.toList());
+
+            // Imprime os dados no console
+            System.out.println("Dados das caixas: " + boxListDTOS);
+
+            return ResponseEntity.ok(
+                    new ApiResponseDTO<>(
+                            LocalDateTime.now(),
+                            HttpStatus.OK.value(),
+                            "Success",
+                            boxListDTOS,
+                            request.getRequestURI()
+                    )
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ApiResponseDTO<>(
+                            LocalDateTime.now(),
+                            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                            "Internal Server Error",
+                            List.of("An error occurred while processing the request"),
+                            request.getRequestURI()
+                    )
+            );
+        }
+    }
+
+        @GetMapping("/kpi/box-dashboard")
+    public ResponseEntity<ApiResponseDTO<?>> getBoxesGreaterOrAlmostOrInLimitOfComponents(HttpServletRequest request) {
+        try {
+            List<BoxDashboardDTO> boxes = boxService.findBoxesGreaterOrAlmostOrInLimitOfComponents();
+
+            List<BoxDashboardDTO> boxListDTOS = boxes.stream()
+                    .map(box -> new BoxDashboardDTO(
+                            box.id(),
+                            box.name(),
+                            box.componentCount()
                     ))
                     .collect(Collectors.toList());
 
