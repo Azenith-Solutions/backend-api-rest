@@ -23,6 +23,9 @@ public class ComponentSpecification {
                         "%" + descricao.toLowerCase() + "%"));
             }
 
+            // Adiciona filtro para o campo is_visible_catalog = true
+            predicates.add(criteriaBuilder.isTrue(root.get("isVisibleCatalog")));
+
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
@@ -51,6 +54,9 @@ public class ComponentSpecification {
             }else if(path.getJavaType().equals(Integer.class)){
                 predicates.add(criteriaBuilder.equal(root.get(campo), Integer.valueOf(valor.toString())));
             }
+
+            // Adiciona filtro para o campo is_visible_catalog = true
+            predicates.add(criteriaBuilder.isTrue(root.get("isVisibleCatalog")));
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

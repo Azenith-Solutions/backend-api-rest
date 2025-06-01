@@ -51,7 +51,8 @@ public class ComponentService {
                         component.getNomeComponente(),
                         component.getFkCategoria(),
                         component.getQuantidade(),
-                        component.getDescricao()
+                        component.getDescricao(),
+                        component.getImagem()
                 ))
                 .toList();
 
@@ -79,7 +80,8 @@ public class ComponentService {
                         component.getNomeComponente(),
                         component.getFkCategoria(),
                         component.getQuantidade(),
-                        component.getDescricao()
+                        component.getDescricao(),
+                        component.getImagem()
                 ))
                 .toList();
 
