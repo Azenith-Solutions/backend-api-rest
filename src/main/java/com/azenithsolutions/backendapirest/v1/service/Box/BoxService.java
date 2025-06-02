@@ -5,9 +5,6 @@ import com.azenithsolutions.backendapirest.v1.model.Box;
 import com.azenithsolutions.backendapirest.v1.repository.BoxRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-
-import java.sql.SQLOutput;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,39 +19,32 @@ public class BoxService {
 
     public List<BoxDashboardDTO> findBoxesGreaterOrAlmostOrInLimitOfComponents() {
         Integer maxComponentsPerBox = 200;
-        System.out.println("=== BUSCANDO BOXES COM COMPONENTES ===");
+        System.out.println("=== INICIANDO BUSCA DE BOXES COM COMPONENTES ===");
         try {
-            System.out.println("=== **************************************** SUCESSO AO BUSCAR BOXES COM COMPONENTES ===");
-            System.out.println("Max components per box: " + maxComponentsPerBox);
-            List<BoxDashboardDTO> components = boxRepository.findBoxesGreaterOrAlmostOrInLimitOfComponents(maxComponentsPerBox);
+            List<Box> components = boxRepository.findBoxesGreaterOrAlmostOrInLimitOfComponents();
+            System.out.println("✅ SUCESSO AO BUSCAR BOXES COM COMPONENTES");
+            System.out.println("📊 Limite máximo de componentes por caixa: ");
+            System.out.println("📦 Quantidade de boxes encontradas: " + components.size());
 
             return components.stream()
                     .map(component -> new BoxDashboardDTO(
-                            component.id(),
-                            component.name(),
-                            boxRepository.countComponentsInBoxes(component.id())
+                            component.getIdCaixa(),
+                            component.getNomeCaixa(),
+                            boxRepository.countComponentsInBoxes(component.getIdCaixa())
                     ))
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            System.out.println("=== **************************************** ERRO AO BUSCAR BOXES COM COMPONENTES ===");
-            WebClientResponseException wcre = (WebClientResponseException) e;
+            System.err.println("\n❌ ERRO INESPERADO AO BUSCAR BOXES COM COMPONENTES ❌");
+            System.err.println("└── Tipo de erro: " + e.getClass().getName());
+            System.err.println("└── Mensagem: " + e.getMessage());
+            System.err.println("└── Causa raiz: " + (e.getCause() != null ? e.getCause().getMessage() : "Não especificada"));
 
-            System.err.println("=== ERRO DE RESPOSTA DOS COMPONENTES POR BOX ===");
-            System.err.println("Status code: " + wcre.getRawStatusCode());
-            System.err.println("Status text: " + wcre.getStatusText());
-            System.err.println("Response headers: " + wcre.getHeaders());
-            System.err.println("Response body: " + wcre.getResponseBodyAsString());
+            // Log stack trace for debugging
+            System.err.println("\nStack trace:");
+            e.printStackTrace();
 
-            if (wcre.getRequest() != null) {
-                System.err.println("Request URI: " + wcre.getRequest().getURI());
-                System.err.println("Request method: " + wcre.getRequest().getMethod());
-            }
-
-            List<BoxDashboardDTO> emptyList = List.of();
-
-            System.out.println("Retornando uma lista vazia devido ao erro: " + e.getMessage());
-
-            return emptyList;
+            System.out.println("⚠️ Retornando lista vazia devido ao erro interno");
+            return List.of();
         }
     }
 }
