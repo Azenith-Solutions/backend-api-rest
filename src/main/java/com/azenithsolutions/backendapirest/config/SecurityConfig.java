@@ -49,6 +49,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/uploads/images/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v1/images/info/*").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/components/filterComponentList").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/emails/send-with-attachment").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v1/components/details/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/v1/components/*/visibility").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/v1/components/*/visibility").permitAll()

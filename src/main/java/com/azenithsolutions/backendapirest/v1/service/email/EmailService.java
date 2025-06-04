@@ -7,10 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
+import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -68,5 +72,32 @@ public class EmailService {
 
                     return Mono.error(new RuntimeException("Failed to send email: " + e.getMessage()));
                 });
+    }
+
+    public Mono<String> sendEmailWithAttachment(EmailRequest request, MultipartFile file) {
+        try {
+            String base64File = Base64.getEncoder().encodeToString(file.getBytes());
+            Map<String, Object> attachment = Map.of(
+                    "content", base64File,
+                    "name", file.getOriginalFilename()
+            );
+
+            Map<String, Object> payload = Map.of(
+                    "sender", Map.of("name", "HardwareTech", "email", "hardwaretech@hardwaretech.com.br"),
+                    "to", new Map[]{Map.of("email", request.getToEmail(), "name", request.getToName())},
+                    "subject", request.getSubject(),
+                    "htmlContent", "<html><body>" + request.getContent() + "</body></html>",
+                    "attachment", List.of(attachment)
+            );
+
+            return brevoWebClient.post()
+                    .uri(apiUrl)
+                    .header("Content-Type", "application/json")
+                    .bodyValue(payload)
+                    .retrieve()
+                    .bodyToMono(String.class);
+        } catch (IOException e) {
+            return Mono.error(new RuntimeException("Erro ao processar o arquivo: " + e.getMessage()));
+        }
     }
 }
