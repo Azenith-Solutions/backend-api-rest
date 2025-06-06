@@ -32,6 +32,7 @@ public class ComponentRequestDTO {
     private Boolean flagML;
     private String codigoML;
     private Boolean flagVerificado;
+    private Boolean isVisibleCatalog;
     private ComponentCondition condicao;
     private String observacao;
     private String descricao;

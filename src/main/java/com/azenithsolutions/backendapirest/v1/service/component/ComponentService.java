@@ -176,6 +176,7 @@ public class ComponentService {
         Component updatedComponent = convertDtoToEntity(componentRequestDTO);
 
         updatedComponent.setIdComponente(id);
+        updatedComponent.setIsVisibleCatalog(existingComponent.getIsVisibleCatalog());
         updatedComponent.setCreatedAt(existingComponent.getCreatedAt());
         updatedComponent.setUpdatedAt(LocalDate.now());
         updatedComponent.setItens(existingComponent.getItens());
