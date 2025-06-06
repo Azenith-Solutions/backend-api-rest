@@ -15,11 +15,13 @@ public class ComponentRequestDTO {
     @NotBlank(message = "ID não pode estar vazio")
     private String idHardWareTech;
 
+    @NotBlank(message = "O componente deve ter nome")
+    private String nomeComponente;
+
     @NotNull(message = "Deve haver uma caixa para ser registrada")
-    private Long caixa;
-    
-    @NotNull(message = "Deve haver uma categoria para ser registrada")
-    private Long categoria;
+    private Long fkCaixa;
+
+    private Long fkCategoria;
 
     @NotBlank(message = "Deve haver um part number para ser registrado")
     private String partNumber;
@@ -30,7 +32,9 @@ public class ComponentRequestDTO {
     private Boolean flagML;
     private String codigoML;
     private Boolean flagVerificado;
+    private Boolean isVisibleCatalog;
     private ComponentCondition condicao;
     private String observacao;
     private String descricao;
+    private String imagem;
 }

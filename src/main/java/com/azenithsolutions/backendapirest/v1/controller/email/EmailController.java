@@ -8,10 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
@@ -58,6 +56,21 @@ public class EmailController {
                                     request.getRequestURI()
                             )
                     );
+        }
+    }
+
+    @PostMapping("/send-with-attachment")
+    public ResponseEntity<ApiResponseDTO<?>> sendEmailWithAttachment(
+            @RequestPart("email") EmailRequest emailToSend,
+            @RequestPart("file") MultipartFile file,
+            HttpServletRequest request) {
+        try {
+            String emailSent = emailService.sendEmailWithAttachment(emailToSend, file).block();
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new ApiResponseDTO<>(LocalDateTime.now(), HttpStatus.CREATED.value(), "Email enviado!", emailSent, request.getRequestURI()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponseDTO<>(LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR.value(), "Falha ao enviar email: " + e.getMessage(), null, request.getRequestURI()));
         }
     }
 }

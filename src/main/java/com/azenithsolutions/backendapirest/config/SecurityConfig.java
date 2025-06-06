@@ -45,9 +45,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/v1/orders").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/items").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v1/components/catalog").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/uploads/images/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/categorys").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/uploads/images/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/images/info/*").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/components/filterComponentList").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/emails/send-with-attachment").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v1/components/details/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/v1/components/*/visibility").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/v1/components/*/visibility").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow preflight requests
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
@@ -62,11 +67,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
-        configuration.setAllowCredentials(true);
-
+        configuration.setExposedHeaders(List.of("Authorization"));
+        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -76,7 +81,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+    
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

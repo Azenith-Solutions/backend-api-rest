@@ -13,7 +13,7 @@ import jakarta.persistence.criteria.Predicate;
 
 
 public class ComponentSpecification {
-    public static Specification<Component> filterBy(String descricao) {
+    public static Specification<Component> filterBy(String descricao, Long categoria) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -22,6 +22,16 @@ public class ComponentSpecification {
                         criteriaBuilder.lower(root.get("descricao")),
                         "%" + descricao.toLowerCase() + "%"));
             }
+
+            // Filtro por categoria, se o ID for informado
+            if (categoria != null && categoria != 0) {
+                predicates.add(criteriaBuilder.equal(
+                        root.get("fkCategoria").get("id"), categoria
+                ));
+            }
+
+            // Adiciona filtro para o campo is_visible_catalog = true
+            predicates.add(criteriaBuilder.isTrue(root.get("isVisibleCatalog")));
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
@@ -51,6 +61,9 @@ public class ComponentSpecification {
             }else if(path.getJavaType().equals(Integer.class)){
                 predicates.add(criteriaBuilder.equal(root.get(campo), Integer.valueOf(valor.toString())));
             }
+
+            // Adiciona filtro para o campo is_visible_catalog = true
+            predicates.add(criteriaBuilder.isTrue(root.get("isVisibleCatalog")));
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

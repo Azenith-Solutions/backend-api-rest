@@ -21,7 +21,9 @@ public class ImageService {
         } catch (IOException e) {
             throw new RuntimeException("Erro ao criar pasta para salvar imagens", e);
         }
-    }    public String saveImage(MultipartFile file) {
+    }    
+    
+    public String saveImage(MultipartFile file) {
         try {
             String originalName = StringUtils.cleanPath(file.getOriginalFilename() != null ? file.getOriginalFilename() : "unnamed-file");
             Path path = imageFolder.resolve(originalName);
@@ -39,5 +41,31 @@ public class ImageService {
             return null;
         }
         return imageUrlPrefix + imageName;
+    }
+    
+    // Método para verificar se uma imagem existe
+    public boolean imageExists(String imageName) {
+        if (imageName == null || imageName.isEmpty()) {
+            return false;
+        }
+        Path imagePath = imageFolder.resolve(imageName);
+        return Files.exists(imagePath);
+    }
+    
+    // Método para deletar uma imagem
+    public boolean deleteImage(String imageName) {
+        if (imageName == null || imageName.isEmpty()) {
+            return false;
+        }
+        try {
+            Path imagePath = imageFolder.resolve(imageName);
+            if (Files.exists(imagePath)) {
+                Files.delete(imagePath);
+                return true;
+            }
+            return false;
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao deletar a imagem", e);
+        }
     }
 }
