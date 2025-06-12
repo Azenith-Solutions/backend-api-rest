@@ -11,7 +11,6 @@ import com.azenithsolutions.backendapirest.v1.service.files.ImageService;
 import com.azenithsolutions.backendapirest.v1.utils.CustomMultipartFile;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -70,10 +69,10 @@ public class ComponentController {
     }
 
     @GetMapping("/catalog")
-    public ResponseEntity<ApiResponseDTO<?>> getPagebleComponentsCatalog(HttpServletRequest request, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String descricao, @RequestParam(required = false) Long categoria) {
+    public ResponseEntity<ApiResponseDTO<?>> getPagebleComponentsCatalog(HttpServletRequest request, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String nomeComponente, @RequestParam(required = false) Long categoria) {
         try {
             Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-            Page<ComponentCatalogResponseDTO> pagina = componentService.getPagebleComponents(pageable, descricao, categoria);
+            Page<ComponentCatalogResponseDTO> pagina = componentService.getPagebleComponents(pageable, nomeComponente, categoria);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(

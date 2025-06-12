@@ -13,14 +13,14 @@ import jakarta.persistence.criteria.Predicate;
 
 
 public class ComponentSpecification {
-    public static Specification<Component> filterBy(String descricao, Long categoria) {
+    public static Specification<Component> filterBy(String nomeComponente, Long categoria) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (descricao != null && !descricao.trim().isEmpty()) {
+            if (nomeComponente != null && !nomeComponente.trim().isEmpty()) {
                 predicates.add(criteriaBuilder.like(
-                        criteriaBuilder.lower(root.get("descricao")),
-                        "%" + descricao.toLowerCase() + "%"));
+                        criteriaBuilder.lower(root.get("nomeComponente")),
+                        "%" + nomeComponente.toLowerCase() + "%"));
             }
 
             // Filtro por categoria, se o ID for informado

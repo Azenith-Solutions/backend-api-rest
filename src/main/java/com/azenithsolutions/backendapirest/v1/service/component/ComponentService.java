@@ -40,8 +40,8 @@ public class ComponentService {
         return componentRepository.findAll();
     }
 
-    public Page<ComponentCatalogResponseDTO> getPagebleComponents(Pageable pageable, String descricao, Long categoria) {
-        Specification<Component> spec = ComponentSpecification.filterBy(descricao, categoria);
+    public Page<ComponentCatalogResponseDTO> getPagebleComponents(Pageable pageable, String nomeComponente, Long categoria) {
+        Specification<Component> spec = ComponentSpecification.filterBy(nomeComponente, categoria);
 
         Page<Component> page = componentRepository.findAll(spec, pageable);
 
