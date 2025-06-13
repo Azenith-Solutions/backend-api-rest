@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum OrderStatus {
-    EM_ANALISE("Em análise"),
+    PENDENTE("Pendente"),
     EM_ANDAMENTO("Em andamento"),
     CONCLUIDO("Concluído");
 
