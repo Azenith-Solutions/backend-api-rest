@@ -41,7 +41,7 @@ public class OrderControllerTest {
     @Test
     public void testGetOrder_ReturnSuccess() {
         Order order1 = new Order(1L, "PED456",null,"Mariana", "mariana@example.com", "98765432000188",
-                "250.00", OrderStatus.EM_ANALISE, "912345678",
+                "250.00", OrderStatus.PENDENTE, "912345678",
                 LocalDateTime.now(), LocalDateTime.now());
 
         Order order2 = new Order(2L, "PED456",null,"Kauan", "kauan@example.com", "98765432000188",
@@ -74,7 +74,7 @@ public class OrderControllerTest {
         requestDTO.setEmailComprador("joao@example.com");
         requestDTO.setCNPJ("12345678000199");
         requestDTO.setValor("500.00");
-        requestDTO.setStatus(OrderStatus.EM_ANALISE);
+        requestDTO.setStatus(OrderStatus.PENDENTE);
         requestDTO.setTelCelular("912345678");
 
         Order mockOrder = new Order();
@@ -118,7 +118,7 @@ public class OrderControllerTest {
         requestDTO.setEmailComprador("carlos@example.com");
         requestDTO.setCNPJ("12345678000199");
         requestDTO.setValor("0.00");
-        requestDTO.setStatus(OrderStatus.EM_ANALISE);
+        requestDTO.setStatus(OrderStatus.PENDENTE);
         requestDTO.setTelCelular("912345678");
 
         when(orderService.createOrder(requestDTO))
