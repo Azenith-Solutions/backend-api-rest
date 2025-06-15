@@ -17,13 +17,16 @@ public interface ComponentRepository extends JpaRepository<Component, Long>, Jpa
     @Query("SELECT c FROM Component c WHERE c.condicao = :observacao")
     List<Component> findByObservationCondition(@Param("observacao") ComponentCondition observacao);
 
-    @Query("SELECT c FROM Component c WHERE (c.flagML = true AND (c.codigoML IS NULL OR c.codigoML = '')) OR " +
+    @Query("SELECT c FROM Component c WHERE " +
+            "(c.flagML = true AND (c.codigoML IS NULL OR c.codigoML = '')) OR " +
             "(c.flagML = false AND c.codigoML IS NOT NULL AND c.codigoML != '') OR " +
             "(c.condicao IS NULL) OR " +
             "(c.condicao = :condition AND (c.observacao IS NULL OR c.observacao = '')) OR " +
             "(c.descricao IS NULL OR c.descricao = '') OR " +
             "(c.flagVerificado = false) OR " +
-            "(c.fkCaixa IS NULL)")
+            "(c.fkCaixa IS NULL) OR " +
+            "(c.imagem IS NULL OR c.imagem = '')")
+
     List<Component> findByIncomplete(@Param("condition") ComponentCondition condition);
 
     @Query("SELECT c FROM Component c WHERE c.dataUltimaVenda <= :SLAUltimaVenda")
