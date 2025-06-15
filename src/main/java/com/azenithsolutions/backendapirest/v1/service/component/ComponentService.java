@@ -121,7 +121,7 @@ public class ComponentService {
     }
 
     public List<ComponentObservationDTO> getInObservationComponents() {
-        List<Component> componentsInObservation = componentRepository.findByObservationCondition(ComponentCondition.OBSERVACAO);
+        List<Component> componentsInObservation = componentRepository.findByObservationCondition(ComponentCondition.EM_OBSERVACAO);
 
         return componentsInObservation.stream()
                 .map(component -> new ComponentObservationDTO(
@@ -134,7 +134,7 @@ public class ComponentService {
     }
 
     public List<Component> getIncompleteComponents() {
-        return componentRepository.findByIncomplete(ComponentCondition.OBSERVACAO);
+        return componentRepository.findByIncomplete(ComponentCondition.EM_OBSERVACAO);
     }
 
     public List<Component> getComponentsOutOfLastSaleSLA() {

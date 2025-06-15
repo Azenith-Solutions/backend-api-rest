@@ -372,7 +372,7 @@ class ComponentControllerTest {
         dto.setFlagML(false);
         dto.setCodigoML("COD456");
         dto.setFlagVerificado(false);
-        dto.setCondicao(ComponentCondition.OBSERVACAO);
+        dto.setCondicao(ComponentCondition.EM_OBSERVACAO);
         dto.setObservacao("Obs atualizada");
         dto.setDescricao("Componente atualizado");
         return dto;
