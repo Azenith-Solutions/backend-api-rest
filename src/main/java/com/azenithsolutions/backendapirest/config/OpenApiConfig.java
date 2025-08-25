@@ -51,4 +51,13 @@ public class OpenApiConfig {
                 .packagesToScan("com.azenithsolutions.backendapirest.v1")
                 .build();
     }
+
+        @Bean
+        public GroupedOpenApi v2ApiGroup() {
+                return GroupedOpenApi.builder()
+                                .group("v2")
+                                .pathsToMatch("/v2/**")
+                                .packagesToScan("com.azenithsolutions.backendapirest.v2.infrastructure.web.controller")
+                                .build();
+        }
 }
