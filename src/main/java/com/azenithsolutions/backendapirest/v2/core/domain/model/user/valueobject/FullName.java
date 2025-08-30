@@ -17,4 +17,8 @@ public class FullName {
         }
         return new FullName(fullName);
     }
+
+    public String getValue() {
+        return value;
+    }
 }

@@ -9,6 +9,8 @@ import com.azenithsolutions.backendapirest.v2.core.domain.repository.RoleGateway
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.UserGateway;
 import com.azenithsolutions.backendapirest.v2.core.usecase.user.command.CreateUserCommand;
 
+import java.time.LocalDate;
+
 public class CreateUserUseCase {
 
     private final UserGateway userGateway;
@@ -24,20 +26,22 @@ public class CreateUserUseCase {
             throw new RuntimeException("Já existe um usuário com este email");
         }
 
-        Role role = roleGateway.existsById(createUserCommand.fkFuncao());
+        Role role = roleGateway.getById(createUserCommand.fkFuncao());
         if (role == null) {
             throw new RuntimeException("Função não encontrada");
         }
 
         User user = User.create(
-                FullName.create(createUserCommand.fullName()),
-                Email.create(createUserCommand.email()),
-                Password.create(createUserCommand.password()),
-                createUserCommand.profilePicture(),
-                createUserCommand.status(),
-                role,
-                createUserCommand.createdAt(),
-                createUserCommand.updatedAt()
+                null,
+                createUserCommand.fullName(),
+                createUserCommand.email(),
+                createUserCommand.password(),
+                "default",
+                true,
+                role.getIdFuncao(),
+                role.getFuncao(),
+                LocalDate.now(),
+                LocalDate.now()
         );
 
         return userGateway.save(user);

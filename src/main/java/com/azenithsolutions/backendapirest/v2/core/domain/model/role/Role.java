@@ -9,20 +9,27 @@ public class Role {
 
     private String funcao;
 
-    private List<User> users;
 
-    private Role(Long idFuncao, String funcao, List<User> users) {
+    private Role(Long idFuncao, String funcao) {
         this.idFuncao = idFuncao;
         this.funcao = funcao;
-        this.users = users;
     }
 
-    public static Role create(Long idFuncao, String funcao, List<User> users){
+    public static Role create(Long idFuncao, String funcao){
         if(idFuncao == null){
             throw new IllegalArgumentException("Role ID cannot be null");
         }else if(idFuncao <= 1) {
             throw new IllegalArgumentException("Role ID must be greater than 1");
         }
-        return new Role(idFuncao, funcao, users);
+        return new Role(idFuncao, funcao);
     }
+
+    public Long getIdFuncao() {
+        return idFuncao;
+    }
+
+    public String getFuncao() {
+        return funcao;
+    }
+
 }

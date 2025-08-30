@@ -17,4 +17,8 @@ public class Email {
         }
         return new Email(email);
     }
+
+    public String getValue() {
+        return value;
+    }
 }

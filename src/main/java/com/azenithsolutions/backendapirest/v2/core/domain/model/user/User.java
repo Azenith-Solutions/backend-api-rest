@@ -38,7 +38,52 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-    public static User create(FullName fullName, Email email, Password password, String profilePicture, Boolean status, Role fkFuncao, LocalDate createdAt, LocalDate updatedAt){
-        return new User(null, fullName, email, password, profilePicture, status, fkFuncao, createdAt, updatedAt);
+    public static User create(Integer id, String fullName, String email, String password, String profilePicture, Boolean status, Long fkFuncao, String funcao, LocalDate createdAt, LocalDate updatedAt){
+        return new User(
+                id,
+                FullName.create(fullName),
+                Email.create(email),
+                Password.create(password),
+                profilePicture,
+                status,
+                Role.create(fkFuncao, funcao),
+                createdAt,
+                updatedAt);
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public FullName getFullName() {
+        return fullName;
+    }
+
+    public Email getEmail() {
+        return email;
+    }
+
+    public Password getPassword() {
+        return password;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public Role getFkFuncao() {
+        return fkFuncao;
+    }
+
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDate getUpdatedAt() {
+        return updatedAt;
     }
 }

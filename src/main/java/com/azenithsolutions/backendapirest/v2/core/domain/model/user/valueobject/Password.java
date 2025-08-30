@@ -17,4 +17,8 @@ public class Password {
         }
         return new Password(password);
     }
+
+    public String getValue() {
+        return value;
+    }
 }
