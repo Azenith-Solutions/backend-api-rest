@@ -21,8 +21,14 @@ public class UserController {
     private final CreateUserUseCase createUserUseCase;
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody CreateUserCommand command){
-        User user = createUserUseCase.execute(command);
-        return ResponseEntity.status(201).body(user);
+    public ResponseEntity<String> createUser(@RequestBody CreateUserCommand command){
+        try{
+            User user = createUserUseCase.execute(command);
+            return ResponseEntity.status(201).body("Usuário criado: %s".formatted(user));
+        }catch (IllegalArgumentException exception){
+            return ResponseEntity.status(400).body("Argumento Inválido: %s".formatted(exception.getMessage()));
+        }catch (RuntimeException exception){
+            return ResponseEntity.status(400).body("Argumento Inválifo: %s".formatted(exception.getMessage()));
+        }
     }
 }
