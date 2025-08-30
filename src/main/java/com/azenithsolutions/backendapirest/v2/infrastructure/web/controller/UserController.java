@@ -2,6 +2,7 @@ package com.azenithsolutions.backendapirest.v2.infrastructure.web.controller;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.user.User;
 import com.azenithsolutions.backendapirest.v2.core.usecase.user.CreateUserUseCase;
+import com.azenithsolutions.backendapirest.v2.core.usecase.user.DeleteUserUseCase;
 import com.azenithsolutions.backendapirest.v2.core.usecase.user.ListUserUseCase;
 import com.azenithsolutions.backendapirest.v2.core.usecase.user.command.CreateUserCommand;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.user.UserResponseDTO;
@@ -23,6 +24,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserController {
     private final CreateUserUseCase createUserUseCase;
+    private final DeleteUserUseCase deleteUserUserCase;
     private final ListUserUseCase listUserUseCase;
 
     @GetMapping
@@ -51,6 +53,16 @@ public class UserController {
             response.put("message", "Error: %s".formatted(exception.getMessage()));
             return ResponseEntity.status(400).body(response);
 
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@RequestParam(value = "id") Integer id){
+        try {
+            deleteUserUserCase.execute(id);
+            return ResponseEntity.status(204).build();
+        }catch (RuntimeException exception){
+            return ResponseEntity.status(400).body("Error: %s".formatted(exception.getMessage()));
         }
     }
 }

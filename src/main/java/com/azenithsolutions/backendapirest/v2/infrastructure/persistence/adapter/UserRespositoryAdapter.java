@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserRespositoryAdapter implements UserGateway {
@@ -17,6 +18,18 @@ public class UserRespositoryAdapter implements UserGateway {
 
     public UserRespositoryAdapter(SpringDataUserRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public User findById(Integer id) {
+        Optional<UserEntity> userEntity = repository.findById(id);
+        if(userEntity.get() == null) return null;
+        return UserEntityMapper.toDomain(userEntity.get());
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+        repository.deleteById(id);
     }
 
     @Override
