@@ -3,6 +3,7 @@ package com.azenithsolutions.backendapirest.v2.infrastructure.web.controller;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.user.User;
 import com.azenithsolutions.backendapirest.v2.core.usecase.user.CreateUserUseCase;
 import com.azenithsolutions.backendapirest.v2.core.usecase.user.DeleteUserUseCase;
+import com.azenithsolutions.backendapirest.v2.core.usecase.user.GetUserByIdUseCase;
 import com.azenithsolutions.backendapirest.v2.core.usecase.user.ListUserUseCase;
 import com.azenithsolutions.backendapirest.v2.core.usecase.user.command.CreateUserCommand;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.user.UserResponseDTO;
@@ -25,6 +26,7 @@ import java.util.Map;
 public class UserController {
     private final CreateUserUseCase createUserUseCase;
     private final DeleteUserUseCase deleteUserUserCase;
+    private final GetUserByIdUseCase getUserByIdUseCase;
     private final ListUserUseCase listUserUseCase;
 
     @GetMapping
@@ -32,6 +34,23 @@ public class UserController {
         List<User> userList = listUserUseCase.execute();
         List<UserResponseDTO> userResponseDTOList = userList.stream().map(UserEntityMapper::toResposeDTO).toList();
         return ResponseEntity.status(200).body(userResponseDTOList);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> getById(@RequestParam(value = "id")Integer id){
+        Map<String, Object> response = new HashMap<>();
+        try {
+            User user = getUserByIdUseCase.execute(id);
+            UserResponseDTO userResponse = UserEntityMapper.toResposeDTO(user);
+            response.put("message", "Usuário encontrado!");
+            response.put("user", userResponse);
+            return ResponseEntity.status(200).body(response);
+        }catch (RuntimeException exception){
+            response.put("message", "Usuário não encontrado!");
+            response.put("status", 404);
+            return ResponseEntity.status(404).body(response);
+        }
+
     }
 
     @PostMapping

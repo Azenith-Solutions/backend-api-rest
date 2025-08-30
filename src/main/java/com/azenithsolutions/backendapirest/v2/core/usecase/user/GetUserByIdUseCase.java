@@ -3,6 +3,7 @@ package com.azenithsolutions.backendapirest.v2.core.usecase.user;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.user.User;
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.UserGateway;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class GetUserByIdUseCase {
@@ -13,6 +14,10 @@ public class GetUserByIdUseCase {
     }
 
     public User execute(Integer id){
-        return userGateway.findById(id);
+        User user = userGateway.findById(id);
+        if(Objects.isNull(user)){
+            throw new RuntimeException("Usuário não encontrado");
+        }
+        return user;
     }
 }
