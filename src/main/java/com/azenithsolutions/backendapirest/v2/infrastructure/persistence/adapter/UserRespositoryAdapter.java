@@ -7,6 +7,9 @@ import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.reposit
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers.UserEntityMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserRespositoryAdapter implements UserGateway {
 
@@ -27,5 +30,13 @@ public class UserRespositoryAdapter implements UserGateway {
     @Override
     public boolean existsByEmail(String email) {
         return repository.existsByEmail(email);
+    }
+
+    @Override
+    public List<User> findAll() {
+        List<UserEntity> userEntityList = repository.findAll();
+        List<User> userList = userEntityList.stream().map(UserEntityMapper::toDomain).toList();
+
+        return userList;
     }
 }
