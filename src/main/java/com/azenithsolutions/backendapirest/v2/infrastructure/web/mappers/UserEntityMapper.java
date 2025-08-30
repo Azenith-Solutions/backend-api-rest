@@ -3,6 +3,7 @@ package com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.user.User;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.entity.RoleEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.entity.UserEntity;
+import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.user.UserResponseDTO;
 
 import java.util.Objects;
 
@@ -44,6 +45,18 @@ public class UserEntityMapper {
         );
 
         return user;
+    }
+
+    public static UserResponseDTO toResposeDTO(User user){
+        if(Objects.isNull(user)) return null;
+
+        UserResponseDTO userResponseDTO = new UserResponseDTO(
+                user.getFullName().getValue(),
+                user.getEmail().getValue(),
+                user.getFkFuncao().getFuncao()
+        );
+
+        return  userResponseDTO;
     }
 
 }
