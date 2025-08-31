@@ -5,6 +5,7 @@ import com.azenithsolutions.backendapirest.v2.core.usecase.user.*;
 import com.azenithsolutions.backendapirest.v2.core.usecase.user.command.CreateUserCommand;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.user.UserResponseDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers.UserEntityMapper;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class UserController {
     private final UpdateUserUseCase updateUserUseCase;
 
     @GetMapping
+    @Operation(summary = "List users", description = "Returns all users (v2 clean architecture)")
     public ResponseEntity<List<UserResponseDTO>> getAll(){
         List<User> userList = listUserUseCase.execute();
         List<UserResponseDTO> userResponseDTOList = userList.stream().map(UserEntityMapper::toResposeDTO).toList();
@@ -35,6 +37,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get user by id", description = "Returns users by id (v2 clean architecture)")
     public ResponseEntity<Map<String, Object>> getById(@RequestParam(value = "id")Integer id){
         Map<String, Object> response = new HashMap<>();
         try {
@@ -52,6 +55,7 @@ public class UserController {
     }
 
     @PostMapping
+    @Operation(summary = "Create user", description = "Returns user create (v2 clean architecture)")
     public ResponseEntity<Map<String, Object>> createUser(@RequestBody CreateUserCommand command){
         Map<String, Object> response = new HashMap<>();
 
@@ -74,6 +78,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete user by id", description = "Delete user (v2 clean architecture)")
     public ResponseEntity<String> deleteUser(@RequestParam(value = "id") Integer id){
         try {
             deleteUserUserCase.execute(id);
@@ -84,6 +89,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update user", description = "Returns new user update (v2 clean architecture)")
     public ResponseEntity<Map<String, Object>> updateUser(@RequestParam(value = "id")Integer id, @RequestBody CreateUserCommand command){
         Map<String, Object> response = new HashMap<>();
 
