@@ -86,4 +86,40 @@ public class User {
     public LocalDate getUpdatedAt() {
         return updatedAt;
     }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setFullName(FullName fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setEmail(Email email) {
+        this.email = email;
+    }
+
+    public void setPassword(Password password) {
+        this.password = password;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+    public void setFkFuncao(Role fkFuncao) {
+        this.fkFuncao = fkFuncao;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

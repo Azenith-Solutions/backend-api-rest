@@ -1,10 +1,7 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.web.controller;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.user.User;
-import com.azenithsolutions.backendapirest.v2.core.usecase.user.CreateUserUseCase;
-import com.azenithsolutions.backendapirest.v2.core.usecase.user.DeleteUserUseCase;
-import com.azenithsolutions.backendapirest.v2.core.usecase.user.GetUserByIdUseCase;
-import com.azenithsolutions.backendapirest.v2.core.usecase.user.ListUserUseCase;
+import com.azenithsolutions.backendapirest.v2.core.usecase.user.*;
 import com.azenithsolutions.backendapirest.v2.core.usecase.user.command.CreateUserCommand;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.user.UserResponseDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers.UserEntityMapper;
@@ -28,6 +25,7 @@ public class UserController {
     private final DeleteUserUseCase deleteUserUserCase;
     private final GetUserByIdUseCase getUserByIdUseCase;
     private final ListUserUseCase listUserUseCase;
+    private final UpdateUserUseCase updateUserUseCase;
 
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAll(){
@@ -82,6 +80,28 @@ public class UserController {
             return ResponseEntity.status(204).build();
         }catch (RuntimeException exception){
             return ResponseEntity.status(400).body("Error: %s".formatted(exception.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> updateUser(@RequestParam(value = "id")Integer id, @RequestBody CreateUserCommand command){
+        Map<String, Object> response = new HashMap<>();
+
+        try{
+            User user = updateUserUseCase.execute(id, command);
+            UserResponseDTO userResponse = UserEntityMapper.toResposeDTO(user);
+
+            response.put("message", "Usuário atualizado com sucesso!");
+            response.put("user", userResponse);
+
+            return ResponseEntity.status(201).body(response);
+        }catch (IllegalArgumentException exception){
+            response.put("message", "Argumento Inválido: %s".formatted(exception.getMessage()));
+            return ResponseEntity.status(400).body(response);
+        }catch (RuntimeException exception){
+            response.put("message", "Error: %s".formatted(exception.getMessage()));
+            return ResponseEntity.status(400).body(response);
+
         }
     }
 }

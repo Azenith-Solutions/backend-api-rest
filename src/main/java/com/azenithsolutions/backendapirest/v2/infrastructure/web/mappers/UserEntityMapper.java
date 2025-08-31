@@ -14,6 +14,7 @@ public class UserEntityMapper {
         }
         RoleEntity roleEntity = RoleEntityMapper.toEntity(user.getFkFuncao());
         UserEntity userEntity = new UserEntity();
+        userEntity.setId(Objects.isNull(user.getId()) ? null : user.getId());
         userEntity.setFullName(user.getFullName().getValue());
         userEntity.setEmail(user.getEmail().getValue());
         userEntity.setPassword(user.getPassword().getValue());
