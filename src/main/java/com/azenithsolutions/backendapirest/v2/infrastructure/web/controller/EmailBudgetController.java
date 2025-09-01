@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v2/emails")
 @Tag(name = "Email Management - v2", description = "Clean architecture endpoint for Emails")
 @RequiredArgsConstructor
-public class EmailController {
+public class EmailBudgetController {
     private final SendEmailUseCase send;
 
     @PostMapping
