@@ -1,16 +1,16 @@
 package com.azenithsolutions.backendapirest.v2.core.usecase.order;
 
-import com.azenithsolutions.backendapirest.v2.core.domain.model.Order;
-import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderRepositoryPort;
+import com.azenithsolutions.backendapirest.v2.core.domain.model.order.Order;
+import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderRepositoryGateway;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 public class UpdateOrderUseCase {
 
-    private final OrderRepositoryPort repository;
+    private final OrderRepositoryGateway repository;
 
-    public UpdateOrderUseCase(OrderRepositoryPort repository) {
+    public UpdateOrderUseCase(OrderRepositoryGateway repository) {
         this.repository = repository;
     }
 

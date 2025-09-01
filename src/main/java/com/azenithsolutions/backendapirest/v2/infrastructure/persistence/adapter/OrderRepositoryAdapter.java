@@ -1,7 +1,7 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.adapter;
 
-import com.azenithsolutions.backendapirest.v2.core.domain.model.Order;
-import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderRepositoryPort;
+import com.azenithsolutions.backendapirest.v2.core.domain.model.order.Order;
+import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderRepositoryGateway;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.entity.OrderEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.repository.jpa.SpringDataOrderRepository;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class OrderRepositoryAdapter implements OrderRepositoryPort {
+public class OrderRepositoryAdapter implements OrderRepositoryGateway {
     private final SpringDataOrderRepository repository;
 
     public OrderRepositoryAdapter(SpringDataOrderRepository repository) {

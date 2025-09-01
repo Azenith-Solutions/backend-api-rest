@@ -1,6 +1,6 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.config;
 
-import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderRepositoryPort;
+import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderRepositoryGateway;
 import com.azenithsolutions.backendapirest.v2.core.usecase.order.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,17 +9,17 @@ import org.springframework.context.annotation.Configuration;
 public class OrderUseCaseConfig {
 
     @Bean
-    CreateOrderUseCase createOrderUseCase(OrderRepositoryPort repositoryPort) { return new CreateOrderUseCase(repositoryPort); }
+    CreateOrderUseCase createOrderUseCase(OrderRepositoryGateway repository) { return new CreateOrderUseCase(repository); }
 
     @Bean
-    UpdateOrderUseCase updateOrderUseCase(OrderRepositoryPort repositoryPort) { return new UpdateOrderUseCase(repositoryPort); }
+    UpdateOrderUseCase updateOrderUseCase(OrderRepositoryGateway repository) { return new UpdateOrderUseCase(repository); }
 
     @Bean
-    GetOrderByIdUseCase getOrderByIdUseCase(OrderRepositoryPort repositoryPort) { return new GetOrderByIdUseCase(repositoryPort); }
+    GetOrderByIdUseCase getOrderByIdUseCase(OrderRepositoryGateway repository) { return new GetOrderByIdUseCase(repository); }
 
     @Bean
-    ListOrdersUseCase listOrdersUseCase(OrderRepositoryPort repositoryPort) { return new ListOrdersUseCase(repositoryPort); }
+    ListOrdersUseCase listOrdersUseCase(OrderRepositoryGateway repository) { return new ListOrdersUseCase(repository); }
 
     @Bean
-    DeleteOrderUseCase deleteOrderUseCase(OrderRepositoryPort repositoryPort) { return new DeleteOrderUseCase(repositoryPort); }
+    DeleteOrderUseCase deleteOrderUseCase(OrderRepositoryGateway repository) { return new DeleteOrderUseCase(repository); }
 }
