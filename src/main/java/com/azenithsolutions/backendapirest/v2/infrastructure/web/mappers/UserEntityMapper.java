@@ -1,8 +1,8 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.user.User;
-import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.entity.RoleEntity;
-import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.entity.UserEntity;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.RoleEntity;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.UserEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.user.UserResponseDTO;
 
 import java.util.Objects;

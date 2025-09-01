@@ -1,13 +1,12 @@
-package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.adapter;
+package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.adapter;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.user.User;
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.UserGateway;
-import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.entity.UserEntity;
-import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.repository.jpa.SpringDataUserRepository;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.UserEntity;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.repository.SpringDataUserRepository;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers.UserEntityMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

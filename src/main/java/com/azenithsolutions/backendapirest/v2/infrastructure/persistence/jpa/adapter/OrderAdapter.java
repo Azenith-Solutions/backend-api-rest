@@ -1,19 +1,19 @@
-package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.adapter;
+package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.adapter;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.order.Order;
-import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderRepositoryGateway;
-import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.entity.OrderEntity;
-import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.repository.jpa.SpringDataOrderRepository;
+import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderGateway;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.OrderEntity;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.repository.SpringDataOrderRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
 @Component
-public class OrderRepositoryAdapter implements OrderRepositoryGateway {
+public class OrderAdapter implements OrderGateway {
     private final SpringDataOrderRepository repository;
 
-    public OrderRepositoryAdapter(SpringDataOrderRepository repository) {
+    public OrderAdapter(SpringDataOrderRepository repository) {
         this.repository = repository;
     }
 

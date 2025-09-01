@@ -5,7 +5,7 @@ import com.azenithsolutions.backendapirest.v2.core.domain.model.order.Order;
 import java.util.List;
 import java.util.Optional;
 
-public interface OrderRepositoryGateway {
+public interface OrderGateway {
     Order save(Order order);
     Optional<Order> findById(Long id);
     List<Order> findAll();

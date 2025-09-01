@@ -1,9 +1,9 @@
-package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.adapter;
+package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.adapter;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.role.Role;
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.RoleGateway;
-import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.entity.RoleEntity;
-import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.repository.jpa.SpringDataRoleRepository;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.RoleEntity;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.repository.SpringDataRoleRepository;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers.RoleEntityMapper;
 import org.springframework.stereotype.Service;
 

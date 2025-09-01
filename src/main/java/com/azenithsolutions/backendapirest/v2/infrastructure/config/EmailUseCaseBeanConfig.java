@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class EmailUseCaseConfig {
+public class EmailUseCaseBeanConfig {
     @Bean
     SendEmailUseCase sendEmailUseCase(EmailGateway gateway) { return new SendEmailUseCase(gateway); }
 }

@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.entity;
+package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.enums.OrderStatus;
 import jakarta.persistence.*;

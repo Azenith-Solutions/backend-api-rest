@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.adapter;
+package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.adapter;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.email.EmailBudget;
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.EmailGateway;

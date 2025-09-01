@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.entity;
+package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
