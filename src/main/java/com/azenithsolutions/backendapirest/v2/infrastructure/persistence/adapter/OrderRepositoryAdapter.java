@@ -1,7 +1,7 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.adapter;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.Order;
-import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderRepositoryPort;
+import com.azenithsolutions.backendapirest.v2.core.domain.repository.order.OrderRepositoryPort;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.entity.OrderEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.repository.jpa.SpringDataOrderRepository;
 import org.springframework.stereotype.Component;

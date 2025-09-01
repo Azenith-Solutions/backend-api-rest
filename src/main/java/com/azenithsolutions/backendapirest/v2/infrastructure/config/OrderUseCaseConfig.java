@@ -1,6 +1,6 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.config;
 
-import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderRepositoryPort;
+import com.azenithsolutions.backendapirest.v2.core.domain.repository.order.OrderRepositoryPort;
 import com.azenithsolutions.backendapirest.v2.core.usecase.order.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
