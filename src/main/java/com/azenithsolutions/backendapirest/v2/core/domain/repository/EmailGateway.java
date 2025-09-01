@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.v2.core.domain.repository.email;
+package com.azenithsolutions.backendapirest.v2.core.domain.repository;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.email.EmailBudget;
 

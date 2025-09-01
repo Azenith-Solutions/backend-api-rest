@@ -1,11 +1,11 @@
-package com.azenithsolutions.backendapirest.v2.core.domain.repository.order;
+package com.azenithsolutions.backendapirest.v2.core.domain.repository;
 
-import com.azenithsolutions.backendapirest.v2.core.domain.model.Order;
+import com.azenithsolutions.backendapirest.v2.core.domain.model.order.Order;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface OrderRepositoryPort {
+public interface OrderRepositoryGateway {
     Order save(Order order);
     Optional<Order> findById(Long id);
     List<Order> findAll();

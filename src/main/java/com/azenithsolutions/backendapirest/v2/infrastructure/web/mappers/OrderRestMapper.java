@@ -1,6 +1,6 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers;
 
-import com.azenithsolutions.backendapirest.v2.core.domain.model.Order;
+import com.azenithsolutions.backendapirest.v2.core.domain.model.order.Order;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.OrderRest;
 
 public class OrderRestMapper {

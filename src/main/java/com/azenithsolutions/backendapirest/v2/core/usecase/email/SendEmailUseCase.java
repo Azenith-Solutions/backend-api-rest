@@ -1,7 +1,7 @@
 package com.azenithsolutions.backendapirest.v2.core.usecase.email;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.email.EmailBudget;
-import com.azenithsolutions.backendapirest.v2.core.domain.repository.email.EmailGateway;
+import com.azenithsolutions.backendapirest.v2.core.domain.repository.EmailGateway;
 
 public class SendEmailUseCase {
     private final EmailGateway gateway;

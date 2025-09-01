@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.v2.core.domain.model;
+package com.azenithsolutions.backendapirest.v2.core.domain.model.order;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.enums.OrderStatus;
 

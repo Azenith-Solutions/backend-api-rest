@@ -1,7 +1,7 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.adapter;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.email.EmailBudget;
-import com.azenithsolutions.backendapirest.v2.core.domain.repository.email.EmailGateway;
+import com.azenithsolutions.backendapirest.v2.core.domain.repository.EmailGateway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 public class EmailGatewayAdapter implements EmailGateway {
