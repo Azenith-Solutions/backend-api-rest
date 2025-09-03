@@ -12,6 +12,28 @@ Histórico:
 
 > Propósito: Documentar de forma operacional e auditável o fluxo de requisições, regras de negócio, validações, anotações Spring relevantes e padrões de Clean Architecture aplicados na migração da v1 (service-centric) para a v2 (use cases + ports & adapters + value objects).
 
+## Sumário
+- [1. Introdução](#1-introdução)
+  - [1.1 Mapeamento de Camadas](#11-mapeamento-de-camadas)
+  - [1.2 Diagrama Macro (High-Level)](#12-diagrama-macro-high-level)
+  - [1.3 Sequência Detalhada – Criação (POST /v2/orders)](#13-sequência-detalhada--criação-post-v2orders)
+- [2. Funcionalidades (Métodos & Complexidade)](#2-funcionalidades-métodos--complexidade)
+  - [2.1 Order (Fluxo CRUD)](#21-order-fluxo-crud)
+  - [2.2 User / Role / Email](#22-user--role--email)
+  - [2.3 Anotações Spring & Lombok Relevantes](#23-anotações-spring--lombok-relevantes)
+- [3. Casos de Uso (Cenários de Negócio)](#3-casos-de-uso-cenários-de-negócio)
+  - [3.1 Order](#31-order)
+  - [3.2 User](#32-user)
+  - [3.3 Email](#33-email)
+  - [3.4 Value Objects & Regras Implícitas](#34-value-objects--regras-implícitas)
+- [4. Exemplos de Código](#4-exemplos-de-código)
+  - [4.1 Sequência (GET /v2/orders/{id})](#41-sequência-get-v2ordersid)
+  - [4.2 POST /v2/orders (Request/Response)](#42-post-v2orders-requestresponse)
+  - [4.3 Criação de Usuário (Use Case)](#43-criação-de-usuário-use-case)
+  - [4.4 Envio de Email](#44-envio-de-email)
+- [5. Comparativo v1 x v2 (Resumo)](#5-comparativo-v1-x-v2-resumo)
+- [6. Resumo Essencial](#6-resumo-essencial)
+
 ## 1. Introdução
 O módulo v2 estabelece um núcleo de domínio independente de frameworks. A lógica de negócios migra de classes anotadas com `@Service` (v1) para casos de uso (Application Rules) simples e testáveis. Adapters encapsulam infraestrutura (JPA, HTTP, envio de email). Value Objects reforçam invariantes (ex: `Email`, `FullName`, `Password`) reduzindo regras dispersas.
 
@@ -52,7 +74,7 @@ M2 --> UC --> M3[Mapper Domain→DTO]
 M3 --> C --> Client
 ```
 
-#### 1.3.1 Sequência Detalhada – Criação (POST /v2/orders)
+### 1.3 Sequência Detalhada – Criação (POST /v2/orders)
 ```mermaid
 sequenceDiagram
 participant Client
@@ -166,9 +188,17 @@ Critérios de complexidade: *(Muito Alta / Alta / Média / Baixa)*.
 ## 4. Exemplos de Código
 ### 4.1 Sequência (GET /v2/orders/{id})
 ```text
-Client → OrderController.getById → GetOrderByIdUseCase.execute → OrderRepositoryGateway.findById
-  ↳ (Adapter) repository.findById → JPA → DB → Entity → Domain
-Retorno Domain → Mapper → DTO → HTTP 200
+Camada / Passos
+1. Client            → dispara HTTP GET
+2. Controller        → OrderController.getById(id)
+3. Use Case          → GetOrderByIdUseCase.execute(id)
+4. Port (Gateway)    → OrderRepositoryGateway.findById(id)
+5. Adapter           → OrderRepositoryAdapter.findById(id)
+6. Repository (JPA)  → SpringDataOrderRepository.findById(id) → DB
+7. Adapter (map)     → Entity → Domain (Order)
+8. Use Case (retorna)→ Order (Domínio puro)
+9. Mapper            → OrderRestMapper.toRest(order)
+10. Controller       → HTTP 200 + JSON (OrderRest)
 ```
 
 ### 4.2 POST /v2/orders (Request/Response)
@@ -196,16 +226,7 @@ EmailBudget budget = new EmailBudget("user@acme.com", "User", "Assunto", "Conte�
 String status = sendEmailUseCase.execute(budget); // "Email enviado com sucesso!"
 ```
 
-## 5. Diagramas de Sequência (Texto)
-```text
-[CreateUser]
-Controller → CreateUserUseCase → UserGateway.existsByEmail → RoleGateway.getById → User.create(VOs) → UserGateway.save → Controller
-
-[SendEmail]
-Controller → SendEmailUseCase → EmailGateway.sendEmail (boolean) → (Falha?) lança IllegalStateException → Sucesso retorna mensagem
-```
-
-## 6. Comparativo v1 x v2 (Resumo)
+## 5. Comparativo v1 x v2 (Resumo)
 | Aspecto | v1 | v2 |
 |---------|----|----|
 | Lógica de negócio | Services anotados | Use Cases puros | 
@@ -214,7 +235,7 @@ Controller → SendEmailUseCase → EmailGateway.sendEmail (boolean) → (Falha?
 | Domínio | Anêmico / acoplado | Rico com VOs (User) |
 | Tratamento de erros | Genérico | Em evolução (planejar exceptions dedicadas) |
 
-## 7. Resumo Essencial
+## 6. Resumo Essencial
 - Clean Architecture aplicada: núcleo independente.
 - Value Objects adicionam robustez ao agregado `User`.
 - Mapeamentos explícitos evitam vazamento de infra.
