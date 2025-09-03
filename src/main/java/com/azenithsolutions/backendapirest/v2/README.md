@@ -37,18 +37,50 @@ Remoção (v1 → v2) de anotações diretas em regras de negócio: `@Service`, 
 
 > Regra de dependência: somente fluxos OUT → IN. Nada no domínio conhece Spring / JPA.
 
-### 1.2 Diagrama Macro (Mermaid)
+### 1.2 Diagrama Macro (High-Level)
 ```mermaid
 flowchart LR
-Client --> Controller
-Controller --> UseCase
-UseCase --> Port
-Port --> Adapter
-Adapter --> JPA[(Spring Data)]
-JPA --> DB[(Database)]
-Adapter -->|Mapeia| Domain[(Domain Model)]
-UseCase -->|Retorna| Domain
-Controller --> DTO
+Client[HTTP Client] --> C[Controller]
+C --> M1[Mapper DTO→Domain]
+M1 --> UC[Use Case]
+UC --> G[OrderRepositoryGateway]
+G --> AD[OrderRepositoryAdapter]
+AD --> R[Spring Data Repository]
+R --> DB[(Database)]
+AD -->|Entity→Domain| M2[Mapper Entity→Domain]
+M2 --> UC --> M3[Mapper Domain→DTO]
+M3 --> C --> Client
+```
+
+#### 1.3.1 Sequência Detalhada – Criação (POST /v2/orders)
+```mermaid
+sequenceDiagram
+participant Client
+participant Controller
+participant Mapper as DTO→Domain
+participant UseCase as CreateOrderUseCase
+participant Gateway as OrderRepositoryGateway
+participant Adapter as OrderRepositoryAdapter
+participant Repo as SpringDataOrderRepository
+participant DB
+Client->>Controller: JSON OrderRest
+Controller->>Mapper: toDomain(dto)
+Mapper-->>Controller: Order (Domain)
+Controller->>UseCase: execute(order)
+UseCase->>Gateway: save(order)
+Gateway->>Adapter: save(order)
+Adapter->>Adapter: toEntity(domain)
+Adapter->>Repo: save(entity)
+Repo->>DB: INSERT
+DB-->>Repo: Entity saved
+Repo-->>Adapter: Entity
+Adapter->>Adapter: toDomain(entity)
+Adapter-->>Gateway: Order
+Gateway-->>UseCase: Order
+UseCase-->>Controller: Order
+Controller->>Mapper: toRest(domain)
+Mapper-->>Controller: OrderRest
+Controller-->>Client: 201 Created (OrderRest)
 ```
 
 ## 2. Funcionalidades (Métodos & Complexidade)
