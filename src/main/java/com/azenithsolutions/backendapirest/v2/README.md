@@ -1,183 +1,145 @@
-# Exemplo de Clean Architecture – Módulo Order (v2)
+<!--
+====================================================================================
+DOCUMENTAÇÃO CLEAN ARCHITECTURE v2
+Criação: 24/08/2025 | Última Modificação: 03/09/2025 | Versão Doc: 1.1
+Histórico:
+ - 1.0 (24/08/2025): Documento inicial focado em Order.
+ - 1.1 (03/09/2025): Expansão para User / Email, inclusão de tabelas de métodos, complexidade, parâmetros, validações e comparativos v1 vs v2.
+====================================================================================
+-->
 
-> Objetivo: Servir como guia prático para replicar a mesma estrutura (ports & adapters + use cases) em novos contextos do projeto.
+# Documentação Fluxo Clean Architecture (Order, User, Email)
 
-## 🎯 Visão Geral
-A versão **v2** introduz uma implementação de **Clean Architecture** focada em isolamento do domínio, independência de frameworks e facilidade de evolução. O módulo `Order` foi utilizado como experimento/blueprint.
+> Propósito: Documentar de forma operacional e auditável o fluxo de requisições, regras de negócio, validações, anotações Spring relevantes e padrões de Clean Architecture aplicados na migração da v1 (service-centric) para a v2 (use cases + ports & adapters + value objects).
 
-### Metas
-- Separar domínio de detalhes de infraestrutura (JPA, Web, Swagger, Segurança)
-- Facilitar testes unitários (mock apenas de portas)
-- Permitir múltiplas implementações de persistência sem alterar regras de negócio
-- Tornar o fluxo de uma requisição legível e explícito
+## 1. Introdução
+O módulo v2 estabelece um núcleo de domínio independente de frameworks. A lógica de negócios migra de classes anotadas com `@Service` (v1) para casos de uso (Application Rules) simples e testáveis. Adapters encapsulam infraestrutura (JPA, HTTP, envio de email). Value Objects reforçam invariantes (ex: `Email`, `FullName`, `Password`) reduzindo regras dispersas.
 
-### Camadas (Mapeamento)
-| Camada | Objetivo | Pasta | Exemplo Chave |
-|--------|----------|-------|---------------|
-| Domain (Enterprise Business Rules) | Modelo rico e estável | `core/domain/model` | `Order`, `OrderStatus` |
-| Ports (Interfaces) | Contratos que o domínio exige | `core/domain/repository` | `OrderRepositoryPort` |
-| Use Cases (Application Business Rules) | Orquestram regras e portas | `core/usecase/order` | `CreateOrderUseCase` |
-| Infrastructure – Persistence | Implementa portas (adapters) | `infrastructure/persistence` | `OrderRepositoryAdapter`, `OrderEntity` |
-| Infrastructure – Web (Delivery) | Exposição HTTP (controllers / DTO) | `infrastructure/web` | `OrderController`, `OrderRest` |
-| Configuration | Montagem dos casos de uso | `infrastructure/config` | `OrderUseCaseConfig` |
+Categoria principal: Gestão de Pedidos `(Order)`, Gestão de Usuários `(User)`, Envio de Email `(EmailBudget)` – domínios transacionais de negócio.
 
-> Regra de dependência: setas sempre de fora para dentro. Camadas externas conhecem internas; internas não conhecem externas.
+**Desacoplamentos e inversões:**
+- Controladores dependem de casos de uso, não de repositories concretos.
+- Casos de uso dependem de interfaces (ports/gateways) – DIP aplicado.
+- Classes de domínio puras (sem JPA / Lombok).
+- Adapter de persistência converte Domain ↔ Entity para isolar anotações `@Entity`, `@Column`, etc.
 
-## 🧬 Modelo de Domínio
-Arquivo: `core/domain/model/Order.java`
-- Responsável apenas por representar o estado e regras internas (no momento, estado + timestamps).
-- Independente de anotações JPA / Spring.
-- Evolução futura: adicionar value objects (ex: `Email`, `Money`) e invariantes (ex: validar formato de CNPJ).
+Remoção (v1 → v2) de anotações diretas em regras de negócio: `@Service`, `@Component` (em classes de lógica), injeção direta de `EntityManager` ou `JpaRepository` dentro da lógica. Agora a composição está centralizada em `@Configuration`.
 
-Enum: `core/domain/model/enums/OrderStatus.java` – restrições de valores válidos.
+### 1.1 Mapeamento de Camadas
+| Camada | Objetivo | Diretório | Exemplos |
+|--------|----------|----------|----------|
+| Domain | Modelo + Invariantes | `core/domain/model` | `Order`, `User`, `Role`, `EmailBudget`, VOs (`Email`, `FullName`, `Password`) |
+| Domain Ports | Contratos de saída | `core/domain/repository` | `OrderRepositoryGateway`, `UserGateway`, `RoleGateway`, `EmailGateway` |
+| Use Cases | Orquestra regras + portas | `core/usecase/**` | `CreateOrderUseCase`, `SendEmailUseCase`, `CreateUserUseCase` |
+| Infrastructure – Persistence | Implementa ports | `infrastructure/persistence` | `OrderRepositoryAdapter`, `OrderEntity` |
+| Infrastructure – Web | Exposição REST | `infrastructure/web` | `OrderController`, `OrderRest`, `OrderRestMapper` |
+| Configuration | Composition root | `infrastructure/config` | `OrderUseCaseConfig` |
 
-## 🔌 Porta (Output Port)
-Arquivo: `core/domain/repository/OrderRepositoryPort.java`
-```java
-public interface OrderRepositoryPort {
-    Order save(Order order);
-    Optional<Order> findById(Long id);
-    List<Order> findAll();
-    void deleteById(Long id);
-    boolean existsById(Long id);
-}
-```
-- O domínio e os use cases dependem **apenas** desta interface.
-- Qualquer detalhe de banco/JPA é invertido para a implementação do adapter.
+> Regra de dependência: somente fluxos OUT → IN. Nada no domínio conhece Spring / JPA.
 
-## 🧠 Use Cases
-Local: `core/usecase/order`
-Cada caso de uso é uma classe pequena com um único método público `execute(...)`.
-
-| Use Case | Responsabilidade | Entrada | Saída | Observações |
-|----------|------------------|---------|-------|-------------|
-| `CreateOrderUseCase` | Criar pedido | `Order` | `Order` | Define timestamps iniciais (se aplicado) |
-| `UpdateOrderUseCase` | Atualizar campos mutáveis | id + `Order` | `Order` | Preserva `createdAt`, atualiza `updatedAt` |
-| `GetOrderByIdUseCase` | Buscar um | id | `Order` | Lança `NoSuchElementException` se não encontrado |
-| `ListOrdersUseCase` | Listar todos | – | `List<Order>` | Livre de infra |
-| `DeleteOrderUseCase` | Remover | id | void | Verifica existência |
-
-Exemplo resumido (fluxo de update):
-```java
-public Order execute(Long id, Order newOrder) {
-    Order existing = repository.findById(id)
-        .orElseThrow(() -> new NoSuchElementException("Order not found: " + id));
-    existing.setCodigo(newOrder.getCodigo());
-    existing.setNomeComprador(newOrder.getNomeComprador());
-    // ... demais campos mutáveis
-    existing.setUpdatedAt(LocalDateTime.now());
-    return repository.save(existing);
-}
-```
-> A lógica de preservação de `createdAt` e atualização granular fica aqui – fora de controllers e repositórios, **ou seja, no caso de uso de atualização (update), o valor de `createdAt` não é alterado**.
-
-## 🧱 Adapter de Persistência
-Local: `infrastructure/persistence/adapter/OrderRepositoryAdapter.java`
-Funções:
-1. Converte Domain ↔ Entity (`Order` ↔ `OrderEntity`)
-2. Delegação para `SpringDataOrderRepository` (interface JPA)
-3. Implementa apenas a porta (`OrderRepositoryPort`)
-
-Por que mapear? Para isolar o domínio de anotações JPA (`@Entity`, `@Column`, etc.).
-
-`OrderEntity` contém somente detalhes específicos de persistência.
-
-## 🌐 Camada Web (Delivery)
-Local: `infrastructure/web`
-- `OrderController` expõe rotas REST (`/v2/orders`) – depende apenas de casos de uso + mapper.
-- `OrderRest` (DTO) é o contrato HTTP; evita expor diretamente o domínio (permite evolução interna).
-- `OrderRestMapper` traduz Domain ↔ DTO.
-
-Exemplo de fluxo (POST /v2/orders):
-1. Controller recebe JSON → desserializa em `OrderRest`.
-2. Mapper converte `OrderRest` → `Order` (domínio).
-3. `CreateOrderUseCase.execute(order)` executa regras.
-4. Retorno `Order` é convertido para `OrderRest` novamente.
-5. Response HTTP 201 enviado.
-
-## 🔄 Sequência de Requisição (Exemplo GET /v2/orders/{id})
-```
-[HTTP Request]
-   ↓
-OrderController.getById(id)
-   ↓ (chama) GetOrderByIdUseCase.execute(id)
-   ↓ (usa) OrderRepositoryPort.findById(id)
-   ↓ Adapter → SpringDataOrderRepository.findById(id)
-   ↓ JPA → Banco de Dados
-   ↑ Entity mapeada
-Adapter converte Entity → Domain
-Use Case retorna Domain
-Controller mapeia Domain → DTO (OrderRest)
-HTTP 200 + JSON
+### 1.2 Diagrama Macro (Mermaid)
+```mermaid
+flowchart LR
+Client --> Controller
+Controller --> UseCase
+UseCase --> Port
+Port --> Adapter
+Adapter --> JPA[(Spring Data)]
+JPA --> DB[(Database)]
+Adapter -->|Mapeia| Domain[(Domain Model)]
+UseCase -->|Retorna| Domain
+Controller --> DTO
 ```
 
-## 🏗️ Configuração (Composition Root)
-Arquivo: `infrastructure/config/OrderUseCaseConfig.java`
-- Define beans explicitamente dos use cases.
-- Injeta a porta (`OrderRepositoryPort`) – que na prática é satisfeita pelo adapter.
-- Ponto único onde Spring conhece as classes de aplicação; o core continua puro.
+## 2. Funcionalidades (Métodos & Complexidade)
 
-## 🧪 Testabilidade
-Para testar um caso de uso:
-- Mock `OrderRepositoryPort`
-- Instanciar o use case diretamente (sem subir contexto Spring)
+Critérios de complexidade: *(Muito Alta / Alta / Média / Baixa)*.
 
-Exemplo (pseudo):
-```java
-var repo = mock(OrderRepositoryPort.class);
-var useCase = new UpdateOrderUseCase(repo);
-when(repo.findById(1L)).thenReturn(Optional.of(existingOrder));
-when(repo.save(existingOrder)).thenReturn(existingOrder);
-var result = useCase.execute(1L, updatedOrderData);
-assertEquals(updatedOrderData.getCodigo(), result.getCodigo());
+### 2.1 Order (Fluxo CRUD)
+| Método | Camada | Tipo | Complexidade | Responsabilidade |
+|--------|--------|------|--------------|------------------|
+| `CreateOrderUseCase.execute(Order)` | Use Case | Público | Baixa | Persistir novo pedido |
+| `UpdateOrderUseCase.execute(Long, Order)` | Use Case | Público | Média | Atualizar campos mutáveis |
+| `GetOrderByIdUseCase.execute(Long)` | Use Case | Público | Baixa | Consulta by id |
+| `ListOrdersUseCase.execute()` | Use Case | Público | Baixa | Listagem total |
+| `DeleteOrderUseCase.execute(Long)` | Use Case | Público | Baixa | Remoção por id |
+| `OrderRepositoryAdapter.save(Order)` | Adapter | Público | Baixa | Persistir via Spring Data |
+| `OrderRepositoryAdapter.findById(Long)` | Adapter | Público | Baixa | Buscar |
+| `OrderRepositoryAdapter.findAll()` | Adapter | Público | Baixa | Listar |
+| `OrderRepositoryAdapter.deleteById(Long)` | Adapter | Público | Baixa | Delegar exclusão |
+| `OrderRepositoryAdapter.existsById(Long)` | Adapter | Público | Baixa | Verificar existência |
+| `OrderRepositoryAdapter.toEntity(Order)` | Adapter | Privado | Baixa | Map Domain→Entity |
+| `OrderRepositoryAdapter.toDomain(OrderEntity)` | Adapter | Privado | Baixa | Map Entity→Domain |
+
+### 2.2 User / Role / Email
+| Método | Camada | Tipo | Complexidade | Responsabilidade |
+|--------|--------|------|--------------|------------------|
+| `CreateUserUseCase.execute(CreateUserCommand)` | Use Case | Público | Média | Criar usuário |
+| `UpdateUserUseCase.execute(Integer, CreateUserCommand)` | Use Case | Público | Média | Atualizar usuário |
+| `DeleteUserUseCase.execute(Integer)` | Use Case | Público | Baixa | Remover usuário |
+| `GetUserByIdUseCase.execute(Integer)` | Use Case | Público | Baixa | Buscar usuário |
+| `ListUserUseCase.execute()` | Use Case | Público | Baixa | Listar usuários |
+| `SendEmailUseCase.execute(EmailBudget)` | Use Case | Público | Baixa | Enviar email |
+| `User.create(...)` | Domain Factory | Público | Baixa | Construção agregada |
+| `Role.create(Long, String)` | Domain Factory | Público | Baixa | Validar role id |
+| `Email.create(String)` | VO Factory | Público | Baixa | Validar email |
+| `FullName.create(String)` | VO Factory | Público | Baixa | Validar nome |
+| `Password.create(String)` | VO Factory | Público | Média | Validar força |
+
+### 2.3 Anotações Spring & Lombok Relevantes
+- `@RestController`, `@RequestMapping`, `@GetMapping`, `@PostMapping`, `@PutMapping`, `@DeleteMapping`: Infra → Web
+- `@Configuration` + `@Bean`: Composition root dos casos de uso
+- `@Service`: Adapter do gateway (`Order`, `User`, `Role`, `Email`)
+- `@Entity`, `@Table`, `@Column`, `@Enumerated`, `@Id`, `@GeneratedValue`: Mapeamento JPA
+- `@Data`, `@AllArgsConstructor`, `@NoArgsConstructor`: Redução de boilerplate em DTO / Entity (não em domínio puro)
+- `@Tag`, `@Operation`, `@ApiResponse`: Documentação Swagger OpenAPI
+
+## 3. Casos de Uso (Cenários de Negócio)
+### 3.1 Order
+| Caso | Cenário | Pré-condições | Pós-condições | Exceções (Atual / Planejada) |
+|------|---------|---------------|---------------|-----------------------------|
+| Criar Pedido | Registrar novo pedido | Campos obrigatórios preenchidos | Pedido persistido com `createdAt` | (Nenhuma) / `OrderValidationException` |
+| Buscar Pedido | Obter pedido por id | ID existente | Pedido retornado | `NoSuchElementException` / `OrderNotFoundException` |
+| Listar Pedidos | Listar todos os pedidos | - | Lista retornada | - / - |
+| Atualizar Pedido | Editar campos mutáveis | Pedido existe | Campos atualizados + `updatedAt` | `NoSuchElementException` / `OrderNotFoundException` |
+| Remover Pedido | Excluir por id | Pedido existe | Registro removido | `NoSuchElementException` / `OrderNotFoundException` |
+
+### 3.2 User
+| Caso | Cenário | Pré-condições | Pós-condições | Exceções (Atual / Planejada) |
+|------|---------|---------------|---------------|-----------------------------|
+| Criar Usuário | Registrar novo usuário interno | Email único, Role existente | Usuário ativo criado (`status=true`) | `RuntimeException` / `UserAlreadyExistsException`, `RoleNotFoundException` |
+| Buscar Usuário | Obter usuário por id | ID válido existente | Usuário retornado | `RuntimeException` / `UserNotFoundException` |
+| Listar Usuários | Listar todos os usuários | - | Lista retornada | - / - |
+| Atualizar Usuário | Alterar dados cadastrais | Usuário existe, Role válida | Dados atualizados (BUG: redefine createdAt) | `RuntimeException` / `UserNotFoundException`, `RoleNotFoundException` |
+| Remover Usuário | Inativar/remover usuário | Usuário existe | Registro removido | `RuntimeException` / `UserNotFoundException` |
+
+### 3.3 Email
+| Caso | Cenário | Pré-condições | Pós-condições | Exceções (Atual / Planejada) |
+|------|---------|---------------|---------------|-----------------------------|
+| Enviar Email | Notificação orçamentária | Gateway operacional, payload válido | Retorno mensagem sucesso | `IllegalStateException` / `EmailSendFailureException` |
+
+> Observações:
+> - Coluna "Planejada" indica exceptions específicas recomendadas para próxima etapa.
+> - Criar `GlobalExceptionHandler` (REST) para mapear exceptions → códigos HTTP.
+> - Adicionar validações estruturadas (Bean Validation) aos DTOs de entrada futuros.
+
+### 3.4 Value Objects & Regras Implícitas
+| Factory | Regras | Exceções (Atual / Planejada) |
+|---------|--------|------------------------------|
+| `Email.create` | Not blank, length ≤ 100, regex simples | `IllegalArgumentException` / `InvalidEmailException` |
+| `FullName.create` | Not blank, length ≤ 100, somente letras/espaços | `IllegalArgumentException` / `InvalidFullNameException` |
+| `Password.create` | 8–100 chars, maiúscula, minúscula, dígito, especial | `IllegalArgumentException` / `WeakPasswordException` |
+| `Role.create` | id != null e > 1 | `IllegalArgumentException` / `InvalidRoleIdException` |
+
+## 4. Exemplos de Código
+### 4.1 Sequência (GET /v2/orders/{id})
+```text
+Client → OrderController.getById → GetOrderByIdUseCase.execute → OrderRepositoryGateway.findById
+  ↳ (Adapter) repository.findById → JPA → DB → Entity → Domain
+Retorno Domain → Mapper → DTO → HTTP 200
 ```
-Nenhum framework de web/persistência é necessário – objetivo atingido.
 
-## ♻️ Como Replicar para Outro Agregado (Ex: Product)
-1. Criar domínio: `Product` + enums/value objects
-2. Criar porta: `ProductRepositoryPort`
-3. Criar casos de uso (CRUD ou específicos) em `core/usecase/product`
-4. Criar entity JPA `ProductEntity`
-5. Criar repository Spring Data (ex: `SpringDataProductRepository`)
-6. Implementar adapter `ProductRepositoryAdapter` (mapear Domain ↔ Entity)
-7. Criar DTO(s) HTTP + mapper (ex: `ProductRest`, `ProductRestMapper`)
-8. Criar controller `ProductController` em `/v2/products`
-9. Registrar beans de use case (config)
-10. Adicionar documentação OpenAPI (tags + operations)
-11. Escrever testes de use case (mock da porta) antes de integrar
-
-Checklist de Qualidade:
-- Domínio sem anotações de framework
-- Controller sem lógica de negócio
-- Adapter sem regras de negócio (apenas mapeamento)
-- Use case sem classes de infra (apenas porta)
-- Fluxo validado com testes unitários
-
-## 🔍 Decisões de Design Notáveis
-| Decisão | Motivo | Trade-off |
-|---------|-------|-----------|
-| Porta única (Command + Query) | Simplificação inicial | Pode ser dividida depois (ISP) |
-| DTO separado (`OrderRest`) | Estabilidade de contrato | Duplicação de campos |
-| Mapeamento manual | Controle explícito | Mais código |
-| Atualização campo-a-campo | Preservar `createdAt` + clareza | Necessita manutenção ao adicionar campos |
-| Bean name explícito do controller v2 | Evitar conflito com v1 | Ideal renomear classe futuramente |
-
-## 🚩 Pontos de Evolução
-- Dividir `OrderRepositoryPort` em `OrderQueryPort` / `OrderCommandPort`
-- Introduzir Value Objects (telefone, email, dinheiro)
-- Eventos de domínio para side effects (ex: enviar email após criação)
-- Exceptions específicas (`OrderNotFoundException`) + handler v2
-- Testes de contrato (component tests) na camada web
-
-## 🧭 Guia Rápido (Mental Map)
-```
-Controller (HTTP) → Mapper → Use Case → Porta → Adapter → Spring Data → DB
-                     ↑                                 ↓
-                  DTO/JSON ← Mapper ← Domain ← Adapter ← Entity
-```
-
-## 📌 Exemplos de Payload
-Request POST `/v2/orders`:
+### 4.2 POST /v2/orders (Request/Response)
 ```json
 {
   "codigo": "ORD-2025-0007",
@@ -189,25 +151,42 @@ Request POST `/v2/orders`:
   "telCelular": "+55 11 98877-6655"
 }
 ```
-Response 201:
-```json
-{
-  "id": 42,
-  "codigo": "ORD-2025-0007",
-  "nomeComprador": "Joao Silva",
-  "emailComprador": "joao.silva@example.com",
-  "cnpj": "12.345.678/0001-99",
-  "valor": "1500.00",
-  "status": "PENDENTE",
-  "telCelular": "+55 11 98877-6655",
-  "createdAt": "2025-05-25T10:15:30",
-  "updatedAt": "2025-05-25T10:15:30"
-}
+
+### 4.3 Criação de Usuário (Use Case)
+```java
+var cmd = new CreateUserCommand("Joao Silva", "joao@acme.com", "Str0ng!Pass", 2L);
+User created = createUserUseCase.execute(cmd);
 ```
 
-## ✅ Resumo Essencial
-- Domínio limpo + portas → desacoplamento real
-- Use cases são a fonte da verdade das regras
-- Adapters convertem e isolam frameworks
-- Controller só orquestra entrada/saída
-- Fácil de testar, evoluir e replicar
+### 4.4 Envio de Email
+```java
+EmailBudget budget = new EmailBudget("user@acme.com", "User", "Assunto", "Conteúdo");
+String status = sendEmailUseCase.execute(budget); // "Email enviado com sucesso!"
+```
+
+## 5. Diagramas de Sequência (Texto)
+```text
+[CreateUser]
+Controller → CreateUserUseCase → UserGateway.existsByEmail → RoleGateway.getById → User.create(VOs) → UserGateway.save → Controller
+
+[SendEmail]
+Controller → SendEmailUseCase → EmailGateway.sendEmail (boolean) → (Falha?) lança IllegalStateException → Sucesso retorna mensagem
+```
+
+## 6. Comparativo v1 x v2 (Resumo)
+| Aspecto | v1 | v2 |
+|---------|----|----|
+| Lógica de negócio | Services anotados | Use Cases puros | 
+| Dependência de Framework | Alta (anotações em todo lugar) | Restrita a bordas (web, persistence) |
+| Testabilidade | Necessita contexto parcial | Mock de ports, instância direta |
+| Domínio | Anêmico / acoplado | Rico com VOs (User) |
+| Tratamento de erros | Genérico | Em evolução (planejar exceptions dedicadas) |
+
+## 7. Resumo Essencial
+- Clean Architecture aplicada: núcleo independente.
+- Value Objects adicionam robustez ao agregado `User`.
+- Mapeamentos explícitos evitam vazamento de infra.
+- Casos de uso enxutos facilitam manutenção.
+- Próximos passos: foco em conversão completa de v1 para v2 (exceptions, segurança, validações avançadas, VOs).
+
+---
