@@ -151,4 +151,16 @@ public class EletronicComponent {
     public Date getDataUltimaAtualizacao() {
         return dataUltimaAtualizacao;
     }
+
+    public EletronicComponent update(String nome, Category categoria, String partNumber, int quantidade) {
+        validarCamposObrigatorios(nome, categoria, quantidade);
+        
+        this.nome = nome;
+        this.categoria = categoria;
+        this.partNumber = partNumber;
+        this.quantidade = quantidade;
+        this.dataUltimaAtualizacao = new Date();
+        
+        return this;
+    }
 }

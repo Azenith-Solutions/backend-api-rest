@@ -15,6 +15,7 @@ public class EletronicComponentResponseDTO {
     private Boolean verificado;
     private String condicao;
     private String observacao;
+    private String status;
     private String s3ImagePath;
     private Date dataUltimaVenda;
     private Date dataCriacao;
@@ -115,6 +116,14 @@ public class EletronicComponentResponseDTO {
 
     public void setObservacao(String observacao) {
         this.observacao = observacao;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getS3ImagePath() {
