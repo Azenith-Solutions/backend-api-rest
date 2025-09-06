@@ -24,8 +24,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController("userControllerV2")
 @RequestMapping("/v2/user")
@@ -174,12 +172,38 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete user by id", description = "Delete user (v2 clean architecture)")
-    public ResponseEntity<String> deleteUser(@RequestParam(value = "id") Integer id){
+    public ResponseEntity<ApiResponseDTO<?>> deleteUser(@PathVariable Integer id, HttpServletRequest request) {
         try {
             deleteUserUserCase.execute(id);
-            return ResponseEntity.status(204).build();
-        }catch (RuntimeException exception){
-            return ResponseEntity.status(400).body("Error: %s".formatted(exception.getMessage()));
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(
+                    new ApiResponseDTO<>(
+                            LocalDateTime.now(),
+                            HttpStatus.NO_CONTENT.value(),
+                            "No Content",
+                            null,
+                            request.getRequestURI()
+                    )
+            );
+        }catch(EntityExistsException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ApiResponseDTO<>(
+                            LocalDateTime.now(),
+                            HttpStatus.NOT_FOUND.value(),
+                            "Not Found",
+                            List.of(e.getMessage()),
+                            request.getRequestURI()
+                    )
+            );
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ApiResponseDTO<>(
+                            LocalDateTime.now(),
+                            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                            "Internal Server Error",
+                            List.of("An error occurred while processing the request"),
+                            request.getRequestURI()
+                    )
+            );
         }
     }
 }
