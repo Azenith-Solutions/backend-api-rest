@@ -1,6 +1,7 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.storage.adapter;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.ImageStorageGateway;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+@Service
 public class ImageStorageGatewayAdapter implements ImageStorageGateway {
     private final Path imageFolder = Paths.get("uploads/images");
     private final String imageUrlPrefix = "/uploads/images/";
