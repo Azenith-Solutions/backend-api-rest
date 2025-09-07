@@ -3,7 +3,9 @@ package com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.user.User;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.entity.RoleEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.entity.UserEntity;
+import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.user.UserListResponseDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.user.UserResponseDTO;
+import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.user.UserUpdateResponseDTO;
 
 import java.util.Objects;
 
@@ -58,6 +60,36 @@ public class UserEntityMapper {
         );
 
         return  userResponseDTO;
+    }
+
+    public static UserListResponseDTO toListResposeDTO(User user){
+        if(Objects.isNull(user)) return null;
+
+        UserListResponseDTO userListResponseDTO = new UserListResponseDTO(
+                user.getId(),
+                user.getFullName().getValue(),
+                user.getEmail().getValue(),
+                user.getFkFuncao().getFuncao(),
+                user.getProfilePicture(),
+                user.getStatus(),
+                user.getCreatedAt()
+        );
+
+        return  userListResponseDTO;
+    }
+
+    public static UserUpdateResponseDTO toUserUpdateResponseDTO(User user){
+        if(Objects.isNull(user)) return null;
+
+        UserUpdateResponseDTO userListResponseDTO = new UserUpdateResponseDTO(
+                user.getFullName().getValue(),
+                user.getEmail().getValue(),
+                user.getFkFuncao().getFuncao(),
+                user.getStatus(),
+                user.getUpdatedAt()
+        );
+
+        return  userListResponseDTO;
     }
 
 }
