@@ -7,11 +7,12 @@ import com.azenithsolutions.backendapirest.v2.infrastructure.security.adapter.To
 import com.azenithsolutions.backendapirest.v2.infrastructure.storage.adapter.ImageStorageGatewayAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class AuthUseCaseConfig {
     @Bean
-    RegisterUserUseCase registerUserUseCase(UserRespositoryAdapter userRespositoryAdapter, RoleRepositoryAdapter roleRepositoryAdapter, TokenGatewayAdapter tokenGatewayAdapter, ImageStorageGatewayAdapter imageStorageGatewayAdapter){
-        return new RegisterUserUseCase(userRespositoryAdapter, roleRepositoryAdapter, tokenGatewayAdapter, imageStorageGatewayAdapter);
+    RegisterUserUseCase registerUserUseCase(UserRespositoryAdapter userRespositoryAdapter, RoleRepositoryAdapter roleRepositoryAdapter, TokenGatewayAdapter tokenGatewayAdapter, ImageStorageGatewayAdapter imageStorageGatewayAdapter, PasswordEncoder passwordEncoder){
+        return new RegisterUserUseCase(userRespositoryAdapter, roleRepositoryAdapter, tokenGatewayAdapter, imageStorageGatewayAdapter, passwordEncoder);
     }
 }
