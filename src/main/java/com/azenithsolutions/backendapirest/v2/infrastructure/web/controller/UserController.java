@@ -2,7 +2,6 @@ package com.azenithsolutions.backendapirest.v2.infrastructure.web.controller;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.user.User;
 import com.azenithsolutions.backendapirest.v2.core.usecase.user.*;
-import com.azenithsolutions.backendapirest.v2.core.usecase.user.command.CreateUserCommand;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.shared.ApiResponseDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.user.UserListResponseDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.user.UserResponseDTO;
@@ -31,7 +30,6 @@ import java.util.Map;
 @SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 public class UserController {
-    private final CreateUserUseCase createUserUseCase;
     private final DeleteUserUseCase deleteUserUserCase;
     private final GetUserByIdUseCase getUserByIdUseCase;
     private final ListUserUseCase listUserUseCase;
@@ -145,29 +143,6 @@ public class UserController {
             return ResponseEntity.status(404).body(response);
         }
 
-    }
-
-    @PostMapping
-    @Operation(summary = "Create user", description = "Returns user create (v2 clean architecture)")
-    public ResponseEntity<Map<String, Object>> createUser(@RequestBody CreateUserCommand command){
-        Map<String, Object> response = new HashMap<>();
-
-        try{
-            User user = createUserUseCase.execute(command);
-            UserResponseDTO userResponse = UserEntityMapper.toResposeDTO(user);
-
-            response.put("message", "Usuário criado com sucesso!");
-            response.put("user", userResponse);
-
-            return ResponseEntity.status(201).body(response);
-        }catch (IllegalArgumentException exception){
-            response.put("message", "Argumento Inválido: %s".formatted(exception.getMessage()));
-            return ResponseEntity.status(400).body(response);
-        }catch (RuntimeException exception){
-            response.put("message", "Error: %s".formatted(exception.getMessage()));
-            return ResponseEntity.status(400).body(response);
-
-        }
     }
 
     @DeleteMapping("/{id}")
