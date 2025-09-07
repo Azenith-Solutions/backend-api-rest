@@ -52,4 +52,11 @@ public class UserRespositoryAdapter implements UserGateway {
 
         return userList;
     }
+
+    @Override
+    public User findByEmail(String email) {
+        Optional<UserEntity> userEntity = repository.findByEmail(email);
+        if(userEntity.get() == null) return null;
+        return UserEntityMapper.toDomain(userEntity.get());
+    }
 }
