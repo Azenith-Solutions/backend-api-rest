@@ -7,7 +7,7 @@ import com.azenithsolutions.backendapirest.v2.core.usecase.auth.dto.Authenticate
 import com.azenithsolutions.backendapirest.v2.core.usecase.auth.dto.LoginUserRequest;
 import com.azenithsolutions.backendapirest.v2.core.usecase.auth.dto.RegisterUserRequest;
 import com.azenithsolutions.backendapirest.v2.core.usecase.auth.dto.RegisteredUserResponse;
-import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.entity.UserEntity;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.UserEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.shared.ApiResponseDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.user.LoginRequestDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.user.LoginResponseDTO;

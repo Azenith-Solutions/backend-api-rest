@@ -1,9 +1,7 @@
-package com.azenithsolutions.backendapirest.v2.infrastructure.config;
+package com.azenithsolutions.backendapirest.v2.infrastructure.config.bean;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.EletronicComponentGateway;
-import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderGateway;
 import com.azenithsolutions.backendapirest.v2.core.usecase.components.*;
-import com.azenithsolutions.backendapirest.v2.core.usecase.order.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

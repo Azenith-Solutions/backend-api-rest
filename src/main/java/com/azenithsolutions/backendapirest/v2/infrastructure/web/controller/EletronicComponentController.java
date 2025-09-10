@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/v2/eletronic-components")
-@Tag(name = "Electronic Component Management", description = "Clean architecture endpoint for Electronic Components")
+@Tag(name = "Electronic Component Management - V2", description = "Clean architecture endpoint for Electronic Components")
 public class EletronicComponentController {
     private final CreateEletronicComponentUseCase createEletronicComponentUseCase;
     private final GetEletronicComponentUseCase getEletronicComponentUseCase;

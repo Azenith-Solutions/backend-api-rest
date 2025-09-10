@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.v2.infrastructure.storage.adapter;
+package com.azenithsolutions.backendapirest.v2.infrastructure.external.storage.adapter;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.ImageStorageGateway;
 import org.springframework.stereotype.Service;
