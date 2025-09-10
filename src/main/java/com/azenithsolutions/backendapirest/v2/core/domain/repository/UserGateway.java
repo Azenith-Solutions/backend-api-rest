@@ -11,4 +11,5 @@ public interface UserGateway {
     List<User> findAll();
     void deleteById(Integer id);
     User findById(Integer id);
+    User findByEmail(String email);
 }
