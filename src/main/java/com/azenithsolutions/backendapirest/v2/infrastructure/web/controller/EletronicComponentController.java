@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/eletronic-components")
+@RequestMapping("/v2/eletronic-components")
 @Tag(name = "Electronic Component Management", description = "Clean architecture endpoint for Electronic Components")
 public class EletronicComponentController {
     private final CreateEletronicComponentUseCase createEletronicComponentUseCase;
