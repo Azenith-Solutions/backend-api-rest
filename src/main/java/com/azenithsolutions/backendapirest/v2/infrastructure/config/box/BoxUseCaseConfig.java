@@ -1,6 +1,5 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.config.box;
 
-import com.azenithsolutions.backendapirest.v1.repository.BoxRepository;
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.BoxGateway;
 import com.azenithsolutions.backendapirest.v2.core.usecase.box.FindLimitBoxesUseCase;
 import com.azenithsolutions.backendapirest.v2.core.usecase.box.ListBoxesUseCase;
