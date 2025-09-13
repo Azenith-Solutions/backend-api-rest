@@ -30,3 +30,17 @@ brevo:
 server:
   servlet:
     context-path: /api
+
+# Configuração de observability (actuator)
+management:
+  endpoints:
+    enabled-by-default: false # Desativa todos os endpoints rodando por default do actuator
+    web:
+      exposure:
+        include: 'health,prometheus' # Define quais endepoints do actuator serão expostos
+  endpoint:
+    health:
+      enabled: true # Ativa o endpoint
+      show-details: always # Informas mais detalhes desse endpoint
+    prometheus:
+      enabled: true
