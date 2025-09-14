@@ -1,0 +1,17 @@
+auth_enabled: false # Define se quem coleta ou envia logs precisa de autenticação
+
+# Quais portas ele esta escutando
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9096
+
+# Persistencia dos dados -> Aqui diz onde os logs e índices vão ser guardados fisicamente
+storage_config:
+  boltdb_shipper:
+    active_index_directory: /loki/index # /loki/index: índices para buscas rápidas.
+    cache_location: /loki/cache
+    shared_store: filesystem
+  filesystem:
+    directory: /loki/chunks # /loki/chunks: logs “brutos”.
+
+# É essencial para persistência; se você montar um volume Docker nesse caminho (loki_data:/loki)

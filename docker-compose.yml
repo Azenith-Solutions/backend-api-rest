@@ -8,6 +8,8 @@ networks:
 volumes:
   prometheus_data:
   grafana_data:
+  loki_data:
+  promtail_positions:  # volume para guardar posições dos logs lidos, evita duplicação dos logs
 
 # Containers que serão criados
 services:
@@ -26,5 +28,26 @@ services:
       - grafana_data:/grafana
     ports:
       - 3000:3000
+    networks:
+      - aw-network
+  loki:
+    image: grafana/loki:latest
+    command: -config.file=/etc/loki/config/config.yml
+    volumes:
+      - ./config/loki-config.yml:/etc/loki/config/config.yml
+      - loki_data:/loki
+    ports:
+      - 3100:3100
+    networks:
+      - aw-network
+# Agent para coletar logs e enviar ao LOKI
+  promtail:
+    image: grafana/promtail:latest
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      # aqui você aponta para os logs do host ou dos containers
+      - /var/log:/var/log
+      - ./config/promtail-config.yml:/etc/promtail/config.yml
+      - promtail_positions:/tmp
     networks:
       - aw-network
