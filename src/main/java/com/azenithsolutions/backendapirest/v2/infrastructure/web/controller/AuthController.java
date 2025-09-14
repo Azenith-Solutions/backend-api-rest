@@ -89,7 +89,7 @@ public class AuthController {
                     )
             );
         } catch (Exception e) {
-            log.error("Error inesperado", e.getMessage());
+            log.error("Error inesperado: %s".formatted(e.getMessage()));
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     new ApiResponseDTO<>(
                             LocalDateTime.now(),

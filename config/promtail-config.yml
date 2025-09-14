@@ -15,4 +15,4 @@ scrape_configs:
           - localhost
         labels:
           job: java-app
-          __path__: logs/java-app/*.log # Local onde vai pegar os logs no sitema
+          __path__: logs/java-app/*.json # Local onde vai pegar os logs no sitema
