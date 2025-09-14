@@ -43,7 +43,7 @@ services:
     image: grafana/promtail:latest
     command: -config.file=/etc/promtail/config.yml
     volumes:
-      - ./logs/java-app:/logs/java-app # aponta para os logs gerados no arquivo app.log
+      - ./logs/java-app:/logs/java-app # aponta para os logs gerados no arquivo app.json
       - /var/log:/logs/syslogs # aqui você aponta para os logs gerados pelo host ou dos containers
       - ./config/promtail-config.yml:/etc/promtail/config.yml # config que o promtail deve utilizar
       - promtail_positions:/tmp # Para saber onde parou na leitura dos logs, evita duplicidade

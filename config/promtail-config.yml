@@ -2,11 +2,11 @@ server:
   http_listen_port: 9080
   grpc_listen_port: 0
 
-positions:
+positions: # para o promtail saber onde parou a consulta dos logs
   filename: /tmp/positions.yaml
 
 clients:
-  - url: http://loki:3100/loki/api/v1/push
+  - url: http://loki:3100/loki/api/v1/push # url do loki para enviar os logs
 
 scrape_configs:
   - job_name: java-app
@@ -15,4 +15,4 @@ scrape_configs:
           - localhost
         labels:
           job: java-app
-          __path__: logs/java-app/*.json # Local onde vai pegar os logs no sitema
+          __path__: logs/java-app/*.json # Local de onde vai pegar os logs gerados
