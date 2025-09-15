@@ -1,105 +1,45 @@
 package com.azenithsolutions.backendapirest.v2.core.domain.model.box;
 
+import com.azenithsolutions.backendapirest.v1.model.Component;//apagardps de criar component V2
+
+import java.util.List;
+
 public class Box {
-    private final Long id;
-    private String codigo;
-    private String localizacao;
-    private int capacidadeMaxima;
-    private int ocupacaoAtual;
+    private Long idCaixa;
+    private String nomeCaixa;
+    private List<Component> fkComponente;
 
-    // Construtor privado
-    private Box(Long id, String codigo, String localizacao, int capacidadeMaxima, int ocupacaoAtual) {
-        this.id = id;
-        this.codigo = codigo;
-        this.localizacao = localizacao;
-        this.capacidadeMaxima = capacidadeMaxima;
-        this.ocupacaoAtual = ocupacaoAtual;
+    public Box(){
+
     }
 
-    // Factory Method para criar uma nova caixa
-    public static Box criar(String codigo, String localizacao, int capacidadeMaxima) {
-        validarCapacidade(capacidadeMaxima);
-        validarCodigo(codigo);
-
-        return new Box(null, codigo, localizacao, capacidadeMaxima, 0);
+    public Box(Long idCaixa, String nomeCaixa, List<Component> fkComponente) {
+        this.idCaixa = idCaixa;
+        this.nomeCaixa = nomeCaixa;
+        this.fkComponente = fkComponente;
     }
 
-    // Factory Method para recriar uma caixa existente
-    public static Box recriar(Long id, String codigo, String localizacao, int capacidadeMaxima, int ocupacaoAtual) {
-        return new Box(id, codigo, localizacao, capacidadeMaxima, ocupacaoAtual);
+    public Long getIdCaixa() {
+        return idCaixa;
     }
 
-    private static void validarCapacidade(int capacidadeMaxima) {
-        if (capacidadeMaxima <= 0) {
-            throw new IllegalArgumentException("Capacidade máxima deve ser maior que zero");
-        }
+    public void setIdCaixa(Long idCaixa) {
+        this.idCaixa = idCaixa;
     }
 
-    private static void validarCodigo(String codigo) {
-        if (codigo == null || codigo.trim().isEmpty()) {
-            throw new IllegalArgumentException("Código da caixa não pode ser vazio");
-        }
+    public String getNomeCaixa() {
+        return nomeCaixa;
     }
 
-    // Métodos de negócio
-    public boolean podeAdicionarComponentes(int quantidade) {
-        return (ocupacaoAtual + quantidade) <= capacidadeMaxima;
+    public void setNomeCaixa(String nomeCaixa) {
+        this.nomeCaixa = nomeCaixa;
     }
 
-    public void adicionarComponentes(int quantidade) {
-        if (!podeAdicionarComponentes(quantidade)) {
-            throw new IllegalStateException("Capacidade da caixa excedida");
-        }
-        ocupacaoAtual += quantidade;
+    public List<Component> getFkComponente() {
+        return fkComponente;
     }
 
-    public void removerComponentes(int quantidade) {
-        if (quantidade > ocupacaoAtual) {
-            throw new IllegalArgumentException("Quantidade a remover excede ocupação atual");
-        }
-        ocupacaoAtual -= quantidade;
-    }
-
-    public int espacoDisponivel() {
-        return capacidadeMaxima - ocupacaoAtual;
-    }
-
-    // Getters e setters limitados
-    public Long getId() {
-        return id;
-    }
-
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(String codigo) {
-        validarCodigo(codigo);
-        this.codigo = codigo;
-    }
-
-    public String getLocalizacao() {
-        return localizacao;
-    }
-
-    public void setLocalizacao(String localizacao) {
-        this.localizacao = localizacao;
-    }
-
-    public int getCapacidadeMaxima() {
-        return capacidadeMaxima;
-    }
-
-    public void setCapacidadeMaxima(int capacidadeMaxima) {
-        validarCapacidade(capacidadeMaxima);
-
-        if (capacidadeMaxima < ocupacaoAtual) {
-            throw new IllegalArgumentException("Nova capacidade não pode ser menor que ocupação atual");
-        }
-        this.capacidadeMaxima = capacidadeMaxima;
-    }
-
-    public int getOcupacaoAtual() {
-        return ocupacaoAtual;
+    public void setFkComponente(List<Component> fkComponente) {
+        this.fkComponente = fkComponente;
     }
 }

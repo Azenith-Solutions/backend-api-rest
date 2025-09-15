@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/boxes")
-public class BoxController {
+public class BoxControllerV1 {
     @Autowired
     private BoxService boxService;
 

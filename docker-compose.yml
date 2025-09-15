@@ -1,0 +1,51 @@
+# O driver: bridge significa que é uma rede de ponte, padrão para containers isolados mas que podem conversar entre si.
+# Todos os serviços que você colocar nessa rede vão poder se enxergar pelo nome do serviço (ex: prometheus).
+networks:
+  aw-network:
+    driver: bridge
+
+# Para quando parar e inicar o serviço, os dados sejam armazenados, garantindo persistencia
+volumes:
+  prometheus_data:
+  grafana_data:
+  loki_data:
+  promtail_positions:  # volume para guardar posições dos logs lidos, evita duplicação dos logs
+
+# Containers que serão criados
+services:
+  prometheus:
+    image: prom/prometheus:latest # Imagem do prometheus
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml # Faz um bind mount do seu arquivo local ./config/prometheus.yml para dentro do container no caminho /etc/prometheus/prometheus.yml.
+      - prometheus_data:/prometheus # Monta o volume nomeado prometheus_data dentro do container no caminho /prometheus.
+    networks:
+      - aw-network # Conecta o container do Prometheus à rede aw-network
+    ports:
+      - 9090:9090 # Faz o mapeamento de portas: Porta 9090 do host → Porta 9090 do container.
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - grafana_data:/grafana
+    ports:
+      - 3000:3000
+    networks:
+      - aw-network
+  loki: # Persiste os logs gerados
+    image: grafana/loki:latest
+    volumes:
+      - ./config/loki-config.yml:/etc/loki/config/config.yml
+      - loki_data:/loki
+    ports:
+      - 3100:3100
+    networks:
+      - aw-network
+  promtail: # Agent para coletar logs e enviar ao LOKI
+    image: grafana/promtail:latest
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ./logs/java-app:/logs/java-app # aponta para os logs gerados no arquivo app.json
+      - /var/log:/logs/syslogs # aqui você aponta para os logs gerados pelo host ou dos containers
+      - ./config/promtail-config.yml:/etc/promtail/config.yml # config que o promtail deve utilizar
+      - promtail_positions:/tmp # Para saber onde parou na leitura dos logs, evita duplicidade
+    networks:
+      - aw-network
