@@ -1,8 +1,8 @@
-package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.adapter;
+package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.adapter;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.box.Box;
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.BoxGateway;
-import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.entity.BoxEntity;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.BoxEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.repository.jpa.SpringDataBoxRepository;
 import org.springframework.stereotype.Component;
 
