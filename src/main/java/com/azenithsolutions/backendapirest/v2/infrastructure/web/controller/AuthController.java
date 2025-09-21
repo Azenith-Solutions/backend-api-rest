@@ -23,6 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @RestController("authControllerV2")
 @RequestMapping("/v2/auth")
@@ -56,7 +58,6 @@ public class AuthController {
 
             UserEntity userEntity = UserEntityMapper.toEntity(authenticatedUserResponse.user());
             String token = authenticatedUserResponse.token();
-            log.info("Usuário autenticado");
 
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ApiResponseDTO<>(
@@ -89,7 +90,13 @@ public class AuthController {
                     )
             );
         } catch (Exception e) {
-            log.error("Error inesperado: %s".formatted(e.getMessage()));
+            String correlationId = UUID.randomUUID().toString();
+
+            // Ou seja, todos os proximos logs após gerar o MDC terão o correlationId
+            MDC.put("correlationId", correlationId); // Adiciona ao contexto de log
+            log.error("Error inesperado: {}", e.getMessage());
+
+            MDC.clear(); // Limpa após o correlation desse contexto a requisição
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     new ApiResponseDTO<>(
                             LocalDateTime.now(),
