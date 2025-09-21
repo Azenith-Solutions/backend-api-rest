@@ -1,0 +1,25 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+      grpc:
+
+exporters:
+  prometheus:
+    endpoint: "0.0.0.0:8888"
+  loki:
+    endpoint: "http://loki:3100/loki/api/v1/push"
+  otlp:
+    endpoint: "tempo:4317"  # ou Jaeger
+
+service:
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      exporters: [prometheus]
+    logs:
+      receivers: [otlp]
+      exporters: [loki]
+    traces:
+      receivers: [otlp]
+      exporters: [otlp]

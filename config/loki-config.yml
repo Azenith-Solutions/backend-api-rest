@@ -5,6 +5,19 @@ server:
   http_listen_port: 3100
   grpc_listen_port: 9096
 
+
+distributor:
+  otlp_config:
+    grpc:
+      enabled: true
+    http:
+      enabled: true
+    default_resource_attributes_as_index_labels:
+      - service.name
+      - service.namespace
+      - service.instance.id
+    allow_structured_metadata: true
+
 # Persistencia dos dados -> Aqui diz onde os logs e índices vão ser guardados fisicamente
 storage_config:
   boltdb_shipper:

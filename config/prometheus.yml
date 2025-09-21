@@ -3,8 +3,7 @@ global:
 
 scrape_configs: # De onde vai coletar os dados
   - job_name: "api-azenith-job"
-    metrics_path: "/api/actuator/prometheus" # Coloca isso depois da porta - caminho completo até as métricas
     static_configs:
-      - targets: ["host.docker.internal:8080"] # Onde está sua API
+      - targets: ["otel-collector:8888"] # Onde estão as metricas
         labels:
           application: "api-azenith"

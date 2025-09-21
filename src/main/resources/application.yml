@@ -44,3 +44,20 @@ management:
       show-details: always # Informas mais detalhes desse endpoint
     prometheus:
       enabled: true
+
+otel:
+  traces:
+    exporter:
+      otlp:
+        endpoint: http://localhost:55681/v1/traces # HTTP se preferir
+  metrics:
+    exporter:
+      otlp:
+        endpoint: http://localhost:55681/v1/metrics # HTTP se preferir
+  logs:
+    exporter:
+      otlp:
+        endpoint: http://otel-collector:55681/v1/logs # HTTP
+  resource:
+    attributes:
+      service.name: java-app-hard
