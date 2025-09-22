@@ -3,7 +3,7 @@ package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.ad
 import com.azenithsolutions.backendapirest.v2.core.domain.model.box.Box;
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.BoxGateway;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.BoxEntity;
-import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.repository.jpa.SpringDataBoxRepository;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.repository.SpringDataBoxRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,10 +12,14 @@ import java.util.List;
 public class BoxRepositoryAdapter implements BoxGateway {
     private final SpringDataBoxRepository repository;
 
-    public BoxRepositoryAdapter (SpringDataBoxRepository repository) { this.repository = repository; }
+    public BoxRepositoryAdapter(SpringDataBoxRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
-    public List<Box> findAll() { return repository.findAll().stream().map(this::toDomain).toList(); }
+    public List<Box> findAll() {
+        return repository.findAll().stream().map(this::toDomain).toList();
+    }
 
     @Override
     public List<Box> findBoxesGreaterOrAlmostOrInLimitOfComponents() {

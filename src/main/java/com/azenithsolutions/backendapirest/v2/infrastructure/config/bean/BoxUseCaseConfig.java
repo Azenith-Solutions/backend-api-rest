@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.v2.infrastructure.config.box;
+package com.azenithsolutions.backendapirest.v2.infrastructure.config.bean;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.BoxGateway;
 import com.azenithsolutions.backendapirest.v2.core.usecase.box.FindLimitBoxesUseCase;

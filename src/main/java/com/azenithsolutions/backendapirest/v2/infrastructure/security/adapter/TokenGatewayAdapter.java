@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.v2.infrastructure.config.security.adapter;
+package com.azenithsolutions.backendapirest.v2.infrastructure.security.adapter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

@@ -13,10 +13,36 @@ public class Box {
 
     }
 
-    public Box(Long idCaixa, String nomeCaixa, List<Component> fkComponente) {
+    private Box(Long idCaixa, String nomeCaixa, List<Component> fkComponente) {
         this.idCaixa = idCaixa;
         this.nomeCaixa = nomeCaixa;
         this.fkComponente = fkComponente;
+    }
+
+    public static Box criarNovo(String nomeCaixa, List<Component> fkComponente) {
+        validarCamposObrigatorios(nomeCaixa);
+
+        return new Box(
+                null,
+                nomeCaixa,
+                fkComponente
+        );
+    }
+
+    private static void validarCamposObrigatorios(String nomeCaixa) {
+        if (nomeCaixa == null || nomeCaixa.isBlank()) {
+            throw new IllegalArgumentException("O nome da caixa é obrigatório.");
+        }
+    }
+
+    public static Box recriar(Long idCaixa, String nomeCaixa, List<Component> fkComponente) {
+        validarCamposObrigatorios(nomeCaixa);
+
+        return new Box(
+                idCaixa,
+                nomeCaixa,
+                fkComponente
+        );
     }
 
     public Long getIdCaixa() {

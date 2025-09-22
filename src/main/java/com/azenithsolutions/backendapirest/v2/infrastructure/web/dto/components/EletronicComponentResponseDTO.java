@@ -6,7 +6,7 @@ public class EletronicComponentResponseDTO {
     private Long id;
     private String idHardwaretech;
     private String nome;
-    private String caixaNome;
+    private Long idCaixa;
     private String categoria;
     private String partNumber;
     private int quantidade;
@@ -46,12 +46,12 @@ public class EletronicComponentResponseDTO {
         this.nome = nome;
     }
 
-    public String getCaixaNome() {
-        return caixaNome;
+    public Long getCaixaID() {
+        return idCaixa;
     }
 
-    public void setCaixaNome(String caixaNome) {
-        this.caixaNome = caixaNome;
+    public void setCaixaID(Long caixaNome) {
+        this.idCaixa = caixaNome;
     }
 
     public String getCategoria() {

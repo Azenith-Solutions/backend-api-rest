@@ -4,7 +4,7 @@ import com.azenithsolutions.backendapirest.v2.core.usecase.auth.LoginUserUserCas
 import com.azenithsolutions.backendapirest.v2.core.usecase.auth.RegisterUserUseCase;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.adapter.RoleRepositoryAdapter;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.adapter.UserRespositoryAdapter;
-import com.azenithsolutions.backendapirest.v2.infrastructure.config.security.adapter.TokenGatewayAdapter;
+import com.azenithsolutions.backendapirest.v2.infrastructure.security.adapter.TokenGatewayAdapter;
 import com.azenithsolutions.backendapirest.v2.infrastructure.external.storage.adapter.ImageStorageGatewayAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

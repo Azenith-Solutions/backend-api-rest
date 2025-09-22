@@ -24,7 +24,7 @@ public class EletronicComponentMapper {
         dto.setNome(component.getNome());
         
         if (component.getCaixa() != null) {
-            dto.setCaixaNome(component.getCaixa().getCodigo());
+            dto.setCaixaID(component.getCaixa().getIdCaixa());
         }
         
         dto.setCategoria(component.getCategoria() != null ? component.getCategoria().getNome() : null);
@@ -87,14 +87,6 @@ public class EletronicComponentMapper {
             entity.setStatusObservacao(domain.getStatus().getObservacao());
         }
         
-        // Mapear Caixa (entidade relacionada)
-        if (domain.getCaixa() != null) {
-            entity.setCaixaCodigo(domain.getCaixa().getCodigo());
-            entity.setCaixaLocalizacao(domain.getCaixa().getLocalizacao());
-            entity.setCaixaCapacidadeMaxima(domain.getCaixa().getCapacidadeMaxima());
-            entity.setCaixaOcupacaoAtual(domain.getCaixa().getOcupacaoAtual());
-        }
-        
         return entity;
     }
     
@@ -103,17 +95,8 @@ public class EletronicComponentMapper {
         if (entity == null) {
             return null;
         }
-        
+
         Box caixa = null;
-        if (entity.getCaixaCodigo() != null) {
-            caixa = Box.recriar(
-                null, // id da caixa pode ser null neste contexto
-                entity.getCaixaCodigo(),
-                entity.getCaixaLocalizacao(),
-                entity.getCaixaCapacidadeMaxima() != null ? entity.getCaixaCapacidadeMaxima() : 0,
-                entity.getCaixaOcupacaoAtual() != null ? entity.getCaixaOcupacaoAtual() : 0
-            );
-        }
         
         Category categoria = null;
         if (entity.getCategoriaNome() != null) {

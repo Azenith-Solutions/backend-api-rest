@@ -1,7 +1,7 @@
-package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.repository.jpa;
+package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.repository;
 
 
-import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.entity.BoxEntity;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.BoxEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
