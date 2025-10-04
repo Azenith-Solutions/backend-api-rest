@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.v2.infrastructure.config;
+package com.azenithsolutions.backendapirest.v2.infrastructure.config.bean;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Bean;
