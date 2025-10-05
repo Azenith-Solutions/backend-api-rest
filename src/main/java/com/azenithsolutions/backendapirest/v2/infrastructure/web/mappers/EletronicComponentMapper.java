@@ -67,24 +67,29 @@ public class EletronicComponentMapper {
         entity.setNome(domain.getNome());
         entity.setPartNumber(domain.getPartNumber());
         entity.setQuantidade(domain.getQuantidade());
-        entity.setAnunciado(domain.getAnunciado());
-        entity.setCodigoMercadoLivre(domain.getCodigoMercadoLivre());
+        entity.setCodigoML(domain.getCodigoMercadoLivre());
         entity.setS3ImagePath(domain.getS3ImagePath());
         entity.setDataUltimaVenda(domain.getDataUltimaVenda());
         entity.setDataCriacao(domain.getDataCriacao());
         entity.setDataUltimaAtualizacao(domain.getDataUltimaAtualizacao());
+        entity.setIsVisibleCatalog(domain.getAnunciado());
+        entity.setFlagML(domain.getAnunciado());
         
-        // Mapear Categoria (valueobject)
+        // Mapear Categoria (valueobject) para campos básicos
         if (domain.getCategoria() != null) {
-            entity.setCategoriaNome(domain.getCategoria().getNome());
-            entity.setCategoriaDescricao(domain.getCategoria().getDescricao());
+            entity.setFkCategoria(domain.getCategoria().getId());
         }
         
-        // Mapear Status (valueobject)
+        // Mapear Caixa 
+        if (domain.getCaixa() != null) {
+            entity.setFkCaixa(domain.getCaixa().getIdCaixa());
+        }
+        
+        // Mapear Status (valueobject) para campos básicos
         if (domain.getStatus() != null) {
-            entity.setStatusFlagVerificado(domain.getStatus().getFlagVerificado());
-            entity.setStatusCondicao(domain.getStatus().getCondicao());
-            entity.setStatusObservacao(domain.getStatus().getObservacao());
+            entity.setFlagVerificado(domain.getStatus().getFlagVerificado());
+            entity.setCondicao(domain.getStatus().getCondicao());
+            entity.setObservacao(domain.getStatus().getObservacao());
         }
         
         return entity;
@@ -92,23 +97,21 @@ public class EletronicComponentMapper {
     
     // Conversão de Entity (JPA) para Domain
     public static EletronicComponent toDomain(EletronicComponentEntity entity) {
+        return toDomain(entity, null, null);
+    }
+    
+    // Conversão de Entity (JPA) para Domain com dependências resolvidas
+    public static EletronicComponent toDomain(EletronicComponentEntity entity, Box caixa, Category categoria) {
         if (entity == null) {
             return null;
         }
-
-        Box caixa = null;
-        
-        Category categoria = null;
-        if (entity.getCategoriaNome() != null) {
-            categoria = Category.criar(entity.getCategoriaNome(), entity.getCategoriaDescricao());
-        }
         
         Status status = null;
-        if (entity.getStatusFlagVerificado() != null) {
-            if (entity.getStatusFlagVerificado()) {
-                status = Status.verificado(entity.getStatusCondicao(), entity.getStatusObservacao());
+        if (entity.getFlagVerificado() != null) {
+            if (entity.getFlagVerificado()) {
+                status = Status.verificado(entity.getCondicao(), entity.getObservacao());
             } else {
-                status = Status.naoVerificado(entity.getStatusObservacao());
+                status = Status.naoVerificado(entity.getObservacao());
             }
         }
         
@@ -120,8 +123,8 @@ public class EletronicComponentMapper {
             categoria,
             entity.getPartNumber(),
             entity.getQuantidade(),
-            entity.getAnunciado(),
-            entity.getCodigoMercadoLivre(),
+            entity.getIsVisibleCatalog(), // Usando isVisibleCatalog como anunciado
+            entity.getCodigoML(),
             status,
             entity.getS3ImagePath(),
             entity.getDataUltimaVenda(),

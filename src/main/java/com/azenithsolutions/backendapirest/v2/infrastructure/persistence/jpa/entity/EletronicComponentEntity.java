@@ -4,75 +4,70 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "componentes_eletronicos")
+@Table(name = "componente")
 public class EletronicComponentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_componente")
     private Long id;
 
-    @Column(name = "id_hardwaretech", unique = true, nullable = false)
+    @Column(name = "id_hardwaretech")
     private String idHardwaretech;
 
-    @Column(nullable = false)
+    @Column(name = "nome_componente")
     private String nome;
 
     @Column(name = "part_number")
     private String partNumber;
 
-    @Column(nullable = false)
+    @Column(name = "quantidade")
     private int quantidade;
 
-    @Column(nullable = false)
-    private Boolean anunciado;
+    @Column(name = "codigo_ml")
+    private String codigoML;
 
-    @Column(name = "codigo_mercado_livre")
-    private String codigoMercadoLivre;
-
-    @Column(name = "s3_image_path")
+    @Column(name = "imagem")
     private String s3ImagePath;
 
     @Column(name = "data_ultima_venda")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date dataUltimaVenda;
 
-    @Column(name = "data_criacao", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at")
+    @Temporal(TemporalType.DATE)
     private Date dataCriacao;
 
-    @Column(name = "data_ultima_atualizacao", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.DATE)
     private Date dataUltimaAtualizacao;
 
-    // Campos de Categoria
-    @Column(name = "categoria_nome")
-    private String categoriaNome;
+    @Column(name = "quantidade_vendido")
+    private Integer quantidadeVendido;
 
-    @Column(name = "categoria_descricao")
-    private String categoriaDescricao;
+    @Column(name = "flag_ml")
+    private Boolean flagML;
 
-    // Campos de Caixa
-    @Column(name = "caixa_codigo")
-    private String caixaCodigo;
+    @Column(name = "flag_verificado")
+    private Boolean flagVerificado;
 
-    @Column(name = "caixa_localizacao")
-    private String caixaLocalizacao;
+    @Column(name = "condicao")
+    private String condicao;
 
-    @Column(name = "caixa_capacidade_maxima")
-    private Integer caixaCapacidadeMaxima;
+    @Column(name = "observacao")
+    private String observacao;
 
-    @Column(name = "caixa_ocupacao_atual")
-    private Integer caixaOcupacaoAtual;
+    @Column(name = "descricao")
+    private String descricao;
 
-    // Campos de Status
-    @Column(name = "status_verificado")
-    private Boolean statusFlagVerificado;
+    @Column(name = "fk_caixa")
+    private Long fkCaixa;
 
-    @Column(name = "status_condicao")
-    private String statusCondicao;
-
-    @Column(name = "status_observacao")
-    private String statusObservacao;
+    @Column(name = "fk_categoria")
+    private Long fkCategoria;
+    
+    @Column(name = "is_visible_catalog")
+    private Boolean isVisibleCatalog;
 
     // Getters e Setters
     public Long getId() {
@@ -115,20 +110,12 @@ public class EletronicComponentEntity {
         this.quantidade = quantidade;
     }
 
-    public Boolean getAnunciado() {
-        return anunciado;
+    public String getCodigoML() {
+        return codigoML;
     }
 
-    public void setAnunciado(Boolean anunciado) {
-        this.anunciado = anunciado;
-    }
-
-    public String getCodigoMercadoLivre() {
-        return codigoMercadoLivre;
-    }
-
-    public void setCodigoMercadoLivre(String codigoMercadoLivre) {
-        this.codigoMercadoLivre = codigoMercadoLivre;
+    public void setCodigoML(String codigoML) {
+        this.codigoML = codigoML;
     }
 
     public String getS3ImagePath() {
@@ -162,76 +149,76 @@ public class EletronicComponentEntity {
     public void setDataUltimaAtualizacao(Date dataUltimaAtualizacao) {
         this.dataUltimaAtualizacao = dataUltimaAtualizacao;
     }
-
-    public String getCategoriaNome() {
-        return categoriaNome;
+    
+    public Boolean getIsVisibleCatalog() {
+        return isVisibleCatalog;
     }
 
-    public void setCategoriaNome(String categoriaNome) {
-        this.categoriaNome = categoriaNome;
+    public void setIsVisibleCatalog(Boolean isVisibleCatalog) {
+        this.isVisibleCatalog = isVisibleCatalog;
     }
 
-    public String getCategoriaDescricao() {
-        return categoriaDescricao;
+    public Integer getQuantidadeVendido() {
+        return quantidadeVendido;
     }
 
-    public void setCategoriaDescricao(String categoriaDescricao) {
-        this.categoriaDescricao = categoriaDescricao;
+    public void setQuantidadeVendido(Integer quantidadeVendido) {
+        this.quantidadeVendido = quantidadeVendido;
     }
 
-    public String getCaixaCodigo() {
-        return caixaCodigo;
+    public Boolean getFlagML() {
+        return flagML;
     }
 
-    public void setCaixaCodigo(String caixaCodigo) {
-        this.caixaCodigo = caixaCodigo;
+    public void setFlagML(Boolean flagML) {
+        this.flagML = flagML;
     }
 
-    public String getCaixaLocalizacao() {
-        return caixaLocalizacao;
+    public Boolean getFlagVerificado() {
+        return flagVerificado;
     }
 
-    public void setCaixaLocalizacao(String caixaLocalizacao) {
-        this.caixaLocalizacao = caixaLocalizacao;
+    public void setFlagVerificado(Boolean flagVerificado) {
+        this.flagVerificado = flagVerificado;
     }
 
-    public Integer getCaixaCapacidadeMaxima() {
-        return caixaCapacidadeMaxima;
+    public String getCondicao() {
+        return condicao;
     }
 
-    public void setCaixaCapacidadeMaxima(Integer caixaCapacidadeMaxima) {
-        this.caixaCapacidadeMaxima = caixaCapacidadeMaxima;
+    public void setCondicao(String condicao) {
+        this.condicao = condicao;
     }
 
-    public Integer getCaixaOcupacaoAtual() {
-        return caixaOcupacaoAtual;
+    public String getObservacao() {
+        return observacao;
     }
 
-    public void setCaixaOcupacaoAtual(Integer caixaOcupacaoAtual) {
-        this.caixaOcupacaoAtual = caixaOcupacaoAtual;
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
     }
 
-    public Boolean getStatusFlagVerificado() {
-        return statusFlagVerificado;
+    public String getDescricao() {
+        return descricao;
     }
 
-    public void setStatusFlagVerificado(Boolean statusFlagVerificado) {
-        this.statusFlagVerificado = statusFlagVerificado;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
-    public String getStatusCondicao() {
-        return statusCondicao;
+    public Long getFkCaixa() {
+        return fkCaixa;
     }
 
-    public void setStatusCondicao(String statusCondicao) {
-        this.statusCondicao = statusCondicao;
+    public void setFkCaixa(Long fkCaixa) {
+        this.fkCaixa = fkCaixa;
     }
 
-    public String getStatusObservacao() {
-        return statusObservacao;
+    public Long getFkCategoria() {
+        return fkCategoria;
     }
 
-    public void setStatusObservacao(String statusObservacao) {
-        this.statusObservacao = statusObservacao;
+    public void setFkCategoria(Long fkCategoria) {
+        this.fkCategoria = fkCategoria;
     }
 }

@@ -15,6 +15,11 @@ public class Category {
         validarNome(nome);
         return new Category(null, nome, descricao);
     }
+    
+    public static Category recriar(Long id, String nome, String descricao) {
+        validarNome(nome);
+        return new Category(id, nome, descricao);
+    }
 
     private static void validarNome(String nome) {
         if (nome == null || nome.trim().isEmpty()) {

@@ -21,4 +21,40 @@ public class EletronicComponentBeanConfig {
 
     @Bean
     DeleteEletronicComponentUseCase deleteEletronicComponentUseCase(EletronicComponentGateway gateway) { return new DeleteEletronicComponentUseCase(gateway); }
+    
+    @Bean
+    GetComponentCatalogUseCase getComponentCatalogUseCase(EletronicComponentGateway gateway) { return new GetComponentCatalogUseCase(gateway); }
+
+    @Bean
+    GetFilterComponentsUseCase getFilterComponentsUseCase(EletronicComponentGateway gateway) { return new GetFilterComponentsUseCase(gateway); }
+    
+    @Bean
+    GetComponentDetailsUseCase getComponentDetailsUseCase(EletronicComponentGateway gateway) { return new GetComponentDetailsUseCase(gateway); }
+    
+    @Bean
+    GetLowStockComponentsUseCase getLowStockComponentsUseCase(EletronicComponentGateway gateway) { return new GetLowStockComponentsUseCase(gateway); }
+    
+    @Bean
+    GetComponentsInObservationUseCase getComponentsInObservationUseCase(EletronicComponentGateway gateway) { return new GetComponentsInObservationUseCase(gateway); }
+    
+    @Bean
+    GetIncompleteComponentsUseCase getIncompleteComponentsUseCase(EletronicComponentGateway gateway) { return new GetIncompleteComponentsUseCase(gateway); }
+    
+    @Bean
+    GetComponentsOutOfLastSaleSLAUseCase getComponentsOutOfLastSaleSLAUseCase(EletronicComponentGateway gateway) { return new GetComponentsOutOfLastSaleSLAUseCase(gateway); }
+    
+    @Bean
+    GetCountOfTrueAndFalseFlagMLUseCase getCountOfTrueAndFalseFlagMLUseCase(EletronicComponentGateway gateway) { return new GetCountOfTrueAndFalseFlagMLUseCase(gateway); }
+    
+    @Bean
+    UpdateComponentVisibilityUseCase updateComponentVisibilityUseCase(EletronicComponentGateway gateway) { return new UpdateComponentVisibilityUseCase(gateway); }
+    
+    @Bean
+    UploadComponentImageUseCase uploadComponentImageUseCase(EletronicComponentGateway gateway) { return new UploadComponentImageUseCase(gateway); }
+    
+    @Bean
+    CreateComponentWithFileUseCase createComponentWithFileUseCase(EletronicComponentGateway gateway) { return new CreateComponentWithFileUseCase(gateway); }
+    
+    @Bean
+    UpdateComponentWithFileUseCase updateComponentWithFileUseCase(EletronicComponentGateway gateway) { return new UpdateComponentWithFileUseCase(gateway); }
 }

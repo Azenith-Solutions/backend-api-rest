@@ -44,6 +44,16 @@ public class Box {
                 fkComponente
         );
     }
+    
+    public static Box recriarSimples(Long idCaixa, String nomeCaixa) {
+        validarCamposObrigatorios(nomeCaixa);
+
+        return new Box(
+                idCaixa,
+                nomeCaixa,
+                null
+        );
+    }
 
     public Long getIdCaixa() {
         return idCaixa;
