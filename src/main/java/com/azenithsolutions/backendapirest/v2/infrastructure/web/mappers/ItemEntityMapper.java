@@ -1,22 +1,12 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers;
 
-import com.azenithsolutions.backendapirest.v2.core.domain.model.category.Category;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.component.valueobjects.Status;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.item.Item;
-import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.adapter.CategoryRepositoryAdapter;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.EletronicComponentEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.ItemEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.OrderEntity;
 
-import java.util.List;
-
 public class ItemEntityMapper {
-
-    private static CategoryRepositoryAdapter categoryRepositoryAdapter;
-
-    public ItemEntityMapper(CategoryRepositoryAdapter categoryRepositoryAdapter) {
-        this.categoryRepositoryAdapter = categoryRepositoryAdapter;
-    }
 
     public static Item toDomain(ItemEntity entity) {
         if (entity == null) {

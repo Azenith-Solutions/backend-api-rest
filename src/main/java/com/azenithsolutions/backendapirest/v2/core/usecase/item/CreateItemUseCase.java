@@ -7,7 +7,6 @@ import com.azenithsolutions.backendapirest.v2.core.domain.repository.EletronicCo
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.ItemGateway;
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderGateway;
 import com.azenithsolutions.backendapirest.v2.core.usecase.item.command.ItemCreateCommand;
-import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.EletronicComponentEntity;
 
 import java.util.ArrayList;
 import java.util.List;
