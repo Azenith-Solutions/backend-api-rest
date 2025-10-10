@@ -2,10 +2,20 @@ package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.ad
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.item.Item;
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.ItemGateway;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.ItemEntity;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.repository.SpringDataItemRepository;
+import com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers.ItemEntityMapper;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ItemRepositoryAdapter implements ItemGateway {
+    SpringDataItemRepository itemRepository;
+
+    public ItemRepositoryAdapter(SpringDataItemRepository itemRepository) {
+        this.itemRepository = itemRepository;
+    }
 
     @Override
     public Item save(Item item) {
@@ -14,8 +24,9 @@ public class ItemRepositoryAdapter implements ItemGateway {
 
     @Override
     public List<Item> saveAll(List<Item> item) {
-
-        return List.of();
+        List<ItemEntity> itemsSalvos = item.stream().map(ItemEntityMapper::toEntity).toList();
+        itemRepository.saveAll(itemsSalvos);
+        return item;
     }
 
     @Override

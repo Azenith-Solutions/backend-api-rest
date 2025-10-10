@@ -55,10 +55,20 @@ public class CreateItemUseCase {
                     order.get().getTelCelular(),
                     order.get().getCreatedAt(),
                     order.get().getUpdatedAt(),
+                    eletronicComponent.get().getId(),
+                    eletronicComponent.get().getIdHardwaretech(),
                     eletronicComponent.get().getNome(),
+                    eletronicComponent.get().getCaixa(),
                     eletronicComponent.get().getCategoria(),
                     eletronicComponent.get().getPartNumber(),
-                    eletronicComponent.get().getQuantidade()
+                    eletronicComponent.get().getQuantidade(),
+                    eletronicComponent.get().getAnunciado(),
+                    eletronicComponent.get().getCodigoMercadoLivre(),
+                    eletronicComponent.get().getStatus(),
+                    eletronicComponent.get().getS3ImagePath(),
+                    eletronicComponent.get().getDataUltimaVenda(),
+                    eletronicComponent.get().getDataCriacao(),
+                    eletronicComponent.get().getDataUltimaAtualizacao()
             );
 
             saveItems.add(item);

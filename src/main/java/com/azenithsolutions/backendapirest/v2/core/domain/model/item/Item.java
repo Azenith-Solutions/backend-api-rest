@@ -1,11 +1,14 @@
 package com.azenithsolutions.backendapirest.v2.core.domain.model.item;
 
+import com.azenithsolutions.backendapirest.v2.core.domain.model.box.Box;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.component.EletronicComponent;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.component.valueobjects.Category;
+import com.azenithsolutions.backendapirest.v2.core.domain.model.component.valueobjects.Status;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.enums.OrderStatus;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.order.Order;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Item {
     private Long idItem;
@@ -32,13 +35,23 @@ public class Item {
                               String telCelular,
                               LocalDateTime createdAt,
                               LocalDateTime updatedAt,
+                              Long idComponent,
+                              String idHardwaretech,
                               String nome,
+                              Box caixa,
                               Category categoria,
                               String partNumber,
-                              int quantidade ){
+                              int quantidade,
+                              Boolean anunciado,
+                              String codigoMercadoLivre,
+                              Status statusComponent,
+                              String s3ImagePath,
+                              Date dataUltimaVenda,
+                              Date dataCriacao,
+                              Date dataUltimaAtualizacao ){
         return new Item(
                 idItem,
-                EletronicComponent.criarNovo(nome, categoria, partNumber, quantidade),
+                EletronicComponent.recriar(idComponent, idHardwaretech, nome, caixa, categoria, partNumber, quantidade, anunciado, codigoMercadoLivre, statusComponent, s3ImagePath, dataUltimaVenda, dataCriacao, dataUltimaAtualizacao),
                 new Order(idOrder, codigo, nomeComprador, emailComprador, cnpj, valor, status, telCelular, createdAt, updatedAt),
                 quantidadeCarrinho
         );
