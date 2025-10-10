@@ -19,12 +19,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Tag(name = "Item Management - v2", description = "Endpoints to manage items")
-@RestController
+@RestController("itemControllerV2")
 @RequestMapping("/v2/items")
 @RequiredArgsConstructor
 public class ItemController {
 
     private CreateItemUseCase createItem;
+
+    public ItemController(CreateItemUseCase createItem) {
+        this.createItem = createItem;
+    }
 
     @PostMapping
     public ResponseEntity<ApiResponseDTO<?>> createItem(@RequestBody List<ItemRequestDTO> itemRequestDTOS, HttpServletRequest request) {
