@@ -24,11 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemController {
 
-    private CreateItemUseCase createItem;
-
-    public ItemController(CreateItemUseCase createItem) {
-        this.createItem = createItem;
-    }
+    private final CreateItemUseCase createItem;
 
     @PostMapping
     public ResponseEntity<ApiResponseDTO<?>> createItem(@RequestBody List<ItemRequestDTO> itemRequestDTOS, HttpServletRequest request) {

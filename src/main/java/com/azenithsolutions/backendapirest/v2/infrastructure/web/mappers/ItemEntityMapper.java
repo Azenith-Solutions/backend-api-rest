@@ -68,7 +68,7 @@ public class ItemEntityMapper {
             EletronicComponentEntity componentEntity = new EletronicComponentEntity();
             componentEntity.setId(domain.getFkComponente().getId());
             componentEntity.setNome(domain.getFkComponente().getNome());
-            componentEntity.setFkCategoria(domain.getFkComponente().getCategoria().getId());
+            componentEntity.setFkCategoria(domain.getFkComponente().getCategoria() !=  null ? domain.getFkComponente().getCategoria().getId() : null);
             componentEntity.setPartNumber(domain.getFkComponente().getPartNumber());
             componentEntity.setQuantidade(domain.getFkComponente().getQuantidade());
             entity.setFkComponente(componentEntity);
