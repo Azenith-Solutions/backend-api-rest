@@ -8,6 +8,7 @@ import com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers.ItemEnt
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ItemRepositoryAdapter implements ItemGateway {
@@ -38,7 +39,9 @@ public class ItemRepositoryAdapter implements ItemGateway {
 
     @Override
     public Item findById(Long id) {
-        return null;
+        Optional<ItemEntity> itemEntity = itemRepository.findById(id);
+        Item itemDomain = ItemEntityMapper.toDomain(itemEntity.get());
+        return itemDomain;
     }
 
     @Override
