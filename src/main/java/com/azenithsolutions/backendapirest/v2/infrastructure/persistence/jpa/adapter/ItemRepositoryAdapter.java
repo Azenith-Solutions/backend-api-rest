@@ -48,6 +48,6 @@ public class ItemRepositoryAdapter implements ItemGateway {
 
     @Override
     public void deleteById(Long id) {
-
+        itemRepository.deleteById(id);
     }
 }

@@ -1,10 +1,7 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.web.controller;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.item.Item;
-import com.azenithsolutions.backendapirest.v2.core.usecase.item.CreateItemUseCase;
-import com.azenithsolutions.backendapirest.v2.core.usecase.item.GetAllItemUseCase;
-import com.azenithsolutions.backendapirest.v2.core.usecase.item.GetItemByIdUseCase;
-import com.azenithsolutions.backendapirest.v2.core.usecase.item.UpdateItemUseCase;
+import com.azenithsolutions.backendapirest.v2.core.usecase.item.*;
 import com.azenithsolutions.backendapirest.v2.core.usecase.item.command.ItemCreateCommand;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.item.ItemRequestDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.shared.ApiResponseDTO;
@@ -29,6 +26,7 @@ public class ItemController {
     private final GetAllItemUseCase getAllItems;
     private final GetItemByIdUseCase getItemByIdUseCase;
     private final UpdateItemUseCase updateItem;
+    private final DeleteItemUseCase deleteItem;
 
     @GetMapping
     public ResponseEntity<ApiResponseDTO<?>> getAllItems(HttpServletRequest request) {
@@ -147,6 +145,36 @@ public class ItemController {
                                     "Erro interno: " + e.getMessage(),
                                     null,
                                     request.getRequestURI()
+                            )
+                    );
+        }
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<ApiResponseDTO<?>> deleteItem(@PathVariable Long id) {
+        try {
+
+            deleteItem.execute(id);
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.NO_CONTENT.value(),
+                                    "Item deletado com sucesso!",
+                                    null,
+                                    null
+                            )
+                    );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    null
                             )
                     );
         }
