@@ -31,7 +31,9 @@ public class ItemRepositoryAdapter implements ItemGateway {
 
     @Override
     public List<Item> findAll() {
-        return List.of();
+        List<ItemEntity> listItemsEntity = itemRepository.findAll();
+        List<Item> listItem = listItemsEntity.stream().map(ItemEntityMapper::toDomain).toList();
+        return listItem;
     }
 
     @Override

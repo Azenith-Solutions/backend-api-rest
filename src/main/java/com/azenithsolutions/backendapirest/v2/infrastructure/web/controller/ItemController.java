@@ -2,6 +2,7 @@ package com.azenithsolutions.backendapirest.v2.infrastructure.web.controller;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.item.Item;
 import com.azenithsolutions.backendapirest.v2.core.usecase.item.CreateItemUseCase;
+import com.azenithsolutions.backendapirest.v2.core.usecase.item.GetAllItemUseCase;
 import com.azenithsolutions.backendapirest.v2.core.usecase.item.command.ItemCreateCommand;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.item.ItemRequestDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.shared.ApiResponseDTO;
@@ -10,10 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +23,36 @@ import java.util.List;
 public class ItemController {
 
     private final CreateItemUseCase createItem;
+    private final GetAllItemUseCase getAllItems;
+
+    @GetMapping
+    public ResponseEntity<ApiResponseDTO<?>> getAllItems(HttpServletRequest request) {
+        try {
+            List<Item> items = getAllItems.execute();
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.OK.value(),
+                                    "OK",
+                                    items,
+                                    request.getRequestURI()
+                            )
+                    );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro interno: " + e.getMessage(),
+                                    null,
+                                    request.getRequestURI()
+                            )
+                    );
+        }
+    }
 
     @PostMapping
     public ResponseEntity<ApiResponseDTO<?>> createItem(@RequestBody List<ItemRequestDTO> itemRequestDTOS, HttpServletRequest request) {
