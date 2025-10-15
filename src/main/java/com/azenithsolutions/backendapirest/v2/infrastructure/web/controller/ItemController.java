@@ -5,6 +5,7 @@ import com.azenithsolutions.backendapirest.v2.core.usecase.item.*;
 import com.azenithsolutions.backendapirest.v2.core.usecase.item.command.ItemCreateCommand;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.item.ItemRequestDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.shared.ApiResponseDTO;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -29,6 +30,7 @@ public class ItemController {
     private final DeleteItemUseCase deleteItem;
 
     @GetMapping
+    @Operation(summary = "Get all items", description = "Returns all items (v2 clean architecture)")
     public ResponseEntity<ApiResponseDTO<?>> getAllItems(HttpServletRequest request) {
         try {
             List<Item> items = getAllItems.execute();
@@ -58,6 +60,7 @@ public class ItemController {
     }
 
     @GetMapping("{id}")
+    @Operation(summary = "Get item by id", description = "Returns item found (v2 clean architecture)")
     public ResponseEntity<ApiResponseDTO<?>> getItemById(@PathVariable Long id) {
         try {
             Item itemWithId = getItemByIdUseCase.execute(id);
@@ -87,6 +90,7 @@ public class ItemController {
     }
 
     @PostMapping
+    @Operation(summary = "Create item", description = "Returns new item (v2 clean architecture)")
     public ResponseEntity<ApiResponseDTO<?>> createItem(@RequestBody List<ItemRequestDTO> itemRequestDTOS, HttpServletRequest request) {
         System.out.println("Estou entrando no createItem");
 
@@ -121,6 +125,7 @@ public class ItemController {
     }
 
     @PutMapping("{id}")
+    @Operation(summary = "Update item", description = "Returns new item update(v2 clean architecture)")
     public ResponseEntity<ApiResponseDTO<?>> updateItem(@PathVariable Long id, @Valid @RequestBody
     ItemRequestDTO itemRequestDTO, HttpServletRequest request) {
         try {
@@ -151,6 +156,7 @@ public class ItemController {
     }
 
     @DeleteMapping("{id}")
+    @Operation(summary = "Delete item", description = "Returns no content to delete success (v2 clean architecture)")
     public ResponseEntity<ApiResponseDTO<?>> deleteItem(@PathVariable Long id) {
         try {
 
