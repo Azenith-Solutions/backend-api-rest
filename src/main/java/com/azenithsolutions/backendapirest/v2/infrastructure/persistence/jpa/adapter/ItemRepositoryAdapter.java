@@ -20,7 +20,9 @@ public class ItemRepositoryAdapter implements ItemGateway {
 
     @Override
     public Item save(Item item) {
-        return null;
+        ItemEntity itemEntity = ItemEntityMapper.toEntity(item);
+        itemRepository.save(itemEntity);
+        return item;
     }
 
     @Override
