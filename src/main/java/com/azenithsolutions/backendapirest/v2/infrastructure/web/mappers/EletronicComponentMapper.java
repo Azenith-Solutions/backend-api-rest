@@ -1,9 +1,11 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.box.Box;
+import com.azenithsolutions.backendapirest.v2.core.domain.model.category.Category;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.component.EletronicComponent;
-import com.azenithsolutions.backendapirest.v2.core.domain.model.component.valueobjects.Category;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.component.valueobjects.Status;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.BoxEntity;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.CategoryEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.EletronicComponentEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.EletronicComponentResponseDTO;
 
@@ -27,7 +29,7 @@ public class EletronicComponentMapper {
             dto.setCaixaID(component.getCaixa().getIdCaixa());
         }
         
-        dto.setCategoria(component.getCategoria() != null ? component.getCategoria().getNome() : null);
+        dto.setCategoria(component.getCategoria() != null ? component.getCategoria().getNomeCategoria() : null);
         dto.setPartNumber(component.getPartNumber());
         dto.setQuantidade(component.getQuantidade());
         dto.setAnunciado(component.getAnunciado());
@@ -77,12 +79,14 @@ public class EletronicComponentMapper {
         
         // Mapear Categoria (valueobject) para campos básicos
         if (domain.getCategoria() != null) {
-            entity.setFkCategoria(domain.getCategoria().getId());
+            CategoryEntity categoryEntity = CategoryEntityMapper.toEntity(domain.getCategoria());
+            entity.setFkCategoria(categoryEntity);
         }
         
         // Mapear Caixa 
         if (domain.getCaixa() != null) {
-            entity.setFkCaixa(domain.getCaixa().getIdCaixa());
+            BoxEntity boxEntity = BoxRestMapper.toEntity(domain.getCaixa());
+            entity.setFkCaixa(boxEntity);
         }
         
         // Mapear Status (valueobject) para campos básicos
@@ -96,12 +100,12 @@ public class EletronicComponentMapper {
     }
     
     // Conversão de Entity (JPA) para Domain
-    public static EletronicComponent toDomain(EletronicComponentEntity entity) {
-        return toDomain(entity, null, null);
-    }
-    
+//    public static EletronicComponent toDomain(EletronicComponentEntity entity) {
+//        return toDomain(entity, null, null);
+//    }
+//
     // Conversão de Entity (JPA) para Domain com dependências resolvidas
-    public static EletronicComponent toDomain(EletronicComponentEntity entity, Box caixa, Category categoria) {
+    public static EletronicComponent toDomain(EletronicComponentEntity entity) {
         if (entity == null) {
             return null;
         }
@@ -114,6 +118,10 @@ public class EletronicComponentMapper {
                 status = Status.naoVerificado(entity.getObservacao());
             }
         }
+
+        Box caixa = BoxRestMapper.toDomain(entity.getFkCaixa());
+        Category categoria = CategoryEntityMapper.toDomain(entity.getFkCategoria());
+
         
         return EletronicComponent.recriar(
             entity.getId(),

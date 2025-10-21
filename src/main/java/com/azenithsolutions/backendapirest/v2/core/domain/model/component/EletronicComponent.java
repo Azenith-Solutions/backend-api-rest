@@ -1,7 +1,8 @@
 package com.azenithsolutions.backendapirest.v2.core.domain.model.component;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.box.Box;
-import com.azenithsolutions.backendapirest.v2.core.domain.model.component.valueobjects.Category;
+
+import com.azenithsolutions.backendapirest.v2.core.domain.model.category.Category;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.component.valueobjects.Status;
 
 import java.util.Date;
@@ -112,7 +113,7 @@ public class EletronicComponent {
         return caixa;
     }
 
-    public Category getCategoria() {
+    public com.azenithsolutions.backendapirest.v2.core.domain.model.category.Category getCategoria() {
         return categoria;
     }
 

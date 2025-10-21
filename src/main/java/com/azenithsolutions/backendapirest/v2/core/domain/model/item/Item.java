@@ -1,8 +1,8 @@
 package com.azenithsolutions.backendapirest.v2.core.domain.model.item;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.box.Box;
+import com.azenithsolutions.backendapirest.v2.core.domain.model.category.Category;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.component.EletronicComponent;
-import com.azenithsolutions.backendapirest.v2.core.domain.model.component.valueobjects.Category;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.component.valueobjects.Status;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.enums.OrderStatus;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.order.Order;

@@ -1,5 +1,6 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.Date;
 
@@ -60,11 +61,15 @@ public class EletronicComponentEntity {
     @Column(name = "descricao")
     private String descricao;
 
-    @Column(name = "fk_caixa")
-    private Long fkCaixa;
+    @ManyToOne
+    @JoinColumn(name = "fk_caixa")
+    @JsonManagedReference
+    private BoxEntity fkCaixa;
 
-    @Column(name = "fk_categoria")
-    private Long fkCategoria;
+    @ManyToOne
+    @JoinColumn(name = "fk_categoria")
+    @JsonManagedReference
+    private CategoryEntity fkCategoria;
     
     @Column(name = "is_visible_catalog")
     private Boolean isVisibleCatalog;
@@ -206,19 +211,19 @@ public class EletronicComponentEntity {
         this.descricao = descricao;
     }
 
-    public Long getFkCaixa() {
+    public BoxEntity getFkCaixa() {
         return fkCaixa;
     }
 
-    public void setFkCaixa(Long fkCaixa) {
+    public void setFkCaixa(BoxEntity fkCaixa) {
         this.fkCaixa = fkCaixa;
     }
 
-    public Long getFkCategoria() {
+    public CategoryEntity getFkCategoria() {
         return fkCategoria;
     }
 
-    public void setFkCategoria(Long fkCategoria) {
+    public void setFkCategoria(CategoryEntity fkCategoria) {
         this.fkCategoria = fkCategoria;
     }
 }

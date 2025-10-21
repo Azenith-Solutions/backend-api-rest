@@ -1,7 +1,10 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers;
 
+import com.azenithsolutions.backendapirest.v2.core.domain.model.box.Box;
+import com.azenithsolutions.backendapirest.v2.core.domain.model.category.Category;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.component.valueobjects.Status;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.item.Item;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.CategoryEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.EletronicComponentEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.ItemEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.OrderEntity;
@@ -24,6 +27,8 @@ public class ItemEntityMapper {
 
         EletronicComponentEntity eletronicComponentEntity = entity.getFkComponente() != null ? entity.getFkComponente() : null;
         OrderEntity orderEntity = entity.getFkPedido() != null ? entity.getFkPedido() : null;
+        Category category = CategoryEntityMapper.toDomain(entity.getFkComponente().getFkCategoria());
+        Box box = BoxRestMapper.toDomain(entity.getFkComponente().getFkCaixa());
 
         return Item.create(
                 entity.getIdItem(),
@@ -41,8 +46,8 @@ public class ItemEntityMapper {
                 eletronicComponentEntity.getId(),
                 eletronicComponentEntity.getIdHardwaretech(),
                 eletronicComponentEntity.getNome(),
-                null,
-                null, // Ajustar campos nulls
+                box,
+                category, // Ajustar campos nulls
                 eletronicComponentEntity.getPartNumber(),
                 eletronicComponentEntity.getQuantidade(),
                 eletronicComponentEntity.getFlagVerificado(),
@@ -64,11 +69,13 @@ public class ItemEntityMapper {
         entity.setIdItem(domain.getIdItem());
         entity.setQuantidadeCarrinho(domain.getQuantidadeCarrinho());
 
+        CategoryEntity categoryEntity = CategoryEntityMapper.toEntity(domain.getFkComponente().getCategoria());
+
         if (domain.getFkComponente() != null) {
             EletronicComponentEntity componentEntity = new EletronicComponentEntity();
             componentEntity.setId(domain.getFkComponente().getId());
             componentEntity.setNome(domain.getFkComponente().getNome());
-            componentEntity.setFkCategoria(domain.getFkComponente().getCategoria() !=  null ? domain.getFkComponente().getCategoria().getId() : null);
+            componentEntity.setFkCategoria(domain.getFkComponente().getCategoria() !=  null ? categoryEntity : null);
             componentEntity.setPartNumber(domain.getFkComponente().getPartNumber());
             componentEntity.setQuantidade(domain.getFkComponente().getQuantidade());
             entity.setFkComponente(componentEntity);
