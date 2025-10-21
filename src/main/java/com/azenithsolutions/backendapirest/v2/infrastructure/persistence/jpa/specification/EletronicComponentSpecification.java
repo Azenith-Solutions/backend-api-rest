@@ -55,17 +55,17 @@ public class EletronicComponentSpecification {
 
     private static Specification<EletronicComponentEntity> categoryEquals(Long categoriaId) {
         return (categoriaId == null) ? null :
-                (root, query, cb) -> cb.equal(root.get("categoriaId"), categoriaId);
+                (root, query, cb) -> cb.equal(root.get("fkCategoria").get("id"), categoriaId);
     }
 
     private static Specification<EletronicComponentEntity> categoryNameEquals(String categoriaNome) {
         return (categoriaNome == null || categoriaNome.isBlank()) ? null :
-                (root, query, cb) -> cb.equal(root.get("categoriaNome"), categoriaNome);
+                (root, query, cb) -> cb.equal(cb.lower(root.get("fkCategoria").get("nome")), categoriaNome.toLowerCase());
     }
 
     private static Specification<EletronicComponentEntity> categoryIdEquals(Long categoriaId) {
         return (categoriaId == null) ? null :
-                (root, query, cb) -> cb.equal(root.get("categoriaId"), categoriaId);
+                (root, query, cb) -> cb.equal(root.get("fkCategoria").get("id"), categoriaId);
     }
 
     private static Specification<EletronicComponentEntity> quantidadeGreaterThan(Integer quantidade) {
