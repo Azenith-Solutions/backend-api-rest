@@ -55,8 +55,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/v1/components/*/visibility").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v2/boxes/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/v2/categories/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/v2/eletronic-components/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v2/categorys/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v2/components/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow preflight requests
                         .requestMatchers("/v2/**").permitAll() // Liberando acesso a todas portas v2/
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()

@@ -21,14 +21,14 @@ public class EletronicComponent {
     private Status status;
     private String s3ImagePath;
     private Date dataUltimaVenda;
-    private Date dataCriacao;
-    private Date dataUltimaAtualizacao;
+    private Date createdAt;
+    private Date updatedAt;
 
     private EletronicComponent(Long id, String idHardwaretech, String nome, Box caixa,
-                                 Category categoria, String partNumber, int quantidade,
-                                 Boolean anunciado, String codigoMercadoLivre, Status status,
-                                 String s3ImagePath, Date dataUltimaVenda,
-                                 Date dataCriacao, Date dataUltimaAtualizacao) {
+                               Category categoria, String partNumber, int quantidade,
+                               Boolean anunciado, String codigoMercadoLivre, Status status,
+                               String s3ImagePath, Date dataUltimaVenda,
+                               Date createdAt, Date dataUltimaAtualizacao) {
         this.id = id;
         this.idHardwaretech = idHardwaretech;
         this.nome = nome;
@@ -41,8 +41,8 @@ public class EletronicComponent {
         this.status = status;
         this.s3ImagePath = s3ImagePath;
         this.dataUltimaVenda = dataUltimaVenda;
-        this.dataCriacao = dataCriacao;
-        this.dataUltimaAtualizacao = dataUltimaAtualizacao;
+        this.createdAt = createdAt;
+        this.updatedAt = dataUltimaAtualizacao;
     }
 
 
@@ -145,12 +145,12 @@ public class EletronicComponent {
         return dataUltimaVenda;
     }
 
-    public Date getDataCriacao() {
-        return dataCriacao;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public Date getDataUltimaAtualizacao() {
-        return dataUltimaAtualizacao;
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 
     public EletronicComponent update(String nome, Category categoria, String partNumber, int quantidade) {
@@ -160,7 +160,7 @@ public class EletronicComponent {
         this.categoria = categoria;
         this.partNumber = partNumber;
         this.quantidade = quantidade;
-        this.dataUltimaAtualizacao = new Date();
+        this.updatedAt = new Date();
         
         return this;
     }

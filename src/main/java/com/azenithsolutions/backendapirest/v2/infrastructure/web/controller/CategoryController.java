@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController("categoryContrrolerV2")
-@RequestMapping("/v2/categories")
+@RequestMapping("/v2/categorys")
 @Tag(name = "Category Management - v2", description = "Clean architecture endpoint for Category")
 @SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor

@@ -44,8 +44,8 @@ public class EletronicComponentMapper {
         
         dto.setS3ImagePath(component.getS3ImagePath());
         dto.setDataUltimaVenda(component.getDataUltimaVenda());
-        dto.setDataCriacao(component.getDataCriacao());
-        dto.setDataUltimaAtualizacao(component.getDataUltimaAtualizacao());
+        dto.setDataCriacao(component.getCreatedAt());
+        dto.setDataUltimaAtualizacao(component.getUpdatedAt());
         
         return dto;
     }
@@ -72,8 +72,8 @@ public class EletronicComponentMapper {
         entity.setCodigoML(domain.getCodigoMercadoLivre());
         entity.setS3ImagePath(domain.getS3ImagePath());
         entity.setDataUltimaVenda(domain.getDataUltimaVenda());
-        entity.setDataCriacao(domain.getDataCriacao());
-        entity.setDataUltimaAtualizacao(domain.getDataUltimaAtualizacao());
+        entity.setCreatedAt(domain.getCreatedAt());
+        entity.setUpdatedAt(domain.getUpdatedAt());
         entity.setIsVisibleCatalog(domain.getAnunciado());
         entity.setFlagML(domain.getAnunciado());
         
@@ -136,8 +136,8 @@ public class EletronicComponentMapper {
             status,
             entity.getS3ImagePath(),
             entity.getDataUltimaVenda(),
-            entity.getDataCriacao(),
-            entity.getDataUltimaAtualizacao()
+            entity.getCreatedAt(),
+            entity.getUpdatedAt()
         );
     }
     

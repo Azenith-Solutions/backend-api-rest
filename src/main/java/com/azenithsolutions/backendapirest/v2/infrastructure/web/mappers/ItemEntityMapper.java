@@ -55,8 +55,8 @@ public class ItemEntityMapper {
                 status,
                 eletronicComponentEntity.getS3ImagePath(),
                 eletronicComponentEntity.getDataUltimaVenda(),
-                eletronicComponentEntity.getDataCriacao(),
-                eletronicComponentEntity.getDataUltimaAtualizacao()
+                eletronicComponentEntity.getCreatedAt(),
+                eletronicComponentEntity.getUpdatedAt()
         );
     }
 

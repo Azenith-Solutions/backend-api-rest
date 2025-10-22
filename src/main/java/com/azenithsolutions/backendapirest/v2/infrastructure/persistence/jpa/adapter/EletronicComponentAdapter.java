@@ -147,7 +147,7 @@ public class EletronicComponentAdapter implements EletronicComponentGateway {
         EletronicComponentEntity entity = entityOpt.get();
         entity.setIsVisibleCatalog(isVisibleCatalog);
         entity.setFlagML(isVisibleCatalog);
-        entity.setDataUltimaAtualizacao(new Date());
+        entity.setUpdatedAt(new Date());
         
         EletronicComponentEntity savedEntity = repository.save(entity);
         return EletronicComponentMapper.toDomain(savedEntity);
@@ -163,7 +163,7 @@ public class EletronicComponentAdapter implements EletronicComponentGateway {
         
         EletronicComponentEntity entity = entityOpt.get();
         entity.setS3ImagePath(imagePath);
-        entity.setDataUltimaAtualizacao(new Date());
+        entity.setUpdatedAt(new Date());
         
         EletronicComponentEntity savedEntity = repository.save(entity);
         return EletronicComponentMapper.toDomain(savedEntity);

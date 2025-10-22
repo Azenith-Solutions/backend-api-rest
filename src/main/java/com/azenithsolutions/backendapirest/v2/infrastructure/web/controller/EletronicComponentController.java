@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/v2/eletronic-components")
+@RequestMapping("/v2/components")
 @Tag(name = "Electronic Component Management - V2", description = "Clean architecture endpoint for Electronic Components")
 public class EletronicComponentController {
     private final CreateEletronicComponentUseCase createEletronicComponentUseCase;
@@ -512,7 +512,7 @@ public class EletronicComponentController {
             @RequestParam(required = false) Long categoria) {
         
         try {
-            Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "dataCriacao"));
+            Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
             Page<EletronicComponent> pageResult = getComponentCatalogUseCase.execute(pageable, nomeComponente, categoria);
 
             return ResponseEntity.status(HttpStatus.OK)
