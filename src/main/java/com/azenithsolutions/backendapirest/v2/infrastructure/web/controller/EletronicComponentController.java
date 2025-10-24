@@ -3,6 +3,7 @@ package com.azenithsolutions.backendapirest.v2.infrastructure.web.controller;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.component.EletronicComponent;
 import com.azenithsolutions.backendapirest.v2.core.usecase.components.*;
 import com.azenithsolutions.backendapirest.v2.core.usecase.components.command.*;
+import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentCatalogResponseDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentObservationDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentVisibilityDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.EletronicComponentResponseDTO;
@@ -513,7 +514,7 @@ public class EletronicComponentController {
         
         try {
             Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-            Page<EletronicComponent> pageResult = getComponentCatalogUseCase.execute(pageable, nomeComponente, categoria);
+            Page<ComponentCatalogResponseDTO> pageResult = getComponentCatalogUseCase.execute(pageable, nomeComponente, categoria);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
@@ -547,7 +548,7 @@ public class EletronicComponentController {
             @RequestBody(required = false) HashMap<String, Object> filtros) {
         
         try {
-            List<EletronicComponent> components = getFilterComponentsUseCase.execute(new FilterComponentCommand(filtros));
+            List<ComponentCatalogResponseDTO> components = getFilterComponentsUseCase.execute(new FilterComponentCommand(filtros));
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
@@ -555,7 +556,7 @@ public class EletronicComponentController {
                                     LocalDateTime.now(),
                                     HttpStatus.OK.value(),
                                     "OK",
-                                    EletronicComponentMapper.toResponseDTOList(components),
+                                    components,
                                     request.getRequestURI()
                             )
                     );

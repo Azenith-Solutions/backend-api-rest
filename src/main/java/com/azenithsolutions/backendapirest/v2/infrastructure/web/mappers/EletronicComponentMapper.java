@@ -7,6 +7,7 @@ import com.azenithsolutions.backendapirest.v2.core.domain.model.component.valueo
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.BoxEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.CategoryEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.EletronicComponentEntity;
+import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentCatalogResponseDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.EletronicComponentResponseDTO;
 
 import java.util.List;
@@ -146,5 +147,36 @@ public class EletronicComponentMapper {
         return entities.stream()
             .map(EletronicComponentMapper::toDomain)
             .collect(Collectors.toList());
+    }
+
+    // Conversão de lista de Entity para lista de Domain
+    public static List<ComponentCatalogResponseDTO> tonListCatalogDTO(List<EletronicComponentEntity> entities) {
+        return entities.stream()
+                .map(EletronicComponentMapper::toResponseCatalogDTO)
+                .collect(Collectors.toList());
+    }
+
+    public static ComponentCatalogResponseDTO toResponseCatalogDTO(EletronicComponentEntity entity){
+        if (entity == null) {
+            return null;
+        }
+
+        Status status = null;
+        if (entity.getFlagVerificado() != null) {
+            if (entity.getFlagVerificado()) {
+                status = Status.verificado(entity.getCondicao(), entity.getObservacao());
+            } else {
+                status = Status.naoVerificado(entity.getObservacao());
+            }
+        }
+
+        return new ComponentCatalogResponseDTO(
+                entity.getId(),
+                entity.getNome(),
+                entity.getFkCategoria(),
+                entity.getQuantidade(),
+                entity.getDescricao(),
+                entity.getS3ImagePath()
+        );
     }
 }

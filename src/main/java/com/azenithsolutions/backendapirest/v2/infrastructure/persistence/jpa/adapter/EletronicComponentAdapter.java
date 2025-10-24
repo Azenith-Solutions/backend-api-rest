@@ -5,6 +5,7 @@ import com.azenithsolutions.backendapirest.v2.core.domain.repository.EletronicCo
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.EletronicComponentEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.repository.SpringDataEletronicComponentRepository;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.specification.EletronicComponentSpecification;
+import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentCatalogResponseDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentObservationDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers.EletronicComponentMapper;
 import org.springframework.data.domain.Page;
@@ -58,14 +59,14 @@ public class EletronicComponentAdapter implements EletronicComponentGateway {
     }
     
     @Override
-    public Page<EletronicComponent> findPageable(Pageable pageable, String nome, Long categoriaId) {
+    public Page<ComponentCatalogResponseDTO> findPageable(Pageable pageable, String nome, Long categoriaId) {
         Specification<EletronicComponentEntity> spec = EletronicComponentSpecification.filterBy(nome, categoriaId);
         Page<EletronicComponentEntity> page = repository.findAll(spec, pageable);
-        return page.map(EletronicComponentMapper::toDomain);
+        return page.map(EletronicComponentMapper::toResponseCatalogDTO);
     }
 
     @Override
-    public List<EletronicComponent> findByFilters(HashMap<String, Object> filtros) {
+    public List<ComponentCatalogResponseDTO> findByFilters(HashMap<String, Object> filtros) {
         Specification<EletronicComponentEntity> spec = EletronicComponentSpecification.whereDinamicFilter(filtros);
         
         String orderBy = (String) filtros.get("orderBy");
@@ -81,7 +82,7 @@ public class EletronicComponentAdapter implements EletronicComponentGateway {
         }
 
         Page<EletronicComponentEntity> page = repository.findAll(spec, pageable);
-        return EletronicComponentMapper.toDomainList(page.getContent());
+        return EletronicComponentMapper.tonListCatalogDTO(page.getContent());
     }
 
     @Override
