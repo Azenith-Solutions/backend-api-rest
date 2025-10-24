@@ -16,7 +16,7 @@ public class EletronicComponentSpecification {
 
             if (nomeComponente != null && !nomeComponente.trim().isEmpty()) {
                 predicates.add(criteriaBuilder.like(
-                        criteriaBuilder.lower(root.get("nomeComponente")),
+                        criteriaBuilder.lower(root.get("nome")),
                         "%" + nomeComponente.toLowerCase() + "%"));
             }
 
