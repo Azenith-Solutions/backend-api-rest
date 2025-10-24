@@ -579,7 +579,7 @@ public class EletronicComponentController {
     @Operation(summary = "Get electronic component details by id", description = "Returns electronic component details by id")
     public ResponseEntity<ApiResponseDTO<?>> getDetailsComponentById(@PathVariable Long id, HttpServletRequest request) {
         try {
-            Optional<EletronicComponent> componentOpt = getComponentDetailsUseCase.execute(id);
+            Optional<ComponentCatalogResponseDTO> componentOpt = getComponentDetailsUseCase.execute(id);
 
             if (componentOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -594,7 +594,6 @@ public class EletronicComponentController {
                         );
             }
 
-            EletronicComponentResponseDTO responseDTO = EletronicComponentMapper.toResponseDTO(componentOpt.get());
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
@@ -602,7 +601,7 @@ public class EletronicComponentController {
                                     LocalDateTime.now(),
                                     HttpStatus.OK.value(),
                                     "OK",
-                                    responseDTO,
+                                    componentOpt.get(),
                                     request.getRequestURI()
                             )
                     );

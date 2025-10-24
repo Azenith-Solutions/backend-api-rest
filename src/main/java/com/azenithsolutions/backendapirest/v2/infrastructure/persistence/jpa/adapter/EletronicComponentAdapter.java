@@ -86,8 +86,8 @@ public class EletronicComponentAdapter implements EletronicComponentGateway {
     }
 
     @Override
-    public Optional<EletronicComponent> findDetailsById(Long id) {
-        return repository.findById(id).map(EletronicComponentMapper::toDomain);
+    public Optional<ComponentCatalogResponseDTO> findDetailsById(Long id) {
+        return repository.findById(id).map(EletronicComponentMapper::toResponseCatalogDTO);
     }
 
     @Override

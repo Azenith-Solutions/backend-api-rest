@@ -20,7 +20,7 @@ public interface EletronicComponentGateway {
     
     Page<ComponentCatalogResponseDTO> findPageable(Pageable pageable, String nome, Long categoriaId);
     List<ComponentCatalogResponseDTO> findByFilters(HashMap<String, Object> filtros);
-    Optional<EletronicComponent> findDetailsById(Long id);
+    Optional<ComponentCatalogResponseDTO> findDetailsById(Long id);
     List<EletronicComponent> findLowStockComponents();
     List<ComponentObservationDTO> findComponentsInObservation();
     List<EletronicComponent> findIncompleteComponents();
