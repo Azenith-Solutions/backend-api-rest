@@ -8,7 +8,7 @@ public class OrderRestMapper {
         if (domain == null) return null;
 
         OrderRest orderRest = new OrderRest();
-        orderRest.setId(domain.getIdPedido());
+        orderRest.setIdPedido(domain.getIdPedido());
         orderRest.setCodigo(domain.getCodigo());
         orderRest.setNomeComprador(domain.getNomeComprador());
         orderRest.setEmailComprador(domain.getEmailComprador());
@@ -26,7 +26,7 @@ public class OrderRestMapper {
         if (rest == null) return null;
 
         Order domain = new Order();
-        domain.setIdPedido(rest.getId());
+        domain.setIdPedido(rest.getIdPedido());
         domain.setCodigo(rest.getCodigo());
         domain.setNomeComprador(rest.getNomeComprador());
         domain.setEmailComprador(rest.getEmailComprador());
