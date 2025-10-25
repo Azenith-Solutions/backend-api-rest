@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController("userControllerV2")
-@RequestMapping("/v2/user")
+@RequestMapping("/v2/users")
 @Tag(name = "User Management - v2", description = "Clean architecture endpoint for Users")
 @SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor

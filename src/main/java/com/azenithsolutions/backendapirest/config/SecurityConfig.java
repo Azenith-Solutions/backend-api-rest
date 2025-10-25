@@ -58,6 +58,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/v2/categorys/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v2/components/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v2/emails/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v2/users/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow preflight requests
                         .requestMatchers("/v2/**").permitAll() // Liberando acesso a todas portas v2/
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
