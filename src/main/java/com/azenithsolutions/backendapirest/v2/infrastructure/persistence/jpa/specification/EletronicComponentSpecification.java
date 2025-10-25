@@ -1,16 +1,37 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.specification;
 
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.EletronicComponentEntity;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class EletronicComponentSpecification {
 
-    public static Specification<EletronicComponentEntity> filterBy(String nome, Long categoriaId) {
-        return Specification
-                .where(nomeContains(nome))
-                .and(categoryEquals(categoriaId));
+    public static Specification<EletronicComponentEntity> filterBy(String nomeComponente, Long categoria) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (nomeComponente != null && !nomeComponente.trim().isEmpty()) {
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("nome")),
+                        "%" + nomeComponente.toLowerCase() + "%"));
+            }
+
+            // Filtro por categoria, se o ID for informado
+            if (categoria != null && categoria != 0) {
+                predicates.add(criteriaBuilder.equal(
+                        root.get("fkCategoria").get("id"), categoria
+                ));
+            }
+
+            // Adiciona filtro para o campo is_visible_catalog = true
+            predicates.add(criteriaBuilder.isTrue(root.get("isVisibleCatalog")));
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
     }
 
     public static Specification<EletronicComponentEntity> whereDinamicFilter(HashMap<String, Object> filtros) {
@@ -55,17 +76,17 @@ public class EletronicComponentSpecification {
 
     private static Specification<EletronicComponentEntity> categoryEquals(Long categoriaId) {
         return (categoriaId == null) ? null :
-                (root, query, cb) -> cb.equal(root.get("categoriaId"), categoriaId);
+                (root, query, cb) -> cb.equal(root.get("fkCategoria").get("id"), categoriaId);
     }
 
     private static Specification<EletronicComponentEntity> categoryNameEquals(String categoriaNome) {
         return (categoriaNome == null || categoriaNome.isBlank()) ? null :
-                (root, query, cb) -> cb.equal(root.get("categoriaNome"), categoriaNome);
+                (root, query, cb) -> cb.equal(cb.lower(root.get("fkCategoria").get("nome")), categoriaNome.toLowerCase());
     }
 
     private static Specification<EletronicComponentEntity> categoryIdEquals(Long categoriaId) {
         return (categoriaId == null) ? null :
-                (root, query, cb) -> cb.equal(root.get("categoriaId"), categoriaId);
+                (root, query, cb) -> cb.equal(root.get("fkCategoria").get("id"), categoriaId);
     }
 
     private static Specification<EletronicComponentEntity> quantidadeGreaterThan(Integer quantidade) {

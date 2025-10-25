@@ -14,6 +14,13 @@ public class CategoryEntityMapper {
         );
     }
 
+    public static CategoryEntity toEntity(Category categoryDomain){
+        return new CategoryEntity(
+                categoryDomain.getIdCategoria(),
+                categoryDomain.getNomeCategoria()
+        );
+    }
+
     public static CategoryListResponseDTO toListResponseDTO(Category category){
         if(Objects.isNull(category)) return null;
 

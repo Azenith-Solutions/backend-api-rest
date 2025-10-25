@@ -66,8 +66,8 @@ public class CreateItemUseCase {
                     eletronicComponent.get().getStatus(),
                     eletronicComponent.get().getS3ImagePath(),
                     eletronicComponent.get().getDataUltimaVenda(),
-                    eletronicComponent.get().getDataCriacao(),
-                    eletronicComponent.get().getDataUltimaAtualizacao()
+                    eletronicComponent.get().getCreatedAt(),
+                    eletronicComponent.get().getUpdatedAt()
             );
 
             saveItems.add(item);

@@ -1,6 +1,7 @@
 package com.azenithsolutions.backendapirest.v2.core.domain.repository;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.component.EletronicComponent;
+import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentCatalogResponseDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentObservationDTO;
 
 import org.springframework.data.domain.Page;
@@ -17,9 +18,9 @@ public interface EletronicComponentGateway {
     void deleteById(Long id);
     boolean existsById(Long id);
     
-    Page<EletronicComponent> findPageable(Pageable pageable, String nome, Long categoriaId);
-    List<EletronicComponent> findByFilters(HashMap<String, Object> filtros);
-    Optional<EletronicComponent> findDetailsById(Long id);
+    Page<ComponentCatalogResponseDTO> findPageable(Pageable pageable, String nome, Long categoriaId);
+    List<ComponentCatalogResponseDTO> findByFilters(HashMap<String, Object> filtros);
+    Optional<ComponentCatalogResponseDTO> findDetailsById(Long id);
     List<EletronicComponent> findLowStockComponents();
     List<ComponentObservationDTO> findComponentsInObservation();
     List<EletronicComponent> findIncompleteComponents();

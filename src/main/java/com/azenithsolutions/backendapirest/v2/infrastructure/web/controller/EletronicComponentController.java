@@ -3,6 +3,7 @@ package com.azenithsolutions.backendapirest.v2.infrastructure.web.controller;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.component.EletronicComponent;
 import com.azenithsolutions.backendapirest.v2.core.usecase.components.*;
 import com.azenithsolutions.backendapirest.v2.core.usecase.components.command.*;
+import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentCatalogResponseDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentObservationDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentVisibilityDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.EletronicComponentResponseDTO;
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/v2/eletronic-components")
+@RequestMapping("/v2/components")
 @Tag(name = "Electronic Component Management - V2", description = "Clean architecture endpoint for Electronic Components")
 public class EletronicComponentController {
     private final CreateEletronicComponentUseCase createEletronicComponentUseCase;
@@ -512,8 +513,8 @@ public class EletronicComponentController {
             @RequestParam(required = false) Long categoria) {
         
         try {
-            Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "dataCriacao"));
-            Page<EletronicComponent> pageResult = getComponentCatalogUseCase.execute(pageable, nomeComponente, categoria);
+            Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+            Page<ComponentCatalogResponseDTO> pageResult = getComponentCatalogUseCase.execute(pageable, nomeComponente, categoria);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
@@ -547,7 +548,7 @@ public class EletronicComponentController {
             @RequestBody(required = false) HashMap<String, Object> filtros) {
         
         try {
-            List<EletronicComponent> components = getFilterComponentsUseCase.execute(new FilterComponentCommand(filtros));
+            List<ComponentCatalogResponseDTO> components = getFilterComponentsUseCase.execute(new FilterComponentCommand(filtros));
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
@@ -555,7 +556,7 @@ public class EletronicComponentController {
                                     LocalDateTime.now(),
                                     HttpStatus.OK.value(),
                                     "OK",
-                                    EletronicComponentMapper.toResponseDTOList(components),
+                                    components,
                                     request.getRequestURI()
                             )
                     );
@@ -578,7 +579,7 @@ public class EletronicComponentController {
     @Operation(summary = "Get electronic component details by id", description = "Returns electronic component details by id")
     public ResponseEntity<ApiResponseDTO<?>> getDetailsComponentById(@PathVariable Long id, HttpServletRequest request) {
         try {
-            Optional<EletronicComponent> componentOpt = getComponentDetailsUseCase.execute(id);
+            Optional<ComponentCatalogResponseDTO> componentOpt = getComponentDetailsUseCase.execute(id);
 
             if (componentOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -593,7 +594,6 @@ public class EletronicComponentController {
                         );
             }
 
-            EletronicComponentResponseDTO responseDTO = EletronicComponentMapper.toResponseDTO(componentOpt.get());
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
@@ -601,7 +601,7 @@ public class EletronicComponentController {
                                     LocalDateTime.now(),
                                     HttpStatus.OK.value(),
                                     "OK",
-                                    responseDTO,
+                                    componentOpt.get(),
                                     request.getRequestURI()
                             )
                     );
