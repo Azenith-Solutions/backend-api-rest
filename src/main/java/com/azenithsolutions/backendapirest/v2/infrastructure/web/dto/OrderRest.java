@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Schema(name = "Order", description = "Order representation for API v2")
 public class OrderRest {
     @Schema(description = "Unique identifier", example = "123")
-    private Long id;
+    private Long idPedido;
     @Schema(description = "Order code", example = "ORD-2025-0001")
     private String codigo;
     @Schema(description = "Buyer name", example = "Joao Silva")

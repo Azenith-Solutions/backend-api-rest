@@ -2,6 +2,7 @@ package com.azenithsolutions.backendapirest.v2.core.domain.repository;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.component.EletronicComponent;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentCatalogResponseDTO;
+import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentManagerResponseDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentObservationDTO;
 
 import org.springframework.data.domain.Page;
@@ -14,7 +15,7 @@ import java.util.Optional;
 public interface EletronicComponentGateway {
     EletronicComponent save(EletronicComponent componenteEletronico);
     Optional<EletronicComponent> findById(Long id);
-    List<EletronicComponent> findAll();
+    List<ComponentManagerResponseDTO> findAll();
     void deleteById(Long id);
     boolean existsById(Long id);
     

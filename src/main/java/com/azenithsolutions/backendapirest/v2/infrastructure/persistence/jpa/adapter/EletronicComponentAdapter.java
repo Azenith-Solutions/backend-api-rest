@@ -6,6 +6,7 @@ import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.ent
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.repository.SpringDataEletronicComponentRepository;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.specification.EletronicComponentSpecification;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentCatalogResponseDTO;
+import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentManagerResponseDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentObservationDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers.EletronicComponentMapper;
 import org.springframework.data.domain.Page;
@@ -44,8 +45,8 @@ public class EletronicComponentAdapter implements EletronicComponentGateway {
     }
 
     @Override
-    public List<EletronicComponent> findAll() {
-        return EletronicComponentMapper.toDomainList(repository.findAll());
+    public List<ComponentManagerResponseDTO> findAll() {
+        return EletronicComponentMapper.tonListManagerDTO(repository.findAll());
     }
 
     @Override

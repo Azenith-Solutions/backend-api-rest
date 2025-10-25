@@ -8,6 +8,7 @@ import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.ent
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.CategoryEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.EletronicComponentEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentCatalogResponseDTO;
+import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentManagerResponseDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.EletronicComponentResponseDTO;
 
 import java.util.List;
@@ -179,4 +180,49 @@ public class EletronicComponentMapper {
                 entity.getS3ImagePath()
         );
     }
+
+    public static List<ComponentManagerResponseDTO> tonListManagerDTO(List<EletronicComponentEntity> entities) {
+        return entities.stream()
+                .map(EletronicComponentMapper::toResponseManagerDTO)
+                .collect(Collectors.toList());
+    }
+
+    public static ComponentManagerResponseDTO toResponseManagerDTO(EletronicComponentEntity entity){
+        if (entity == null) {
+            return null;
+        }
+
+        Status status = null;
+        if (entity.getFlagVerificado() != null) {
+            if (entity.getFlagVerificado()) {
+                status = Status.verificado(entity.getCondicao(), entity.getObservacao());
+            } else {
+                status = Status.naoVerificado(entity.getObservacao());
+            }
+        }
+
+        return new ComponentManagerResponseDTO(
+                entity.getId(),
+                entity.getIdHardwaretech(),
+                entity.getNome(),
+                entity.getFkCaixa(),
+                entity.getFkCategoria(),
+                entity.getPartNumber(),
+                entity.getQuantidade(),
+                entity.getFlagML(),
+                entity.getCodigoML(),
+                entity.getFlagVerificado(),
+                entity.getCondicao(),
+                entity.getObservacao(),
+                entity.getDescricao(),
+                entity.getS3ImagePath(),
+                entity.getDataUltimaVenda(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt(),
+                entity.getQuantidadeVendido(),
+                entity.getIsVisibleCatalog()
+        );
+    }
+
+
 }
