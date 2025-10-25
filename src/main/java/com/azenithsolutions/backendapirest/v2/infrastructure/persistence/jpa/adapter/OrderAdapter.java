@@ -38,7 +38,7 @@ public class OrderAdapter implements OrderGateway {
 
     private OrderEntity toEntity(Order order) {
         OrderEntity entity = new OrderEntity();
-        entity.setId(order.getId());
+        entity.setId(order.getIdPedido());
         entity.setCodigo(order.getCodigo());
         entity.setNomeComprador(order.getNomeComprador());
         entity.setEmailComprador(order.getEmailComprador());
@@ -53,7 +53,7 @@ public class OrderAdapter implements OrderGateway {
 
     private Order toDomain(OrderEntity entity) {
        Order domain  = new Order();
-       domain.setId(entity.getId());
+       domain.setIdPedido(entity.getId());
        domain.setCodigo(entity.getCodigo());
        domain.setNomeComprador(entity.getNomeComprador());
        domain.setEmailComprador(entity.getEmailComprador());

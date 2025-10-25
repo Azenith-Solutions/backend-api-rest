@@ -44,7 +44,7 @@ public class CreateItemUseCase {
             Item item = Item.create(
                     null,
                     dto.quantidadeCarrinho(),
-                    order.get().getId(),
+                    order.get().getIdPedido(),
                     order.get().getCodigo(),
                     order.get().getNomeComprador(),
                     order.get().getEmailComprador(),
