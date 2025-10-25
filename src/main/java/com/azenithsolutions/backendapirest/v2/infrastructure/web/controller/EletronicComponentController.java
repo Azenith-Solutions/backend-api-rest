@@ -3,10 +3,7 @@ package com.azenithsolutions.backendapirest.v2.infrastructure.web.controller;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.component.EletronicComponent;
 import com.azenithsolutions.backendapirest.v2.core.usecase.components.*;
 import com.azenithsolutions.backendapirest.v2.core.usecase.components.command.*;
-import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentCatalogResponseDTO;
-import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentObservationDTO;
-import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.ComponentVisibilityDTO;
-import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.EletronicComponentResponseDTO;
+import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.components.*;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.shared.ApiResponseDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers.EletronicComponentMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -182,16 +179,15 @@ public class EletronicComponentController {
     @Operation(summary = "List electronic components", description = "Returns all electronic components")
     public ResponseEntity<ApiResponseDTO<?>> getEletronicComponent(HttpServletRequest request) {
         try {
-            List<EletronicComponent> components = getEletronicComponentUseCase.execute();
-            List<EletronicComponentResponseDTO> responseDTOs = EletronicComponentMapper.toResponseDTOList(components);
-            
+            List<ComponentManagerResponseDTO> components = getEletronicComponentUseCase.execute();
+
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
                             new ApiResponseDTO<>(
                                     LocalDateTime.now(),
                                     HttpStatus.OK.value(),
                                     "OK",
-                                    responseDTOs,
+                                    components,
                                     request.getRequestURI()
                             )
                     );
