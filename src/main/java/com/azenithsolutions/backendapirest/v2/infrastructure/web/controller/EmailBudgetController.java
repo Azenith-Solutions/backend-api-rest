@@ -26,7 +26,7 @@ public class EmailBudgetController {
         @ApiResponse(responseCode = "400", description = "Dados inválidos"),
         @ApiResponse(responseCode = "500", description = "Erro interno")
     })
-    @PostMapping
+    @PostMapping("/send")
     public ResponseEntity<String> sendEmail(@Valid @RequestBody EmailBudgetRest restBudget) {
         String response = send.execute(EmailRestMapper.toDomain(restBudget));
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
