@@ -1,11 +1,12 @@
 package com.azenithsolutions.backendapirest.v2.core.domain.model.order;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.enums.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
 public class Order {
-    private Long idPedido;
+    private Long id;
     private String codigo;
     private String nomeComprador;
     private String emailComprador;
@@ -13,14 +14,16 @@ public class Order {
     private String valor;
     private OrderStatus status;
     private String telCelular;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime updatedAt;
 
     public Order() {
     }
 
-    public Order(Long idPedido, String codigo, String nomeComprador, String emailComprador, String cnpj, String valor, OrderStatus status, String telCelular, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.idPedido = idPedido;
+    public Order(Long id, String codigo, String nomeComprador, String emailComprador, String cnpj, String valor, OrderStatus status, String telCelular, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
         this.codigo = codigo;
         this.nomeComprador = nomeComprador;
         this.emailComprador = emailComprador;
@@ -32,8 +35,8 @@ public class Order {
         this.updatedAt = updatedAt;
     }
 
-    public Long getIdPedido() {
-        return idPedido;
+    public Long getId() {
+        return id;
     }
 
     public String getCodigo() {
@@ -72,8 +75,8 @@ public class Order {
         return updatedAt;
     }
 
-    public void setIdPedido(Long idPedido) {
-        this.idPedido = idPedido;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setCodigo(String codigo) {
