@@ -22,10 +22,8 @@ public class OrderDTO {
     private String valor;
     @Schema(description = "Current status", example = "PENDENTE")
     private OrderStatus status;
-    @Schema(description = "Buyer phone", example = "+55 11 98877-6655")
+    @Schema(description = "Buyer phone", example = "11988776655")
     private String telCelular;
-    @Schema(description = "Creation timestamp", example = "2025-05-25T10:15:30")
     private LocalDateTime createdAt;
-    @Schema(description = "Last update timestamp", example = "2025-05-26T12:00:00")
     private LocalDateTime updatedAt;
 }
