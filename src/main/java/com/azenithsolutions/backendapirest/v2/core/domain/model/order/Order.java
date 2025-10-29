@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 
 public class Order {
-    private Long id;
+    private Long idPedido;
     private String codigo;
     private String nomeComprador;
     private String emailComprador;
@@ -22,8 +22,8 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, String codigo, String nomeComprador, String emailComprador, String cnpj, String valor, OrderStatus status, String telCelular, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
+    public Order(Long idPedido, String codigo, String nomeComprador, String emailComprador, String cnpj, String valor, OrderStatus status, String telCelular, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.idPedido = idPedido;
         this.codigo = codigo;
         this.nomeComprador = nomeComprador;
         this.emailComprador = emailComprador;
@@ -35,8 +35,8 @@ public class Order {
         this.updatedAt = updatedAt;
     }
 
-    public Long getId() {
-        return id;
+    public Long getIdPedido() {
+        return idPedido;
     }
 
     public String getCodigo() {
@@ -75,8 +75,8 @@ public class Order {
         return updatedAt;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setIdPedido(Long idPedido) {
+        this.idPedido = idPedido;
     }
 
     public void setCodigo(String codigo) {

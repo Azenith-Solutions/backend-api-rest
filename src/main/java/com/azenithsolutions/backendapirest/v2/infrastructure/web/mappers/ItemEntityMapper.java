@@ -83,7 +83,7 @@ public class ItemEntityMapper {
 
         if (domain.getFkPedido() != null) {
             OrderEntity orderEntity = new OrderEntity();
-            orderEntity.setId(domain.getFkPedido().getId());
+            orderEntity.setId(domain.getFkPedido().getIdPedido());
             orderEntity.setCodigo(domain.getFkPedido().getCodigo());
             orderEntity.setNomeComprador(domain.getFkPedido().getNomeComprador());
             orderEntity.setEmailComprador(domain.getFkPedido().getEmailComprador());
