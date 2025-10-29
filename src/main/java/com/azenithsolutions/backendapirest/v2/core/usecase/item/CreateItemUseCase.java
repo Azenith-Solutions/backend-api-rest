@@ -39,21 +39,21 @@ public class CreateItemUseCase {
 
             Optional<EletronicComponent> eletronicComponent = eletronicComponentGateway.findById(dto.fkComponente());
 
-            Optional<Order> order = orderGateway.findById(dto.fkPedido());
+            Order order = orderGateway.findById(dto.fkPedido());
 
             Item item = Item.create(
                     null,
                     dto.quantidadeCarrinho(),
-                    order.get().getIdPedido(),
-                    order.get().getCodigo(),
-                    order.get().getNomeComprador(),
-                    order.get().getEmailComprador(),
-                    order.get().getCnpj(),
-                    order.get().getValor(),
-                    order.get().getStatus(),
-                    order.get().getTelCelular(),
-                    order.get().getCreatedAt(),
-                    order.get().getUpdatedAt(),
+                    order.getId(),
+                    order.getCodigo(),
+                    order.getNomeComprador(),
+                    order.getEmailComprador(),
+                    order.getCnpj(),
+                    order.getValor(),
+                    order.getStatus(),
+                    order.getTelCelular(),
+                    order.getCreatedAt(),
+                    order.getUpdatedAt(),
                     eletronicComponent.get().getId(),
                     eletronicComponent.get().getIdHardwaretech(),
                     eletronicComponent.get().getNome(),

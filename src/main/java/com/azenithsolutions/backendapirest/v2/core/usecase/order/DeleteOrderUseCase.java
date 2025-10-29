@@ -2,17 +2,14 @@ package com.azenithsolutions.backendapirest.v2.core.usecase.order;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderGateway;
 
-import java.util.NoSuchElementException;
-
 public class DeleteOrderUseCase {
-    private final OrderGateway repository;
+    private final OrderGateway gateway;
 
-    public DeleteOrderUseCase(OrderGateway repository) { this.repository = repository; }
+    public DeleteOrderUseCase(OrderGateway gateway) {
+        this.gateway = gateway;
+    }
 
     public void execute(Long id) {
-        if (!repository.existsById(id)) {
-            throw new NoSuchElementException("Pedido não encontrado");
-        }
-        repository.deleteById(id);
+        this.gateway.deleteById(id);
     }
 }
