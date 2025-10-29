@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.config;
+package com.azenithsolutions.backendapirest.v2.infrastructure.config.bean;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +20,13 @@ public class WebClientConfig {
         return WebClient.builder()
                 .defaultHeader("api-key", brevoApiKey)
                 .defaultHeader("Content-Type", "application/json")
+                .build();
+    }
+
+    @Bean(name = "orderWebClient")
+    public WebClient orderWebClient() {
+        return WebClient.builder()
+                .baseUrl("http://localhost:8082")
                 .build();
     }
 }

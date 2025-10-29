@@ -6,9 +6,11 @@ import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderGatewa
 import java.util.List;
 
 public class ListOrdersUseCase {
-    private final OrderGateway repository;
+    private final OrderGateway gateway;
 
-    public ListOrdersUseCase(OrderGateway repository) { this.repository = repository; }
+    public ListOrdersUseCase(OrderGateway gateway) {
+        this.gateway = gateway;
+    }
 
-    public List<Order> execute() { return repository.findAll(); }
+    public List<Order> execute() { return gateway.findAll(); }
 }

@@ -39,7 +39,6 @@
         @Column(name = "valor")
         private String valor;
 
-        // Enum que limita os status possíveis
         @Column(name = "status")
         @Enumerated(EnumType.STRING)
         private OrderStatus status;

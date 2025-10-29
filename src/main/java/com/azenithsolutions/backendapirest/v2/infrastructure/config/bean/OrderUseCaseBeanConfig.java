@@ -9,17 +9,17 @@ import org.springframework.context.annotation.Configuration;
 public class OrderUseCaseBeanConfig {
 
     @Bean
-    CreateOrderUseCase createOrderUseCase(OrderGateway repository) { return new CreateOrderUseCase(repository); }
+    CreateOrderUseCase createOrderUseCase(OrderGateway gateway) { return new CreateOrderUseCase(gateway); }
 
     @Bean
-    UpdateOrderUseCase updateOrderUseCase(OrderGateway repository) { return new UpdateOrderUseCase(repository); }
+    UpdateOrderUseCase updateOrderUseCase(OrderGateway gateway) { return new UpdateOrderUseCase(gateway); }
 
     @Bean
-    GetOrderByIdUseCase getOrderByIdUseCase(OrderGateway repository) { return new GetOrderByIdUseCase(repository); }
+    GetOrderByIdUseCase getOrderByIdUseCase(OrderGateway gateway) { return new GetOrderByIdUseCase(gateway); }
 
     @Bean
-    ListOrdersUseCase listOrdersUseCase(OrderGateway repository) { return new ListOrdersUseCase(repository); }
+    ListOrdersUseCase listOrdersUseCase(OrderGateway gateway) { return new ListOrdersUseCase(gateway); }
 
     @Bean
-    DeleteOrderUseCase deleteOrderUseCase(OrderGateway repository) { return new DeleteOrderUseCase(repository); }
+    DeleteOrderUseCase deleteOrderUseCase(OrderGateway gateway) { return new DeleteOrderUseCase(gateway); }
 }

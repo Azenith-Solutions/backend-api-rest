@@ -1,4 +1,4 @@
-package com.azenithsolutions.backendapirest.v2.infrastructure.web.dto;
+package com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.order;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.enums.OrderStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -8,8 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Schema(name = "Order", description = "Order representation for API v2")
-public class OrderRest {
-    @Schema(description = "Unique identifier", example = "123")
+public class OrderDTO {
     private Long idPedido;
     @Schema(description = "Order code", example = "ORD-2025-0001")
     private String codigo;

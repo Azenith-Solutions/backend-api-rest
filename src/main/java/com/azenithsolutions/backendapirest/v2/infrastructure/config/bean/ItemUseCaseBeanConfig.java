@@ -1,17 +1,17 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.config.bean;
 
 import com.azenithsolutions.backendapirest.v2.core.usecase.item.*;
+import com.azenithsolutions.backendapirest.v2.infrastructure.external.order.OrderGatewayAdapter;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.adapter.EletronicComponentAdapter;
 import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.adapter.ItemRepositoryAdapter;
-import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.adapter.OrderAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ItemUseCaseBeanConfig {
     @Bean
-    CreateItemUseCase createItemUseCase(ItemRepositoryAdapter itemRepositoryAdapter, EletronicComponentAdapter eletronicComponentAdapter, OrderAdapter orderAdapter){
-        return new CreateItemUseCase(itemRepositoryAdapter, eletronicComponentAdapter, orderAdapter);
+    CreateItemUseCase createItemUseCase(ItemRepositoryAdapter itemRepositoryAdapter, EletronicComponentAdapter eletronicComponentAdapter, OrderGatewayAdapter orderGatewayAdapter) {
+        return new CreateItemUseCase(itemRepositoryAdapter, eletronicComponentAdapter, orderGatewayAdapter);
     }
 
     @Bean
@@ -25,8 +25,8 @@ public class ItemUseCaseBeanConfig {
     }
 
     @Bean
-    UpdateItemUseCase updateItemUseCase(ItemRepositoryAdapter itemRepositoryAdapter, EletronicComponentAdapter eletronicComponentAdapter, OrderAdapter orderAdapter){
-        return new UpdateItemUseCase(itemRepositoryAdapter, eletronicComponentAdapter, orderAdapter);
+    UpdateItemUseCase updateItemUseCase(ItemRepositoryAdapter itemRepositoryAdapter, EletronicComponentAdapter eletronicComponentAdapter, OrderGatewayAdapter orderGatewayAdapter){
+        return new UpdateItemUseCase(itemRepositoryAdapter, eletronicComponentAdapter, orderGatewayAdapter);
     }
 
     @Bean

@@ -1,6 +1,7 @@
 package com.azenithsolutions.backendapirest.v2.core.domain.model.order;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.enums.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +14,9 @@ public class Order {
     private String valor;
     private OrderStatus status;
     private String telCelular;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSSSSS][.SSS]")
     private LocalDateTime createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSSSSS][.SSS]")
     private LocalDateTime updatedAt;
 
     public Order() {

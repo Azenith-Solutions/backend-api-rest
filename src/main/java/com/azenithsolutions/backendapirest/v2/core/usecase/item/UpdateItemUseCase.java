@@ -41,10 +41,10 @@ public class UpdateItemUseCase {
 
         Optional<EletronicComponent> eletronicComponent = eletronicComponentGateway.findById(itemRequestDTO.getFkComponente());
 
-        Optional<Order> order = orderGateway.findById(itemRequestDTO.getFkPedido());
+        Order order = orderGateway.findById(itemRequestDTO.getFkPedido());
 
         item.setFkComponente(eletronicComponent.get());
-        item.setFkPedido(order.get());
+        item.setFkPedido(order);
         item.setQuantidadeCarrinho(itemRequestDTO.getQuantidadeCarrinho());
 
         return itemGateway.save(item);
