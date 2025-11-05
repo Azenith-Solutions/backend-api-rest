@@ -3,10 +3,11 @@ package com.azenithsolutions.backendapirest.v2.infrastructure.config.bean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-public class WebClientConfig {
+public class ClientConfig {
     @Value("${brevo.key}")
     private String brevoApiKey;
 
@@ -23,9 +24,9 @@ public class WebClientConfig {
                 .build();
     }
 
-    @Bean(name = "orderWebClient")
-    public WebClient orderWebClient() {
-        return WebClient.builder()
+    @Bean(name = "orderRestClient")
+    public RestClient orderRestClient() {
+        return RestClient.builder()
                 .baseUrl("http://localhost:8082")
                 .build();
     }
