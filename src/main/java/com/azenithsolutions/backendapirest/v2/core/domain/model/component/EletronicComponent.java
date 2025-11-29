@@ -209,13 +209,23 @@ public class EletronicComponent {
         this.updatedAt = updatedAt;
     }
 
-    public EletronicComponent update(String nome, Category categoria, String partNumber, int quantidade) {
+    public EletronicComponent update(String idHardwaretech, String nome, Box caixa,
+                                     Category categoria, String partNumber, int quantidade,
+                                     Boolean anunciado, String codigoMercadoLivre, Status status) {
         validarCamposObrigatorios(nome, categoria, quantidade);
-        
+
+        this.idHardwaretech = idHardwaretech;
         this.nome = nome;
+        this.caixa = caixa;
         this.categoria = categoria;
         this.partNumber = partNumber;
         this.quantidade = quantidade;
+        this.anunciado = anunciado;
+        this.codigoMercadoLivre = codigoMercadoLivre;
+        this.status = status;
+        this.s3ImagePath = s3ImagePath;
+        this.dataUltimaVenda = dataUltimaVenda;
+        this.createdAt = new Date();
         this.updatedAt = new Date();
         
         return this;
