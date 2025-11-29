@@ -46,14 +46,14 @@ public class EletronicComponent {
     }
 
 
-    public static EletronicComponent criarNovo(String nome, Category categoria, String partNumber, int quantidade) {
+    public static EletronicComponent criarNovo(String nome, Category categoria, String partNumber, int quantidade, Box box) {
         validarCamposObrigatorios(nome, categoria, quantidade);
 
         return new EletronicComponent(
                 null,
                 gerarIdHardwaretech(),
                 nome,
-                null,
+                box,
                 categoria,
                 partNumber,
                 quantidade,
@@ -151,6 +151,62 @@ public class EletronicComponent {
 
     public Date getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setIdHardwaretech(String idHardwaretech) {
+        this.idHardwaretech = idHardwaretech;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setCaixa(Box caixa) {
+        this.caixa = caixa;
+    }
+
+    public void setCategoria(Category categoria) {
+        this.categoria = categoria;
+    }
+
+    public void setPartNumber(String partNumber) {
+        this.partNumber = partNumber;
+    }
+
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public void setAnunciado(Boolean anunciado) {
+        this.anunciado = anunciado;
+    }
+
+    public void setCodigoMercadoLivre(String codigoMercadoLivre) {
+        this.codigoMercadoLivre = codigoMercadoLivre;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void setS3ImagePath(String s3ImagePath) {
+        this.s3ImagePath = s3ImagePath;
+    }
+
+    public void setDataUltimaVenda(Date dataUltimaVenda) {
+        this.dataUltimaVenda = dataUltimaVenda;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public EletronicComponent update(String nome, Category categoria, String partNumber, int quantidade) {

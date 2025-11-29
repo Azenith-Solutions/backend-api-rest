@@ -1,6 +1,9 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.config.bean;
 
+import com.azenithsolutions.backendapirest.v2.core.domain.repository.BoxGateway;
+import com.azenithsolutions.backendapirest.v2.core.domain.repository.CategoryRepositoryGateway;
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.EletronicComponentGateway;
+import com.azenithsolutions.backendapirest.v2.core.domain.repository.ImageStorageGateway;
 import com.azenithsolutions.backendapirest.v2.core.usecase.components.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class EletronicComponentBeanConfig {
     @Bean
-    CreateEletronicComponentUseCase createEletronicComponentUseCase(EletronicComponentGateway gateway) { return new CreateEletronicComponentUseCase(gateway); }
+    CreateEletronicComponentUseCase createEletronicComponentUseCase(EletronicComponentGateway gateway, CategoryRepositoryGateway categoryRepositoryGateway, BoxGateway boxGateway) { return new CreateEletronicComponentUseCase(gateway, categoryRepositoryGateway,boxGateway); }
 
     @Bean
     UpdateEletronicComponentUseCase updateEletronicComponentUseCase(EletronicComponentGateway gateway) { return new UpdateEletronicComponentUseCase(gateway); }
@@ -53,7 +56,7 @@ public class EletronicComponentBeanConfig {
     UploadComponentImageUseCase uploadComponentImageUseCase(EletronicComponentGateway gateway) { return new UploadComponentImageUseCase(gateway); }
     
     @Bean
-    CreateComponentWithFileUseCase createComponentWithFileUseCase(EletronicComponentGateway gateway) { return new CreateComponentWithFileUseCase(gateway); }
+    CreateComponentWithFileUseCase createComponentWithFileUseCase(EletronicComponentGateway gateway, ImageStorageGateway imageStorageGateway, CategoryRepositoryGateway categoryRepositoryGateway, BoxGateway boxGateway) { return new CreateComponentWithFileUseCase(gateway, imageStorageGateway, categoryRepositoryGateway, boxGateway); }
     
     @Bean
     UpdateComponentWithFileUseCase updateComponentWithFileUseCase(EletronicComponentGateway gateway) { return new UpdateComponentWithFileUseCase(gateway); }
