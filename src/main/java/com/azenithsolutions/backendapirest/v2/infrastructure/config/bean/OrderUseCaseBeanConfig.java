@@ -1,5 +1,6 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.config.bean;
 
+import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderEmailCacheGateway;
 import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderGateway;
 import com.azenithsolutions.backendapirest.v2.core.usecase.order.*;
 import org.springframework.context.annotation.Bean;
@@ -22,4 +23,9 @@ public class OrderUseCaseBeanConfig {
 
     @Bean
     DeleteOrderUseCase deleteOrderUseCase(OrderGateway gateway) { return new DeleteOrderUseCase(gateway); }
+    
+    @Bean
+    PublishOrderWithQuoteUseCase publishOrderWithQuoteUseCase(OrderEmailCacheGateway emailCacheGateway) { 
+        return new PublishOrderWithQuoteUseCase(emailCacheGateway); 
+    }
 }

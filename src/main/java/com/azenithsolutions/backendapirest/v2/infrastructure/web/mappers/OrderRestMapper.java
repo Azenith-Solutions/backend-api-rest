@@ -23,6 +23,23 @@ public class OrderRestMapper {
 
         return orderDTO;
     }
+    
+    public static OrderDTO commandToDto(OrderRequestCommandDTO command) {
+        if (command == null) return null;
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setCodigo(command.codigo());
+        orderDTO.setNomeComprador(command.nomeComprador());
+        orderDTO.setEmailComprador(command.emailComprador());
+        orderDTO.setCnpj(command.cnpj());
+        orderDTO.setValor(command.valor());
+        orderDTO.setStatus(command.status());
+        orderDTO.setTelCelular(command.telCelular());
+        orderDTO.setCreatedAt(command.createdAt());
+        orderDTO.setUpdatedAt(command.updatedAt());
+
+        return orderDTO;
+    }
 
     public static Order toDomain(OrderDTO rest) {
         if (rest == null) return null;

@@ -206,16 +206,15 @@ public class RabbitMQConfig {
     @Bean
     public RabbitListenerContainerFactory<?> orderEventListenerContainerFactory(
             ConnectionFactory connectionFactory,
-            MessageConverter jacksonMessageConverter,
-            RetryOperationsInterceptor orderEventRetryInterceptor) {
+            MessageConverter jacksonMessageConverter) {
 
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
-        factory.setConcurrentConsumers(2);
-        factory.setMaxConcurrentConsumers(5);
+        factory.setConcurrentConsumers(1);
+        factory.setMaxConcurrentConsumers(1);
         factory.setDefaultRequeueRejected(false);
+        factory.setAcknowledgeMode(org.springframework.amqp.core.AcknowledgeMode.AUTO);
         factory.setMessageConverter(jacksonMessageConverter);
-        factory.setAdviceChain(orderEventRetryInterceptor);
         return factory;
     }
 }

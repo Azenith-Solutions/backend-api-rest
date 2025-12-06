@@ -1,10 +1,12 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.order;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.enums.OrderStatus;
+import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.item.ItemRequestDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Schema(name = "Order", description = "Order representation for API v2")
@@ -24,6 +26,8 @@ public class OrderDTO {
     private OrderStatus status;
     @Schema(description = "Buyer phone", example = "11988776655")
     private String telCelular;
+    @Schema(description = "Order items")
+    private List<ItemRequestDTO> items;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

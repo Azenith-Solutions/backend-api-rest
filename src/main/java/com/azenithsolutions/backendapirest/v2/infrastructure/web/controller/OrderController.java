@@ -1,12 +1,16 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.web.controller;
 
+import com.azenithsolutions.backendapirest.v2.core.domain.command.order.OrderRequestCommandDTO;
+import com.azenithsolutions.backendapirest.v2.core.domain.model.email.QuoteEmailData;
 import com.azenithsolutions.backendapirest.v2.core.domain.model.order.Order;
 import com.azenithsolutions.backendapirest.v2.core.usecase.order.*;
 import com.azenithsolutions.backendapirest.v2.infrastructure.producer.CreateOrderCommandPublisher;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.order.OrderDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.order.OrderRequestDTO;
+import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.order.OrderWithQuoteRequestDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.shared.ApiResponseDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers.OrderRestMapper;
+import com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers.QuoteEmailRestMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -33,6 +37,7 @@ public class OrderController {
     private final ListOrdersUseCase list;
     private final DeleteOrderUseCase delete;
     private final CreateOrderCommandPublisher createOrderCommandPublisher;
+    private final PublishOrderWithQuoteUseCase publishOrderWithQuote;
 
     @GetMapping
     @Operation(summary = "List orders", description = "Returns all orders (v2 clean architecture)")
@@ -210,7 +215,7 @@ public class OrderController {
 
     @PostMapping("/publish")
     @Operation(summary = "Publish create order command", description = "Publishes a create order command to RabbitMQ")
-    public ResponseEntity<ApiResponseDTO<?>> publishCreateOrderCommand(@Valid @RequestBody OrderRequestDTO order, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<ApiResponseDTO<?>> publishCreateOrderCommand(@Valid @RequestBody OrderDTO order, HttpServletRequest httpServletRequest) {
         try {
             createOrderCommandPublisher.publish(order);
 
@@ -231,6 +236,49 @@ public class OrderController {
                                     LocalDateTime.now(),
                                     HttpStatus.INTERNAL_SERVER_ERROR.value(),
                                     "Erro ao publicar comando: " + e.getMessage(),
+                                    null,
+                                    httpServletRequest.getRequestURI()
+                            )
+                    );
+        }
+    }
+    
+    @PostMapping("/publish-with-quote")
+    @Operation(
+        summary = "Publish order with quote email caching", 
+        description = "Caches email data in Redis and publishes order creation command to RabbitMQ. " +
+                     "The email will be sent automatically when the order creation event is received from the microservice."
+    )
+    public ResponseEntity<ApiResponseDTO<?>> publishOrderWithQuote(
+            @Valid @RequestBody OrderWithQuoteRequestDTO request, 
+            HttpServletRequest httpServletRequest) {
+        try {
+            OrderRequestCommandDTO orderCommand = OrderRestMapper.toCommand(request.getOrder());
+            QuoteEmailData emailData = QuoteEmailRestMapper.toDomain(request.getEmailData());
+            OrderRequestCommandDTO enrichedCommand = publishOrderWithQuote.execute(orderCommand, emailData);
+            
+            OrderDTO orderDTO = OrderRestMapper.commandToDto(enrichedCommand);
+            createOrderCommandPublisher.publish(orderDTO);
+            
+            return ResponseEntity.status(HttpStatus.ACCEPTED)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.ACCEPTED.value(),
+                                    "Pedido publicado e dados de email cacheados com sucesso! O email será enviado após confirmação do microserviço.",
+                                    orderDTO,
+                                    httpServletRequest.getRequestURI()
+                            )
+                    );
+        } catch (Exception e) {
+            System.err.println("Error in publishOrderWithQuote: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponseDTO<>(
+                                    LocalDateTime.now(),
+                                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                    "Erro ao publicar pedido com cotação: " + e.getMessage(),
                                     null,
                                     httpServletRequest.getRequestURI()
                             )
