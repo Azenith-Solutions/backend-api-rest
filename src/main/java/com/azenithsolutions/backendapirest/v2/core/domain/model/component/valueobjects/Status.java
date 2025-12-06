@@ -20,7 +20,7 @@ public class Status {
     }
 
     public static Status naoVerificado(String observacao) {
-        return new Status(false, "Não verificado", observacao);
+        return new Status(false, "BOM_ESTADO", observacao);
     }
 
     public static Status recriar(Boolean flagVerificado, String condicao, String observacao) {

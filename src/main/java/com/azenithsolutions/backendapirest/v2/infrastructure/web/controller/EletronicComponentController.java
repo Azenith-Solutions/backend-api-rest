@@ -86,7 +86,7 @@ public class EletronicComponentController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Create electronic component", description = "Creates a new electronic component")
-    public ResponseEntity<ApiResponseDTO<?>> createEletronicComponent(@RequestBody CreateEletronicComponentCommand command, HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDTO<?>> createEletronicComponent(@RequestBody ComponentRequestDTO command, HttpServletRequest request) {
         try {
             EletronicComponent createdComponent = createEletronicComponentUseCase.execute(command);
             EletronicComponentResponseDTO responseDTO = EletronicComponentMapper.toResponseDTO(createdComponent);
@@ -118,7 +118,7 @@ public class EletronicComponentController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Create electronic component with image", description = "Creates a new electronic component with image")
     public ResponseEntity<ApiResponseDTO<?>> createComponentWithFile(
-            @RequestPart(value = "data", required = false) CreateEletronicComponentCommand componentData,
+            @RequestPart(value = "data", required = false) ComponentRequestDTO componentData,
             @RequestPart(value = "file", required = false) MultipartFile file,
             HttpServletRequest request) {
         try {
@@ -135,21 +135,7 @@ public class EletronicComponentController {
                         );
             }
             
-            // In a real implementation, you would save the image and get its path
-            String imagePath = null;
-            if (file != null && !file.isEmpty()) {
-                imagePath = "sample-path/" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            }
-            
-            CreateComponentWithFileCommand command = new CreateComponentWithFileCommand(
-                    componentData.nome(),
-                    componentData.categoria(),
-                    componentData.partNumber(),
-                    componentData.quantidade(),
-                    file
-            );
-            
-            EletronicComponent createdComponent = createComponentWithFileUseCase.execute(command, imagePath);
+            EletronicComponent createdComponent = createComponentWithFileUseCase.execute(componentData, file);
             
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(
@@ -390,7 +376,7 @@ public class EletronicComponentController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update electronic component", description = "Updates an existing electronic component")
-    public ResponseEntity<ApiResponseDTO<?>> updateEletronicComponent(@PathVariable Long id, @RequestBody UpdateEletronicComponentCommand command, HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDTO<?>> updateEletronicComponent(@PathVariable Long id, @RequestBody ComponentRequestDTO command, HttpServletRequest request) {
         try {
             Optional<EletronicComponent> existingComponentOpt = getEletronicComponentByIdUseCase.execute(id);
 
@@ -437,7 +423,7 @@ public class EletronicComponentController {
     @Operation(summary = "Update electronic component with file", description = "Updates an existing electronic component with file")
     public ResponseEntity<ApiResponseDTO<?>> updateComponentWithFile(
             @PathVariable Long id,
-            @RequestPart(value = "data") UpdateEletronicComponentCommand componentData,
+            @RequestPart(value = "data") ComponentRequestDTO componentData,
             @RequestPart(value = "file", required = false) MultipartFile file,
             HttpServletRequest request) {
         try {
@@ -455,25 +441,8 @@ public class EletronicComponentController {
                                 )
                         );
             }
-            
-            // In a real implementation, you would save the image and get its path
-            String imagePath = null;
-            if (file != null && !file.isEmpty()) {
-                imagePath = "sample-path/" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            } else {
-                // Keep the existing image
-                imagePath = existingComponentOpt.get().getS3ImagePath();
-            }
-            
-            UpdateComponentWithFileCommand command = new UpdateComponentWithFileCommand(
-                    componentData.nome(),
-                    componentData.categoria(),
-                    componentData.partNumber(),
-                    componentData.quantidade(),
-                    file
-            );
-            
-            EletronicComponent updatedComponent = updateComponentWithFileUseCase.execute(id, command, imagePath);
+
+            EletronicComponent updatedComponent = updateComponentWithFileUseCase.execute(id, componentData, file);
             
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
