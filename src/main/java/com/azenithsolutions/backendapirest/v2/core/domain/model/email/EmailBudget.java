@@ -47,4 +47,39 @@ public class EmailBudget {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private String toEmail;
+        private String toName;
+        private String subject;
+        private String content;
+
+        public Builder toEmail(String toEmail) {
+            this.toEmail = toEmail;
+            return this;
+        }
+
+        public Builder toName(String toName) {
+            this.toName = toName;
+            return this;
+        }
+
+        public Builder subject(String subject) {
+            this.subject = subject;
+            return this;
+        }
+
+        public Builder content(String content) {
+            this.content = content;
+            return this;
+        }
+
+        public EmailBudget build() {
+            return new EmailBudget(toEmail, toName, subject, content);
+        }
+    }
 }
