@@ -32,9 +32,10 @@ public class OrderRestMapper {
         orderDTO.setNomeComprador(command.nomeComprador());
         orderDTO.setEmailComprador(command.emailComprador());
         orderDTO.setCnpj(command.cnpj());
-        orderDTO.setValor(command.valor());
+        orderDTO.setValor(command   .valor());
         orderDTO.setStatus(command.status());
         orderDTO.setTelCelular(command.telCelular());
+        orderDTO.setItems(command.items());
         orderDTO.setCreatedAt(command.createdAt());
         orderDTO.setUpdatedAt(command.updatedAt());
 
@@ -70,6 +71,7 @@ public class OrderRestMapper {
                 rest.valor(),
                 rest.status(),
                 rest.telCelular(),
+                rest.items(),
                 rest.createdAt(),
                 rest.updatedAt()
         );
