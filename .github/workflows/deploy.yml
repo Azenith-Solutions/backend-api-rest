@@ -1,0 +1,140 @@
+name: deploy-backend-api-rest
+on:
+  push:
+    branches:
+      - "dev"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest 
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE: ghcr.io/azenith-solutions/backend-api-rest
+      TAG: ${{ github.sha }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: Azenith-Solutions/backend-api-rest
+          ref: dev
+
+      - name: Login GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & Push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ env.IMAGE }}:${{ env.TAG }}
+
+      - name: Setup SSH 
+        run: |
+          set -x
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ci
+          chmod 600 ~/.ssh/id_ci
+          
+          ssh-keyscan -T 10 -H "${{ secrets.BASTION_IP }}" >> ~/.ssh/known_hosts || echo "ssh-keyscan failed"
+          
+          cat > ~/.ssh/config << 'SSHCONFIG'
+          Host bastion
+            HostName ${{ secrets.BASTION_IP }}
+            User ${{ secrets.SERVER_USER }}
+            IdentityFile ~/.ssh/id_ci
+            StrictHostKeyChecking accept-new
+          
+          Host target-backend-1
+            HostName ${{ secrets.BACKEND_SERVER_1_IP }}
+            User ${{ secrets.SERVER_USER }}
+            IdentityFile ~/.ssh/id_ci
+            ProxyJump bastion
+            StrictHostKeyChecking accept-new
+          
+          Host target-backend-2
+            HostName ${{ secrets.BACKEND_SERVER_2_IP }}
+            User ${{ secrets.SERVER_USER }}
+            IdentityFile ~/.ssh/id_ci
+            ProxyJump bastion
+            StrictHostKeyChecking accept-new
+          SSHCONFIG
+          
+          chmod 600 ~/.ssh/config
+
+      - name: Copy docker-compose.yml to Backend Server 1
+        run: |
+          scp -v ./docker-compose.yaml target-backend-1:/opt/backend-api-rest/docker-compose.yaml
+
+      - name: Copy docker-compose.yml to Backend Server 2
+        run: |
+          scp -v ./docker-compose.yaml target-backend-2:/opt/backend-api-rest/docker-compose.yaml
+
+      - name: Deploy to Backend Server 1
+        run: |
+          set -euo pipefail
+          REMOTE_CMD='
+            set -e
+            cd /opt/backend-api-rest
+            
+            if [ ! -f .env.production ]; then
+              echo "❌ Erro: .env.production não existe!"
+              exit 1
+            fi
+            
+            echo "IMAGE_TAG=${{ github.sha }}" > .env
+            cat .env.production >> .env
+            
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+            
+            docker compose --env-file .env pull
+            docker compose --env-file .env up -d
+            
+            sleep 10
+            docker compose logs --tail=50
+          '
+          
+          ssh target-backend-1 "$REMOTE_CMD"
+
+      - name: Deploy to Backend Server 2
+        run: |
+          set -euo pipefail
+          REMOTE_CMD='
+            set -e
+            cd /opt/backend-api-rest
+            
+            if [ ! -f .env.production ]; then
+              echo "❌ Erro: .env.production não existe!"
+              exit 1
+            fi
+            
+            echo "IMAGE_TAG=${{ github.sha }}" > .env
+            cat .env.production >> .env
+            
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+            
+            docker compose --env-file .env pull
+            docker compose --env-file .env up -d
+            
+            sleep 10
+            docker compose logs --tail=50
+          '
+          
+          ssh target-backend-2 "$REMOTE_CMD"
+
+      - name: Health Check
+        run: |
+          sleep 30
+          
+          ssh target-backend-1 "curl -f http://localhost:8080/api/actuator/health || echo '❌ Health check falhou no servidor 1'"
+          ssh target-backend-2 "curl -f http://localhost:8080/api/actuator/health || echo '❌ Health check falhou no servidor 2'"
+          
+          echo "✅ Deploy concluído!"
