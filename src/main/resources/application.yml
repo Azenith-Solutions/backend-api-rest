@@ -8,12 +8,14 @@ spring:
     driver-class-name: ${DB_DRIVER}
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: validate # Mudar de 'update' para 'validate'
+    show-sql: false # Desativar em produção
     properties:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
+        hbm2ddl:
+          auto: validate # Confirmar validação apenas
   data:
     redis:
       host: ${CACHE_HOST}
@@ -30,25 +32,31 @@ gemini:
   api:
     key: ${GEMINI_API_KEY}
     url: ${GEMINI_API_URL}
+
 brevo:
   key: ${BREVO_API_KEY}
   url: ${BREVO_API_URL}
+
 server:
   servlet:
     context-path: /api
 
-
 broker:
-    order:
-      command:
-        exchange: ${ORDER_CREATE_EXCHANGE}
-        queue: ${ORDER_CREATE_QUEUE}
-        routing-key: ${ORDER_ROUTING_KEY}
-        dlx: ${ORDER_DLX}
-        dlq: ${ORDER_DLQ}
-      event:
-        exchange: ${ORDER_CREATED_EXCHANGE}
-        queue: ${ORDER_CREATED_QUEUE}
-        routing-key: ${ORDER_CREATED_ROUTING_KEY}
-        dlx: ${ORDER_CREATED_DLX}
-        dlq: ${ORDER_CREATED_DLQ}
+  order:
+    command:
+      exchange: ${ORDER_CREATE_EXCHANGE}
+      queue: ${ORDER_CREATE_QUEUE}
+      routing-key: ${ORDER_ROUTING_KEY}
+      dlx: ${ORDER_DLX}
+      dlq: ${ORDER_DLQ}
+    event:
+      exchange: ${ORDER_CREATED_EXCHANGE}
+      queue: ${ORDER_CREATED_QUEUE}
+      routing-key: ${ORDER_CREATED_ROUTING_KEY}
+      dlx: ${ORDER_CREATED_DLX}
+      dlq: ${ORDER_CREATED_DLQ}
+
+# Adicionar configuração do microservice se necessário
+order:
+  microservice:
+    url: ${ORDER_MICROSERVICE_URL:http://order-microservice-api:8082}

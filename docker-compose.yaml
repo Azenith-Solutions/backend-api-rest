@@ -5,6 +5,8 @@ services:
     image: ghcr.io/azenith-solutions/backend-api-rest:${IMAGE_TAG:-latest}
     container_name: backend-api-rest
     restart: unless-stopped
+    # Adicionar usuário específico para resolver permissões
+    user: "1001:1001"
     ports:
       - "8080:8080"
     environment:
@@ -35,10 +37,9 @@ services:
       - ORDER_CREATED_DLQ=${ORDER_CREATED_DLQ}
       - ORDER_MICROSERVICE_URL=${ORDER_MICROSERVICE_URL:-http://order-microservice-api:8082}
     volumes:
-      - ./uploads:/app/uploads
+      - uploads:/app/uploads
     networks:
       - hardwaretech-network
-    # Mapear o banco externo para facilitar conexão
     extra_hosts:
       - "mysql-server:10.0.1.5"
     healthcheck:
@@ -59,3 +60,4 @@ networks:
 
 volumes:
   uploads:
+    driver: local
