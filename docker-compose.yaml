@@ -21,10 +21,8 @@ services:
       - RABBITMQ_PORT=${RABBITMQ_PORT:-5672}
       - RABBITMQ_USERNAME=${RABBITMQ_USERNAME:-guest}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-guest}
-      # Adicione as variáveis do Redis que estão faltando:
       - CACHE_HOST=${CACHE_HOST:-redis}
       - CACHE_PORT=${CACHE_PORT:-6379}
-      # Adicione também as variáveis do RabbitMQ para orders:
       - ORDER_CREATE_EXCHANGE=${ORDER_CREATE_EXCHANGE}
       - ORDER_CREATE_QUEUE=${ORDER_CREATE_QUEUE}
       - ORDER_ROUTING_KEY=${ORDER_ROUTING_KEY}
@@ -35,11 +33,14 @@ services:
       - ORDER_CREATED_ROUTING_KEY=${ORDER_CREATED_ROUTING_KEY}
       - ORDER_CREATED_DLX=${ORDER_CREATED_DLX}
       - ORDER_CREATED_DLQ=${ORDER_CREATED_DLQ}
-      - ORDER_MICROSERVICE_URL=${ORDER_MICROSERVICE_URL}
+      - ORDER_MICROSERVICE_URL=${ORDER_MICROSERVICE_URL:-http://order-microservice-api:8082}
     volumes:
       - ./uploads:/app/uploads
     networks:
-      - backend-network
+      - hardwaretech-network
+    # Mapear o banco externo para facilitar conexão
+    extra_hosts:
+      - "mysql-server:10.0.1.5"
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/api/actuator/health"]
       interval: 30s
@@ -53,8 +54,8 @@ services:
         max-file: "3"
 
 networks:
-  backend-network:
-    driver: bridge
+  hardwaretech-network:
+    external: true
 
 volumes:
   uploads:
