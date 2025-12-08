@@ -28,7 +28,6 @@ public class Box {
     @JsonBackReference
     private List<Component> components;
 
-    // Em Box.java
     @Override
     public String toString() {
         return "Box{" +

@@ -18,8 +18,8 @@ public class Role {
     public static Role create(Long idFuncao, String funcao){
         if(idFuncao == null){
             throw new IllegalArgumentException("Role ID cannot be null");
-        }else if(idFuncao <= 1) {
-            throw new IllegalArgumentException("Role ID must be greater than 1");
+        }else if(idFuncao < 1 || idFuncao > 3) {
+            throw new IllegalArgumentException("Role ID invalid!");
         }
         return new Role(idFuncao, funcao);
     }

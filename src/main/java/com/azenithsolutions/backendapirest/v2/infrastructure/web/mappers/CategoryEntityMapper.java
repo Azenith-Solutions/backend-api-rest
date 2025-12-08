@@ -1,7 +1,7 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.category.Category;
-import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.entity.CategoryEntity;
+import com.azenithsolutions.backendapirest.v2.infrastructure.persistence.jpa.entity.CategoryEntity;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.category.CategoryListResponseDTO;
 
 import java.util.Objects;
@@ -11,6 +11,13 @@ public class CategoryEntityMapper {
         return Category.create(
                 categoryEntity.getId(),
                 categoryEntity.getNome()
+        );
+    }
+
+    public static CategoryEntity toEntity(Category categoryDomain){
+        return new CategoryEntity(
+                categoryDomain.getIdCategoria(),
+                categoryDomain.getNomeCategoria()
         );
     }
 

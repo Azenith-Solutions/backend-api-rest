@@ -14,6 +14,12 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
+  data:
+    redis:
+      host: ${CACHE_HOST}
+      port: ${CACHE_PORT}
+  cache:
+    type: redis
 
 api:
   security:
@@ -30,3 +36,19 @@ brevo:
 server:
   servlet:
     context-path: /api
+
+
+broker:
+    order:
+      command:
+        exchange: ${ORDER_CREATE_EXCHANGE}
+        queue: ${ORDER_CREATE_QUEUE}
+        routing-key: ${ORDER_ROUTING_KEY}
+        dlx: ${ORDER_DLX}
+        dlq: ${ORDER_DLQ}
+      event:
+        exchange: ${ORDER_CREATED_EXCHANGE}
+        queue: ${ORDER_CREATED_QUEUE}
+        routing-key: ${ORDER_CREATED_ROUTING_KEY}
+        dlx: ${ORDER_CREATED_DLX}
+        dlq: ${ORDER_CREATED_DLQ}

@@ -1,16 +1,16 @@
 package com.azenithsolutions.backendapirest.v2.core.usecase.order;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.model.order.Order;
-import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderRepositoryGateway;
-
-import java.util.NoSuchElementException;
+import com.azenithsolutions.backendapirest.v2.core.domain.repository.OrderGateway;
 
 public class GetOrderByIdUseCase {
-    private final OrderRepositoryGateway repository;
+    private final OrderGateway gateway;
 
-    public GetOrderByIdUseCase(OrderRepositoryGateway repository) { this.repository = repository; }
+    public GetOrderByIdUseCase(OrderGateway gateway) {
+        this.gateway = gateway;
+    }
 
     public Order execute(Long id) {
-        return repository.findById(id).orElseThrow(() -> new NoSuchElementException("Pedido não encontrado"));
+        return this.gateway.findById(id);
     }
 }
