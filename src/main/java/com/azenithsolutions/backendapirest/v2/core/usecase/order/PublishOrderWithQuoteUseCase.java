@@ -26,6 +26,7 @@ public class PublishOrderWithQuoteUseCase {
                     orderCommand.valor(),
                     orderCommand.status(),
                     orderCommand.telCelular(),
+                    orderCommand.items(),
                     orderCommand.createdAt(),
                     orderCommand.updatedAt()
                 );
