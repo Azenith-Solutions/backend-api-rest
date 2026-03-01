@@ -13,6 +13,8 @@ FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 
+RUN apk add --no-cache wget
+
 RUN addgroup -S spring && adduser -S spring -G spring
 
 RUN mkdir -p /app/uploads/images && \

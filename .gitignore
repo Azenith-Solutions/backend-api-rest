@@ -36,4 +36,8 @@ build/
 .env.development
 .env.production
 
+### uploads
+uploads/images/*
+!uploads/images/.gitkeep
+
 

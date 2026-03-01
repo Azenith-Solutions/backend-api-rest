@@ -26,8 +26,19 @@ public class CategoryRepositoryAdapter implements CategoryRepositoryGateway {
     public List<Category> findAll(){
         List<CategoryEntity> categoryEntitiesList = repository.findAll();
         List<Category> categoryList = categoryEntitiesList.stream().map(CategoryEntityMapper::toDomain).collect(Collectors.toList());
-        
+
         return categoryList;
     }
 
+    @Override
+    public Category save(Category category) {
+        CategoryEntity entity = CategoryEntityMapper.toEntity(category);
+        CategoryEntity saved = repository.save(entity);
+        return CategoryEntityMapper.toDomain(saved);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        repository.deleteById(id);
+    }
 }

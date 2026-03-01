@@ -5,4 +5,6 @@ import java.util.List;
 
 public interface CategoryRepositoryGateway {
     List<Category> findAll();
+    Category save(Category category);
+    void deleteById(Long id);
 }

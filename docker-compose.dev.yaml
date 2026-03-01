@@ -55,14 +55,34 @@ services:
       start_period: 30s
     command: --default-authentication-plugin=mysql_native_password --bind-address=0.0.0.0
 
+  redis-dev:
+    image: redis:7-alpine
+    container_name: hardwaretech-redis-dev
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-dev-data:/data
+    networks:
+      - backend-network
+      - hardwaretech-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
 networks:
   backend-network:
     driver: bridge
-  hardwaretech-network: 
+  hardwaretech-network:
     external: true
 
 volumes:
   mysql-dev-data:
+    driver: local
+  redis-dev-data:
     driver: local
   uploads:
     driver: local

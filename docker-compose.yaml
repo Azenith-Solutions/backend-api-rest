@@ -21,10 +21,24 @@ services:
       - RABBITMQ_PORT=${RABBITMQ_PORT:-5672}
       - RABBITMQ_USERNAME=${RABBITMQ_USERNAME:-guest}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-guest}
+      - CACHE_HOST=${CACHE_HOST:-redis}
+      - CACHE_PORT=${CACHE_PORT:-6379}
+      - JWT_SECRET=${JWT_SECRET:-sptech}
+      - ORDER_CREATE_EXCHANGE=${ORDER_CREATE_EXCHANGE}
+      - ORDER_CREATE_QUEUE=${ORDER_CREATE_QUEUE}
+      - ORDER_ROUTING_KEY=${ORDER_ROUTING_KEY}
+      - ORDER_DLX=${ORDER_DLX}
+      - ORDER_DLQ=${ORDER_DLQ}
+      - ORDER_CREATED_EXCHANGE=${ORDER_CREATED_EXCHANGE}
+      - ORDER_CREATED_QUEUE=${ORDER_CREATED_QUEUE}
+      - ORDER_CREATED_ROUTING_KEY=${ORDER_CREATED_ROUTING_KEY}
+      - ORDER_CREATED_DLX=${ORDER_CREATED_DLX}
+      - ORDER_CREATED_DLQ=${ORDER_CREATED_DLQ}
     volumes:
       - ./uploads:/app/uploads
     networks:
       - backend-network
+      - hardwaretech-network
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/api/actuator/health"]
       interval: 30s
@@ -40,6 +54,8 @@ services:
 networks:
   backend-network:
     driver: bridge
+  hardwaretech-network:
+    external: true
 
 volumes:
   uploads:

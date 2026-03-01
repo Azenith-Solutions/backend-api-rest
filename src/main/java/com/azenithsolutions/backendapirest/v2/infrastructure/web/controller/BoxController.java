@@ -1,9 +1,13 @@
 package com.azenithsolutions.backendapirest.v2.infrastructure.web.controller;
 
 import com.azenithsolutions.backendapirest.v2.core.domain.command.BoxDashboardCommand;
+import com.azenithsolutions.backendapirest.v2.core.domain.model.box.Box;
+import com.azenithsolutions.backendapirest.v2.core.usecase.box.CreateBoxUseCase;
+import com.azenithsolutions.backendapirest.v2.core.usecase.box.DeleteBoxUseCase;
 import com.azenithsolutions.backendapirest.v2.core.usecase.box.FindLimitBoxesUseCase;
 import com.azenithsolutions.backendapirest.v2.core.usecase.box.ListBoxesUseCase;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.box.ApiResponseRest;
+import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.box.BoxCreateRequest;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.box.BoxListRest;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.dto.shared.ApiResponseDTO;
 import com.azenithsolutions.backendapirest.v2.infrastructure.web.mappers.BoxRestMapper;
@@ -12,9 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +28,8 @@ import java.util.List;
 public class BoxController {
     private final FindLimitBoxesUseCase limiteCaixa;
     private final ListBoxesUseCase listBoxes;
+    private final CreateBoxUseCase createBox;
+    private final DeleteBoxUseCase deleteBox;
 
     @GetMapping
     public ResponseEntity<ApiResponseDTO<?>> getAll(HttpServletRequest request) {
@@ -70,6 +74,71 @@ public class BoxController {
                     )
             );
         }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ApiResponseDTO<>(
+                            LocalDateTime.now(),
+                            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                            "Internal Server Error",
+                            List.of("An error occurred while processing the request"),
+                            request.getRequestURI()
+                    )
+            );
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponseDTO<?>> create(@RequestBody BoxCreateRequest body, HttpServletRequest request) {
+        try {
+            Box created = createBox.execute(body.nome());
+            BoxListRest data = BoxRestMapper.toList(created);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(
+                    new ApiResponseDTO<>(
+                            LocalDateTime.now(),
+                            HttpStatus.CREATED.value(),
+                            "Box created successfully",
+                            data,
+                            request.getRequestURI()
+                    )
+            );
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new ApiResponseDTO<>(
+                            LocalDateTime.now(),
+                            HttpStatus.BAD_REQUEST.value(),
+                            e.getMessage(),
+                            null,
+                            request.getRequestURI()
+                    )
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ApiResponseDTO<>(
+                            LocalDateTime.now(),
+                            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                            "Internal Server Error",
+                            List.of("An error occurred while processing the request"),
+                            request.getRequestURI()
+                    )
+            );
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponseDTO<?>> delete(@PathVariable Long id, HttpServletRequest request) {
+        try {
+            deleteBox.execute(id);
+
+            return ResponseEntity.ok(
+                    new ApiResponseDTO<>(
+                            LocalDateTime.now(),
+                            HttpStatus.OK.value(),
+                            "Box deleted successfully",
+                            null,
+                            request.getRequestURI()
+                    )
+            );
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     new ApiResponseDTO<>(
                             LocalDateTime.now(),

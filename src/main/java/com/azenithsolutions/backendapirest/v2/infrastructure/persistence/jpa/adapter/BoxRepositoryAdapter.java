@@ -35,6 +35,18 @@ public class BoxRepositoryAdapter implements BoxGateway {
         return repository.countComponentsInBoxes(boxId);
     }
 
+    @Override
+    public Box save(Box box) {
+        BoxEntity entity = toEntity(box);
+        BoxEntity saved = repository.save(entity);
+        return toDomain(saved);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        repository.deleteById(id);
+    }
+
     private BoxEntity toEntity(Box box) {
         BoxEntity entity = new BoxEntity();
         entity.setIdCaixa(box.getIdCaixa());

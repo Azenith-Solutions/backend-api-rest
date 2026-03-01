@@ -24,10 +24,13 @@ public class ClientConfig {
                 .build();
     }
 
+    @Value("${order.service.url}")
+    private String orderServiceUrl;
+
     @Bean(name = "orderRestClient")
     public RestClient orderRestClient() {
         return RestClient.builder()
-                .baseUrl("http://localhost:8082")
+                .baseUrl(orderServiceUrl)
                 .build();
     }
 }

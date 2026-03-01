@@ -8,4 +8,6 @@ public interface BoxGateway {
     List<Box> findAll();
     List<Box> findBoxesGreaterOrAlmostOrInLimitOfComponents();
     int countComponentsInBoxes(Long boxId);
+    Box save(Box box);
+    void deleteById(Long id);
 }
