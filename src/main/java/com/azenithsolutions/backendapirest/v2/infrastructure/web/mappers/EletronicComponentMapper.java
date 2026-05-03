@@ -114,11 +114,7 @@ public class EletronicComponentMapper {
         
         Status status = null;
         if (entity.getFlagVerificado() != null) {
-            if (entity.getFlagVerificado()) {
-                status = Status.verificado(entity.getCondicao(), entity.getObservacao());
-            } else {
-                status = Status.naoVerificado(entity.getObservacao());
-            }
+            status = Status.recriar(entity.getFlagVerificado(), entity.getCondicao(), entity.getObservacao());
         }
 
         Box caixa = BoxRestMapper.toDomain(entity.getFkCaixa());
@@ -164,11 +160,7 @@ public class EletronicComponentMapper {
 
         Status status = null;
         if (entity.getFlagVerificado() != null) {
-            if (entity.getFlagVerificado()) {
-                status = Status.verificado(entity.getCondicao(), entity.getObservacao());
-            } else {
-                status = Status.naoVerificado(entity.getObservacao());
-            }
+            status = Status.recriar(entity.getFlagVerificado(), entity.getCondicao(), entity.getObservacao());
         }
 
         return new ComponentCatalogResponseDTO(
@@ -194,11 +186,7 @@ public class EletronicComponentMapper {
 
         Status status = null;
         if (entity.getFlagVerificado() != null) {
-            if (entity.getFlagVerificado()) {
-                status = Status.verificado(entity.getCondicao(), entity.getObservacao());
-            } else {
-                status = Status.naoVerificado(entity.getObservacao());
-            }
+            status = Status.recriar(entity.getFlagVerificado(), entity.getCondicao(), entity.getObservacao());
         }
 
         return new ComponentManagerResponseDTO(

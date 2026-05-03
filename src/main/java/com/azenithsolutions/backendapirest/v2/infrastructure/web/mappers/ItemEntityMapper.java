@@ -18,11 +18,7 @@ public class ItemEntityMapper {
 
         Status status = null;
         if (entity.getFkComponente().getFlagVerificado() != null) {
-            if (entity.getFkComponente().getFlagVerificado()) {
-                status = Status.verificado(entity.getFkComponente().getCondicao(), entity.getFkComponente().getObservacao());
-            } else {
-                status = Status.naoVerificado(entity.getFkComponente().getObservacao());
-            }
+            status = Status.recriar(entity.getFkComponente().getFlagVerificado(), entity.getFkComponente().getCondicao(), entity.getFkComponente().getObservacao());
         }
 
         EletronicComponentEntity eletronicComponentEntity = entity.getFkComponente() != null ? entity.getFkComponente() : null;
