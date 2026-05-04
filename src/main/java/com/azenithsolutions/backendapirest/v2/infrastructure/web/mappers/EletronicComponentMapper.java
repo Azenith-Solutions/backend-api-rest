@@ -192,6 +192,7 @@ public class EletronicComponentMapper {
         return new ComponentManagerResponseDTO(
                 entity.getId(),
                 entity.getIdHardwaretech(),
+            entity.getIdQrcode(),
                 entity.getNome(),
                 entity.getFkCaixa(),
                 entity.getFkCategoria(),

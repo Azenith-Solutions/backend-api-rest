@@ -16,6 +16,7 @@ public class ComponentManagerResponseDTO {
 
     private Long idComponente;
     private String idHardWareTech;
+    private String idQrcode;
     private String nomeComponente;
     private BoxEntity fkCaixa;
     private CategoryEntity fkCategoria;
