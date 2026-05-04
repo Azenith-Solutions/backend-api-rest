@@ -16,6 +16,9 @@ public class EletronicComponentEntity {
     @Column(name = "id_hardwaretech")
     private String idHardwaretech;
 
+    @Column(name = "id_qrcode")
+    private String idQrcode;
+
     @Column(name = "nome_componente")
     private String nome;
 
@@ -89,6 +92,14 @@ public class EletronicComponentEntity {
 
     public void setIdHardwaretech(String idHardwaretech) {
         this.idHardwaretech = idHardwaretech;
+    }
+
+    public String getIdQrcode() {
+        return idQrcode;
+    }
+
+    public void setIdQrcode(String idQrcode) {
+        this.idQrcode = idQrcode;
     }
 
     public String getNome() {
