@@ -20,7 +20,7 @@ public class LoginUserUserCase {
     public AuthenticatedUserResponse execute(LoginUserRequest request) {
         User user = userGateway.findByEmail(request.email());
         if(user == null){
-            new RuntimeException("Invalid credentials");
+            throw new RuntimeException("Invalid credentials");
         }
 
         if (!passwordEncoder.matches(request.password(), user.getPassword().getValue())) {

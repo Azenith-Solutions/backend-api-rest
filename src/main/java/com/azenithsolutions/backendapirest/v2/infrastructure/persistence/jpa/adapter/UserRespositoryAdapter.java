@@ -22,8 +22,7 @@ public class UserRespositoryAdapter implements UserGateway {
     @Override
     public User findById(Integer id) {
         Optional<UserEntity> userEntity = repository.findById(id);
-        if(userEntity.get() == null) return null;
-        return UserEntityMapper.toDomain(userEntity.get());
+        return userEntity.map(UserEntityMapper::toDomain).orElse(null);
     }
 
     @Override
@@ -55,7 +54,6 @@ public class UserRespositoryAdapter implements UserGateway {
     @Override
     public User findByEmail(String email) {
         Optional<UserEntity> userEntity = repository.findByEmail(email);
-        if(userEntity.get() == null) return null;
-        return UserEntityMapper.toDomain(userEntity.get());
+        return userEntity.map(UserEntityMapper::toDomain).orElse(null);
     }
 }

@@ -84,6 +84,16 @@ public class AuthController {
                             request.getRequestURI()
                     )
             );
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    new ApiResponseDTO<>(
+                            LocalDateTime.now(),
+                            HttpStatus.UNAUTHORIZED.value(),
+                            "Unauthorized",
+                            List.of("Invalid credentials"),
+                            request.getRequestURI()
+                    )
+            );
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     new ApiResponseDTO<>(
