@@ -18,6 +18,14 @@ public class Password {
         return new Password(password);
     }
 
+    // Used when reconstructing the domain object from a stored BCrypt hash — skips plain-text validation.
+    public static Password fromHash(String hash) {
+        if (hash == null || hash.isBlank()) {
+            throw new IllegalArgumentException("Password hash cannot be empty");
+        }
+        return new Password(hash);
+    }
+
     public String getValue() {
         return value;
     }

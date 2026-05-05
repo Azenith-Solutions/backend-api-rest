@@ -34,7 +34,7 @@ public class UserEntityMapper {
             return null;
         }
 
-        User user = User.create(
+        User user = User.load(
                 userEntity.getId(),
                 userEntity.getFullName(),
                 userEntity.getEmail(),

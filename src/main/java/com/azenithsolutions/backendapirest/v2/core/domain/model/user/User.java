@@ -51,6 +51,20 @@ public class User {
                 updatedAt);
     }
 
+    // Hydrates a User from a persisted record — password is already a BCrypt hash, skip plain-text validation.
+    public static User load(Integer id, String fullName, String email, String passwordHash, String profilePicture, Boolean status, Long fkFuncao, String funcao, LocalDate createdAt, LocalDate updatedAt){
+        return new User(
+                id,
+                FullName.create(fullName),
+                Email.create(email),
+                Password.fromHash(passwordHash),
+                profilePicture,
+                status,
+                Role.create(fkFuncao, funcao),
+                createdAt,
+                updatedAt);
+    }
+
     public Integer getId() {
         return id;
     }
